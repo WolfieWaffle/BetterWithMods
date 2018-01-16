@@ -1,7 +1,7 @@
 package betterwithmods.module.industry;
 
+import betterwithmods.api.util.ITickEffect;
 import betterwithmods.common.blocks.BlockUrn;
-import betterwithmods.module.hardcore.beacons.IBeaconEffect;
 import betterwithmods.util.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by primetoxinz on 7/25/17.
  */
-public class WeatherBeaconEffect implements IBeaconEffect {
+public class WeatherBeaconEffect implements ITickEffect {
     private static final int MAX_WATER_CONSUMPTION = 64;
 
     @Override
@@ -26,7 +26,7 @@ public class WeatherBeaconEffect implements IBeaconEffect {
     }
 
     @Override
-    public void effect(World world, BlockPos pos, int level) {
+    public void tick(World world, BlockPos pos, int level) {
         if (world.isThundering()) {
 
         }

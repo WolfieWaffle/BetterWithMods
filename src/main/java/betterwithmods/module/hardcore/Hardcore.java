@@ -4,6 +4,7 @@ import betterwithmods.client.gui.GuiStatus;
 import betterwithmods.module.CompatModule;
 import betterwithmods.module.ModuleLoader;
 import betterwithmods.module.hardcore.beacons.HCBeacons;
+import betterwithmods.module.hardcore.corruption.Corruption;
 import betterwithmods.module.hardcore.crafting.*;
 import betterwithmods.module.hardcore.creatures.*;
 import betterwithmods.module.hardcore.needs.*;
@@ -70,6 +71,7 @@ public class Hardcore extends CompatModule {
         registerFeature(new HCStrata());
         registerFeature(new HCFurnace());
         registerFeature(new HCBoating());
+        registerFeature(new Corruption());
 //        registerFeature(new HCSquid());
 //        registerFeature(new HCVillagers());
         this.load();

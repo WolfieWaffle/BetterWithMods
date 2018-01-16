@@ -12,6 +12,7 @@ import betterwithmods.common.blocks.tile.SimpleStackHandler;
 import betterwithmods.common.blocks.tile.TileEntityVisibleInventory;
 import betterwithmods.common.registry.HopperFilters;
 import betterwithmods.common.registry.HopperInteractions;
+import betterwithmods.module.hardcore.corruption.CorruptEvent;
 import betterwithmods.util.InvUtils;
 import betterwithmods.util.WorldUtils;
 import net.minecraft.block.Block;
@@ -27,6 +28,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
@@ -163,6 +165,7 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     public void update() {
 
         if (!this.world.isRemote) {
+
             byte power = (byte) calculateInput();
             if (this.power != power) {
                 this.power = power;
@@ -172,6 +175,11 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
             if (isPowered()) {
                 extract();
             }
+
+            if (soulsRetained > 0) {
+                MinecraftForge.EVENT_BUS.post(new CorruptEvent(getBlockWorld(), getBlockWorld().getBlockState(getPos()), getPos()));
+            }
+
         }
 
     }
@@ -253,24 +261,25 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     @Nullable
     public ISoulSensitive getSoulContainer() {
         Block block = world.getBlockState(pos.down()).getBlock();
-        if(block instanceof ISoulSensitive && ((ISoulSensitive) block).isSoulSensitive(world,pos.down())) {
+        if (block instanceof ISoulSensitive && ((ISoulSensitive) block).isSoulSensitive(world, pos.down())) {
             return (ISoulSensitive) block;
         }
         return null;
     }
+
     private ISoulSensitive prevContainer;
+
     public void increaseSoulCount(int numSouls) {
         this.soulsRetained += numSouls;
         ISoulSensitive container = getSoulContainer();
-        if(container != null) {
-            if(prevContainer != container)
+        if (container != null) {
+            if (prevContainer != container)
                 soulsRetained = numSouls;
             int soulsConsumed = container.processSouls(this.getBlockWorld(), pos.down(), this.soulsRetained);
             if (container.consumeSouls(this.getBlockWorld(), pos.down(), soulsConsumed))
                 this.soulsRetained -= soulsConsumed;
-
         } else {
-            if(this.soulsRetained > 7 && !isPowered()) {
+            if (this.soulsRetained > 7 && !isPowered()) {
                 if (WorldUtils.spawnGhast(world, pos))
                     this.getBlockWorld().playSound(null, this.pos, SoundEvents.ENTITY_GHAST_SCREAM, SoundCategory.BLOCKS, 1.0F, getBlockWorld().rand.nextFloat() * 0.1F + 0.8F);
                 overpower();
@@ -335,7 +344,7 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if(!hopper.canFilterProcessItem(stack))
+            if (!hopper.canFilterProcessItem(stack))
                 return stack;
             return super.insertItem(slot, stack, simulate);
         }
@@ -379,7 +388,7 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nonnull EnumFacing facing) {
         if (capability == CapabilityMechanicalPower.MECHANICAL_POWER)
             return CapabilityMechanicalPower.MECHANICAL_POWER.cast(this);
-        return super.getCapability(capability,facing);
+        return super.getCapability(capability, facing);
     }
 
     @Override

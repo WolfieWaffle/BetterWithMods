@@ -1,4 +1,4 @@
-package betterwithmods.module.hardcore.beacons;
+package betterwithmods.api.util;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,19 +13,18 @@ import java.util.function.Consumer;
 /**
  * Created by primetoxinz on 7/17/17.
  */
-public interface IBeaconEffect {
+public interface ITickEffect {
 
-    int[] radii = new int[]{20, 40, 80, 160};
 
-    void effect(World world, BlockPos pos, int level);
 
-    static void forEachPlayersAround(World world, BlockPos pos, int level, Consumer<? super EntityLivingBase> player) {
-        forEachEntityAround(EntityPlayer.class, world, pos, level, player);
+    void tick(World world, BlockPos pos, int level);
+
+    static void forEachPlayersAround(World world, BlockPos pos, int radius, Consumer<? super EntityLivingBase> player) {
+        forEachEntityAround(EntityPlayer.class, world, pos, radius, player);
     }
 
-    static void forEachEntityAround(Class<? extends EntityLivingBase> clazz, World world, BlockPos pos, int level, Consumer<? super EntityLivingBase> consumer) {
-        int r = radii[Math.min(level - 1, 3)];
-        AxisAlignedBB box = new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(r);
+    static void forEachEntityAround(Class<? extends EntityLivingBase> clazz, World world, BlockPos pos, int radius, Consumer<? super EntityLivingBase> consumer) {
+        AxisAlignedBB box = new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(radius);
         List<? extends EntityLivingBase> entities = world.getEntitiesWithinAABB(clazz, box);
         entities.forEach(consumer);
     }

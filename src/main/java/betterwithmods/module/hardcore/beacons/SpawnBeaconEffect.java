@@ -1,5 +1,6 @@
 package betterwithmods.module.hardcore.beacons;
 
+import betterwithmods.api.util.ITickEffect;
 import betterwithmods.common.blocks.tile.TileEntityBeacon;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -19,7 +20,7 @@ import java.util.UUID;
 /**
  * Created by primetoxinz on 7/17/17.
  */
-public class SpawnBeaconEffect implements IBeaconEffect {
+public class SpawnBeaconEffect implements ITickEffect {
 
     public static final HashMap<BlockPos, HashSet<BindingPoint>> SPAWN_LIST = Maps.newHashMap();
 
@@ -67,7 +68,7 @@ public class SpawnBeaconEffect implements IBeaconEffect {
     }
 
     @Override
-    public void effect(World world, BlockPos pos, int level) {
+    public void tick(World world, BlockPos pos, int level) {
         //TODO Blight
     }
 

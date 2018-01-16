@@ -1,6 +1,7 @@
 package betterwithmods.module.hardcore.beacons;
 
 import betterwithmods.BWMod;
+import betterwithmods.api.util.ITickEffect;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWRegistry;
 import betterwithmods.common.blocks.BlockAesthetic;
@@ -42,12 +43,18 @@ import static betterwithmods.module.hardcore.beacons.EnderchestCap.ENDERCHEST_CA
  */
 public class HCBeacons extends Feature {
 
-    public static final HashMap<IBlockState, IBeaconEffect> BEACON_EFFECTS = Maps.newHashMap();
+    public static final HashMap<IBlockState, ITickEffect> BEACON_EFFECTS = Maps.newHashMap();
 
-    public static final IBeaconEffect getBeaconEffect(IBlockState state) {
+    private static final int[] radii = new int[]{20, 40, 80, 160};
+
+    public static int getRadius(int level) {
+        return radii[level];
+    }
+
+    public static final ITickEffect getBeaconEffect(IBlockState state) {
         if (BEACON_EFFECTS.containsKey(state))
             return BEACON_EFFECTS.get(state);
-        return (world, pos, level) -> {
+        return (world, pos, radius) -> {
         };
     }
 
@@ -80,35 +87,35 @@ public class HCBeacons extends Feature {
         BEACON_EFFECTS.put(Blocks.IRON_BLOCK.getDefaultState(), (world, pos, level) -> {
             //TODO substitute ItemCompass.
         });
-        BEACON_EFFECTS.put(Blocks.EMERALD_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachEntityAround(EntityLivingBase.class, world, pos, level, entity -> entity.addPotionEffect(new PotionEffect(BWRegistry.POTION_LOOTING, 125, level - 1, true, false))));
-        BEACON_EFFECTS.put(Blocks.LAPIS_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(BWRegistry.POTION_TRUESIGHT, 125, 1))));
-        BEACON_EFFECTS.put(Blocks.DIAMOND_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(BWRegistry.POTION_FORTUNE, 125, level - 1))));
-        BEACON_EFFECTS.put(Blocks.GLOWSTONE.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 125, 1))));
-        BEACON_EFFECTS.put(Blocks.GOLD_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.HASTE, 120, level))));
-        BEACON_EFFECTS.put(Blocks.SLIME_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST, 120, level))));
-        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.DUNG), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> {
+        BEACON_EFFECTS.put(Blocks.EMERALD_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachEntityAround(EntityLivingBase.class, world, pos, getRadius(level), entity -> entity.addPotionEffect(new PotionEffect(BWRegistry.POTION_LOOTING, 125, level - 1, true, false))));
+        BEACON_EFFECTS.put(Blocks.LAPIS_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(BWRegistry.POTION_TRUESIGHT, 125, 1))));
+        BEACON_EFFECTS.put(Blocks.DIAMOND_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(BWRegistry.POTION_FORTUNE, 125, level - 1))));
+        BEACON_EFFECTS.put(Blocks.GLOWSTONE.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 125, 1))));
+        BEACON_EFFECTS.put(Blocks.GOLD_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(MobEffects.HASTE, 120, level))));
+        BEACON_EFFECTS.put(Blocks.SLIME_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST, 120, level))));
+        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.DUNG), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos,  getRadius(level), player -> {
                     if (!PlayerHelper.hasFullSet((EntityPlayer) player, ItemSoulforgeArmor.class)) {
                         player.addPotionEffect(new PotionEffect(MobEffects.POISON, 120, level));
                         player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 120, level));
                     }
                 }
         ));
-        BEACON_EFFECTS.put(Blocks.COAL_BLOCK.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> {
+        BEACON_EFFECTS.put(Blocks.COAL_BLOCK.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> {
                     if (!PlayerHelper.hasPart(player, EntityEquipmentSlot.HEAD, ItemSoulforgeArmor.class)) {
                         player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 120, level));
                     }
                 }
         ));
-        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.HELLFIRE), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 120, level))));
-        BEACON_EFFECTS.put(Blocks.PRISMARINE.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 120, level))));
-        BEACON_EFFECTS.put(Blocks.SPONGE.getDefaultState(), (world, pos, level) -> IBeaconEffect.forEachEntityAround(EntityLivingBase.class, world, pos, level, entity -> {
+        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.HELLFIRE), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 120, level))));
+        BEACON_EFFECTS.put(Blocks.PRISMARINE.getDefaultState(), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, level, player -> player.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 120, level))));
+        BEACON_EFFECTS.put(Blocks.SPONGE.getDefaultState(), (world, pos, level) -> ITickEffect.forEachEntityAround(EntityLivingBase.class, world, pos, level, entity -> {
             if (!(entity instanceof EntityWaterMob) && !(entity.isEntityUndead() && !PlayerHelper.hasPart(entity, EntityEquipmentSlot.HEAD, ItemSoulforgeArmor.class))) {
                 entity.setAir(entity.getAir() - 1);
             }
         }));
         BEACON_EFFECTS.put(BWMBlocks.STEEL_BLOCK.getDefaultState().withProperty(BlockSteel.HEIGHT, 15), new SpawnBeaconEffect());
 
-        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.PADDING), (world, pos, level) -> IBeaconEffect.forEachPlayersAround(world, pos, level, player -> {
+        BEACON_EFFECTS.put(BlockAesthetic.getVariant(BlockAesthetic.EnumType.PADDING), (world, pos, level) -> ITickEffect.forEachPlayersAround(world, pos, getRadius(level), player -> {
             player.addPotionEffect(new PotionEffect(BWRegistry.POTION_SLOWFALL, 120, level));
         }));
         if (enderchestBeacon) {

@@ -3,6 +3,7 @@ package betterwithmods.module.tweaks;
 import betterwithmods.common.BWMItems;
 import betterwithmods.common.entity.EntityShearedCreeper;
 import betterwithmods.module.Feature;
+import betterwithmods.util.EntityUtils;
 import betterwithmods.util.InvUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -30,23 +31,16 @@ public class CreeperShearing extends Feature {
                     if (item instanceof ItemShears) {
                         e.getEntityPlayer().getCooldownTracker().setCooldown(item, 20);
                         InvUtils.ejectStack(e.getWorld(), creeper.posX, creeper.posY, creeper.posZ, new ItemStack(BWMItems.CREEPER_OYSTER));
-                        EntityShearedCreeper shearedCreeper = new EntityShearedCreeper(e.getWorld());
                         creeper.attackEntityFrom(new DamageSource(""), 0);
-                        copyEntityInfo(creeper, shearedCreeper);
-                        e.getWorld().playSound(null, shearedCreeper.posX, shearedCreeper.posY, shearedCreeper.posZ, SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.HOSTILE, 1, 0.3F);
-                        e.getWorld().playSound(null, shearedCreeper.posX, shearedCreeper.posY, shearedCreeper.posZ, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.HOSTILE, 1, 1F);
-                        creeper.setDead();
-                        e.getWorld().spawnEntity(shearedCreeper);
+                        EntityShearedCreeper shearedCreeper = EntityUtils.replaceEntity(creeper, EntityShearedCreeper.class);
+                        if (shearedCreeper != null) {
+                            e.getWorld().playSound(null, shearedCreeper.posX, shearedCreeper.posY, shearedCreeper.posZ, SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.HOSTILE, 1, 0.3F);
+                            e.getWorld().playSound(null, shearedCreeper.posX, shearedCreeper.posY, shearedCreeper.posZ, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.HOSTILE, 1, 1F);
+                        }
                     }
                 }
             }
         }
-    }
-
-    private void copyEntityInfo(EntityLivingBase copyFrom, EntityLivingBase copyTo) {
-        copyTo.setHealth(copyFrom.getHealth());
-        copyTo.setPositionAndRotation(copyFrom.posX, copyFrom.posY, copyFrom.posZ, copyFrom.rotationYaw, copyFrom.rotationPitch);
-        copyTo.setRotationYawHead(copyFrom.getRotationYawHead());
     }
 
     @Override

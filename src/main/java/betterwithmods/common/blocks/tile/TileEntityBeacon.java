@@ -1,8 +1,8 @@
 package betterwithmods.common.blocks.tile;
 
+import betterwithmods.api.util.ITickEffect;
 import betterwithmods.module.hardcore.beacons.CapabilityBeacon;
 import betterwithmods.module.hardcore.beacons.HCBeacons;
-import betterwithmods.module.hardcore.beacons.IBeaconEffect;
 import betterwithmods.module.hardcore.beacons.SpawnBeaconEffect;
 import betterwithmods.util.ColorUtils;
 import com.google.common.collect.Lists;
@@ -47,7 +47,7 @@ public class TileEntityBeacon extends net.minecraft.tileentity.TileEntityBeacon 
 
     private int level, prevLevel;
     private IBlockState type = Blocks.AIR.getDefaultState();
-    private IBeaconEffect effect, prevEffect;
+    private ITickEffect effect, prevEffect;
     private int tick;
     private List<BeamSegment> segments = Lists.newArrayList();
 
@@ -107,7 +107,7 @@ public class TileEntityBeacon extends net.minecraft.tileentity.TileEntityBeacon 
                     this.world.getEntitiesWithinAABB(EntityPlayerMP.class, new AxisAlignedBB(pos, pos.add(1, -4, 1)).grow(10.0D, 5.0D, 10.0D)).forEach(player -> CriteriaTriggers.CONSTRUCT_BEACON.trigger(player, this));
                 }
                 if (effect != null) {
-                    effect.effect(world, pos, level);
+                    effect.tick(world, pos, level);
                     calcSegments();
                 }
                 prevEffect = effect;
