@@ -28,7 +28,7 @@ public final class WorldUtils {
     private WorldUtils() {
     }
 
-        /**
+    /**
      * Based on {@link World#getLightFromNeighbors(BlockPos)} build 2185
      */
     public static int getNaturalLightFromNeighbors(World worldIn, BlockPos pos) {
@@ -187,7 +187,7 @@ public final class WorldUtils {
     }
 
     public static boolean isMoonPhase(World world, MoonPhase phase) {
-        return phase.ordinal() == world.getMoonPhase();
+        return phase.ordinal() == world.provider.getMoonPhase(world.getWorldTime());
     }
 
     public enum MoonPhase {
