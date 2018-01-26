@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class CauldronRecipeCategory extends BWMRecipeCategory<BulkRecipeWrapper> {
     public static final String
@@ -60,10 +59,7 @@ public class CauldronRecipeCategory extends BWMRecipeCategory<BulkRecipeWrapper>
                 stacks.init(index, true, 2 + i * 18, j * 18);
             }
         }
-        stacks.set(outputSlots, wrapper.getRecipe().getOutput());
-        if (!wrapper.getRecipe().getSecondary().isEmpty())
-            stacks.set(outputSlots + 1, wrapper.getRecipe().getSecondary());
-        List<List<ItemStack>> inputList = ingredients.getInputs(ItemStack.class);
-        craftingGrid.setInputs(stacks, inputList);
+        stacks.set(outputSlots, wrapper.getRecipe().getOutputs());
+        craftingGrid.setInputs(stacks, ingredients.getInputs(ItemStack.class));
     }
 }

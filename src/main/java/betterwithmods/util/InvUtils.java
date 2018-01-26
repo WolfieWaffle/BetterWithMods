@@ -26,6 +26,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,14 +35,14 @@ public class InvUtils {
     public static <T> NonNullList<T> asNonnullList(T... array) {
         NonNullList<T> nonNullList = NonNullList.create();
         if (array != null)
-            nonNullList.addAll(Arrays.stream(array).filter(e -> e != null).collect(Collectors.toList()));
+            nonNullList.addAll(Arrays.stream(array).filter(Objects::nonNull).collect(Collectors.toList()));
         return nonNullList;
     }
 
     public static <T> NonNullList<T> asNonnullList(List<T> list) {
         NonNullList<T> nonNullList = NonNullList.create();
         if (list != null)
-            nonNullList.addAll(list.stream().filter(e -> e != null).collect(Collectors.toList()));
+            nonNullList.addAll(list.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         return nonNullList;
     }
 

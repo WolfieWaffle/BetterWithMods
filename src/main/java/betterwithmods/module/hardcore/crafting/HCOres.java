@@ -3,15 +3,12 @@ package betterwithmods.module.hardcore.crafting;
 import betterwithmods.common.BWMRecipes;
 import betterwithmods.common.BWOreDictionary;
 import betterwithmods.module.Feature;
-import betterwithmods.module.gameplay.CrucibleRecipes;
 import com.google.common.collect.Sets;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -61,24 +58,25 @@ public class HCOres extends Feature {
 			addHardcoreRecipe(new ShapedOreRecipe(null, Items.BUCKET, "N N", "N N", "NNN", 'N', "nuggetIron").setRegistryName(new ResourceLocation("minecraft", "bucket")));
 			addHardcoreRecipe(new ShapelessOreRecipe(null, Items.FLINT_AND_STEEL, Items.FLINT, "nuggetIron").setRegistryName(new ResourceLocation("minecraft", "flint_and_steel")));
 		}
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.BUCKET) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.WATER_BUCKET) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.MILK_BUCKET) });
-
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 4), new Object[] { new ItemStack(Items.MAP) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 4), new Object[] { new ItemStack(Items.COMPASS) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.GOLD_NUGGET, 4), new Object[] { new ItemStack(Items.CLOCK) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET), new Object[] { new ItemStack(Blocks.TRIPWIRE_HOOK, 2, 0) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET), new Object[] { new ItemStack(Items.FLINT_AND_STEEL) });
+		//TODO
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.BUCKET) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.WATER_BUCKET) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 7), new Object[] { new ItemStack(Items.MILK_BUCKET) });
+//
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 4), new Object[] { new ItemStack(Items.MAP) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET, 4), new Object[] { new ItemStack(Items.COMPASS) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.GOLD_NUGGET, 4), new Object[] { new ItemStack(Items.CLOCK) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET), new Object[] { new ItemStack(Blocks.TRIPWIRE_HOOK, 2, 0) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_NUGGET), new Object[] { new ItemStack(Items.FLINT_AND_STEEL) });
 	}
 
 	@Override
 	public void disabledInit(FMLInitializationEvent event) {
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT, 3), new Object[] { new ItemStack(Items.BUCKET) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT), new Object[] { new ItemStack(Blocks.TRIPWIRE_HOOK, 2, 0) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT), new Object[] { new ItemStack(Items.FLINT_AND_STEEL, 1, OreDictionary.WILDCARD_VALUE) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT, 4), new Object[] { new ItemStack(Items.COMPASS) });
-		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.GOLD_INGOT, 4), new Object[] { new ItemStack(Items.CLOCK) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT, 3), new Object[] { new ItemStack(Items.BUCKET) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT), new Object[] { new ItemStack(Blocks.TRIPWIRE_HOOK, 2, 0) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT), new Object[] { new ItemStack(Items.FLINT_AND_STEEL, 1, OreDictionary.WILDCARD_VALUE) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.IRON_INGOT, 4), new Object[] { new ItemStack(Items.COMPASS) });
+//		CrucibleRecipes.addStokedCrucibleRecipe(new ItemStack(Items.GOLD_INGOT, 4), new Object[] { new ItemStack(Items.CLOCK) });
 	}
 
 	@Override
@@ -86,35 +84,29 @@ public class HCOres extends Feature {
 		Set<String> oreExcludes = Sets.union(oreExclude, Sets.newHashSet("oreDiamond"));
 		if (oreNuggetSmelting) {
 			for (BWOreDictionary.Ore ore : BWOreDictionary.oreNames) {
-				if (!oreExcludes.contains(ore.getOre())) {
-					Optional<ItemStack> nugget = BWOreDictionary.nuggetNames.stream().filter(o -> o.getSuffix().equals(ore.getSuffix())).flatMap(o -> o.getOres().stream()).findFirst();
-					if (nugget.isPresent()) {
-						ItemStack n = nugget.get().copy();
-						n.setCount(oreProductionCount);
-						//Remove all furnace recipes with dust
-						ore.getOres().forEach(BWMRecipes::removeFurnaceRecipe);
-						//Add dust -> nugget smelting recipe
-						ore.getOres().forEach(s -> BWMRecipes.addFurnaceRecipe(s, n));
-					}
-				}
+				convertToNuggets(oreExcludes, ore, oreProductionCount);
 			}
 		}
 		Set<String> dustExcludes = Sets.union(dustExclude, Sets.newHashSet("dustDiamond"));
 		if (dustNuggetSmelting) {
 			for (BWOreDictionary.Ore dust : BWOreDictionary.dustNames) {
-				if (!dustExcludes.contains(dust.getOre())) {
-					Optional<ItemStack> nugget = BWOreDictionary.nuggetNames.stream().filter(o -> o.getSuffix().equals(dust.getSuffix())).flatMap(o -> o.getOres().stream()).findFirst();
-					if (nugget.isPresent()) {
-						ItemStack n = nugget.get().copy();
-						n.setCount(dustProductionCount);
-						//Remove all furnace recipes with dust
-						dust.getOres().forEach(BWMRecipes::removeFurnaceRecipe);
-						//Add dust -> nugget smelting recipe
-						dust.getOres().forEach(s -> BWMRecipes.addFurnaceRecipe(s, n));
-					}
-				}
+				convertToNuggets(dustExcludes, dust, dustProductionCount);
 			}
 		}
+	}
+
+	private void convertToNuggets(Set<String> oreExcludes, BWOreDictionary.Ore ore, int oreProductionCount) {
+		if (!oreExcludes.contains(ore.getOre())) {
+            Optional<ItemStack> nugget = BWOreDictionary.nuggetNames.stream().filter(o -> o.getSuffix().equals(ore.getSuffix())).flatMap(o -> o.getOres().stream()).findFirst();
+            if (nugget.isPresent()) {
+                ItemStack n = nugget.get().copy();
+                n.setCount(oreProductionCount);
+                //Remove all furnace recipes with dust
+                ore.getOres().forEach(BWMRecipes::removeFurnaceRecipe);
+                //Add dust -> nugget smelting recipe
+                ore.getOres().forEach(s -> BWMRecipes.addFurnaceRecipe(s, n));
+            }
+        }
 	}
 
 }

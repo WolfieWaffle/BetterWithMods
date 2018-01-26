@@ -6,22 +6,27 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BulkRecipe implements Comparable<BulkRecipe> {
+public class BulkRecipe implements Comparable<BulkRecipe>, IRecipe {
 
     @Nonnull
     protected NonNullList<ItemStack> outputs;
@@ -69,6 +74,7 @@ public class BulkRecipe implements Comparable<BulkRecipe> {
     public List<StackIngredient> getInputs() {
         return this.inputs;
     }
+
 
     public boolean matches(ItemStackHandler inv) {
         if (!inputs.isEmpty()) {
@@ -129,22 +135,69 @@ public class BulkRecipe implements Comparable<BulkRecipe> {
         return Integer.compare(other.getPriority(), this.getPriority());
     }
 
-    public static class Factory implements IRecipeFactory {
+    @Override
+    public boolean matches(InventoryCrafting inv, World worldIn) {
+        return false;
+    }
 
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv) {
+        return null;
+    }
+
+    @Override
+    public boolean canFit(int width, int height) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getRecipeOutput() {
+        return null;
+    }
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return null;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return null;
+    }
+
+
+    public static abstract class Factory<T extends BulkRecipe> implements IRecipeFactory {
+
+        protected NonNullList<ItemStack> parseOutputs(JsonContext context, JsonObject json) {
+            JsonArray outputs = JsonUtils.getJsonArray(json, "outputs");
+            List<ItemStack> recipeOutputs = Lists.newArrayList();
+            for (JsonElement element : outputs) {
+                recipeOutputs.add(CraftingHelper.getItemStack(element.getAsJsonObject(), context));
+            }
+            return InvUtils.asNonnullList(recipeOutputs);
+        }
+
+        protected List<StackIngredient> parseInputs(JsonContext context, JsonObject json) {
+            JsonArray inputs = JsonUtils.getJsonArray(json, "inputs");
+
+            List<StackIngredient> recipeInputs = Lists.newArrayList();
+            for (JsonElement element : inputs) {
+                JsonObject obj = element.getAsJsonObject();
+                JsonElement e = obj.get("item");
+                Ingredient base = CraftingHelper.getIngredient(e, context);
+                int count = obj.get("count").getAsInt();
+                recipeInputs.add(new StackIngredient(base, count));
+            }
+            return recipeInputs;
+        }
 
         @Override
-        public IRecipe parse(JsonContext context, JsonObject json) {
-
-            JsonArray ingredients = JsonUtils.getJsonArray(json, "ingredients");
-
-            List<StackIngredient> inputs = Lists.newArrayList();
-            for(JsonElement element: ingredients) {
-                JsonObject obj = element.getAsJsonObject();
-                obj.get("item")
-            }
-
-            return
-
-        }
+        public abstract T parse(JsonContext context, JsonObject json);
     }
 }

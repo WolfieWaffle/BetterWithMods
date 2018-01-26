@@ -4,7 +4,6 @@ import betterwithmods.common.BWOreDictionary;
 import betterwithmods.common.registry.OreStack;
 import betterwithmods.module.Feature;
 import com.google.common.collect.Sets;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.util.Set;
@@ -27,8 +26,9 @@ public class NuggetCompression extends Feature {
             if (suffix != null && !exclude.contains(suffix.toLowerCase())) {
                 OreStack nugget = new OreStack("nugget" + suffix, 9);
                 if (!nugget.isEmpty()) {
-                    for (ItemStack i : ingot.getMatchingStacks())
-                        CrucibleRecipes.addStokedCrucibleRecipe(i, new Object[]{nugget});
+                    //TODO
+//                    for (ItemStack i : ingot.getMatchingStacks())
+//                        CrucibleRecipes.addStokedCrucibleRecipe(i, new Object[]{nugget});
                 }
             }
 

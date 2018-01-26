@@ -24,6 +24,7 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,16 +110,20 @@ public class PollutionHandler {
                 else if (time % 1000 == 0) {
                     pollution.calculatePollutionReduction();
                 }
-                List<TileEntity> tiles = evt.world.loadedTileEntityList.stream().filter(tileEntity -> tileEntity.hasCapability(PollutionCapability.POLLUTION, EnumFacing.UP)).collect(Collectors.toList());
-                if (!tiles.isEmpty()) {
-                    for (TileEntity tile : tiles) {
-                        IPollutant pollutant = tile.getCapability(PollutionCapability.POLLUTION, EnumFacing.UP);
-                        if (pollutant.isPolluting() && pollution.getPollution(new ChunkPos(tile.getPos())) > -1) {
-                            ChunkPos p = new ChunkPos(tile.getPos());
-                            float pollute = pollution.getPollution(p);
-                            pollution.setPollution(p, pollute + pollutant.getPollutionRate());
+                try {
+                    List<TileEntity> tiles = evt.world.loadedTileEntityList.stream().filter(tileEntity -> tileEntity.hasCapability(PollutionCapability.POLLUTION, EnumFacing.UP)).collect(Collectors.toList());
+                    if (!tiles.isEmpty()) {
+                        for (TileEntity tile : tiles) {
+                            IPollutant pollutant = tile.getCapability(PollutionCapability.POLLUTION, EnumFacing.UP);
+                            if (pollutant != null && pollutant.isPolluting() && pollution.getPollution(new ChunkPos(tile.getPos())) > -1) {
+                                ChunkPos p = new ChunkPos(tile.getPos());
+                                float pollute = pollution.getPollution(p);
+                                pollution.setPollution(p, pollute + pollutant.getPollutionRate());
+                            }
                         }
                     }
+                } catch (ConcurrentModificationException ignored) {
+                    ignored.printStackTrace();
                 }
             }
         }
