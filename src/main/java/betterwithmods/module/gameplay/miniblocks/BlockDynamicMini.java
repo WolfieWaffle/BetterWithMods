@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -22,17 +24,23 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nullable;
 
-public class BlockMini extends BWMBlock {
+public class BlockDynamicMini extends BWMBlock {
 
     public static final IUnlistedProperty<MiniCacheInfo> MINI_INFO = new UnlistedPropertyGeneric<>("mini", MiniCacheInfo.class);
 
-    public BlockMini() {
+    public BlockDynamicMini() {
         super(Material.WOOD);
     }
 
     @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        TileDynamicMini tile = (TileDynamicMini) worldIn.getTileEntity(pos);
+        return tile != null && tile.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+    }
+
+    @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-        for(ItemStack material: MiniBlocks.MATERIALS) {
+        for (ItemStack material : MiniBlocks.MATERIALS) {
             ItemStack stack = new ItemStack(this);
             NBTTagCompound tag = new NBTTagCompound();
             tag.setTag("texture", material.serializeNBT());
@@ -59,7 +67,7 @@ public class BlockMini extends BWMBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileMini();
+        return new TileDynamicMini();
     }
 
 
@@ -70,7 +78,7 @@ public class BlockMini extends BWMBlock {
 
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileMini tile = (TileMini) world.getTileEntity(pos);
+        TileDynamicMini tile = (TileDynamicMini) world.getTileEntity(pos);
         IExtendedBlockState extendedBS = (IExtendedBlockState) super.getExtendedState(state, world, pos);
         if (tile != null) {
             return extendedBS.withProperty(MINI_INFO, MiniCacheInfo.from(tile));
@@ -89,7 +97,7 @@ public class BlockMini extends BWMBlock {
     }
 
 
-    private final AxisAlignedBB[] boxes = new AxisAlignedBB[] {
+    private final AxisAlignedBB[] boxes = new AxisAlignedBB[]{
             new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D),
             new AxisAlignedBB(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D),
             new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D),
@@ -102,10 +110,10 @@ public class BlockMini extends BWMBlock {
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         int i = 0;
         TileEntity tile = source.getTileEntity(pos);
-        if(tile instanceof TileMini) {
-            TileMini mini = (TileMini) tile;
-            if(mini.orientation != null && mini.orientation.facing != null)
-                i = mini.orientation.facing.getIndex();
+        if (tile instanceof TileDynamicMini) {
+            TileDynamicMini mini = (TileDynamicMini) tile;
+            if (mini.orientation != null && mini.orientation.facing != null)
+                i = mini.orientation.top.getOpposite().getIndex();
         }
         return boxes[i];
     }

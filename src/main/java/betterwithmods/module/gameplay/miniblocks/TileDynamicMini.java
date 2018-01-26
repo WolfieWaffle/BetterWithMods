@@ -4,20 +4,23 @@ import betterwithmods.common.blocks.tile.TileBasic;
 import betterwithmods.util.SpaceUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class TileMini extends TileBasic {
+public class TileDynamicMini extends TileBasic {
 
-    public ItemStack texture;
+    public ItemStack texture = ItemStack.EMPTY;
     public Orientation orientation;
 
-    public TileMini() {
+    public TileDynamicMini() {
     }
 
     @Override
@@ -43,19 +46,28 @@ public class TileMini extends TileBasic {
     @Override
     public void onPlacedBy(EntityLivingBase placer, @Nullable EnumFacing face, ItemStack stack, float hitX, float hitY, float hitZ) {
         loadFromStack(stack);
-
-        orientation = SpaceUtils.getOrientation(getWorld(), getPos(), placer, face, 0,0,0);
+        orientation = SpaceUtils.getOrientation(world,pos,placer,null,hitX,hitY,hitZ);
+        System.out.println(orientation);
     }
 
     public void loadFromStack(ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
-        texture = new ItemStack(tag.getCompoundTag("texture"));
+        if (tag != null) {
+            texture = new ItemStack(tag.getCompoundTag("texture"));
+        }
     }
+
+
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return changeOrientation(Orientation.getOrientation((this.orientation.ordinal() + 1) % Orientation.valuesCache.length), false);
+    }
+
 
     private boolean changeOrientation(Orientation newOrientation, boolean simulate) {
         if (orientation != newOrientation) {
             if (!simulate) {
                 orientation = newOrientation;
+                System.out.println(orientation.getName());
                 markBlockForUpdate();
                 getWorld().notifyNeighborsRespectDebug(pos, getBlockType(), true);
             }

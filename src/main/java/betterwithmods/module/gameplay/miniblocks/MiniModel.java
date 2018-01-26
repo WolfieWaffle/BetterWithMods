@@ -12,11 +12,11 @@ import net.minecraftforge.common.model.IModelState;
 
 public class MiniModel extends ModelFactory<MiniCacheInfo> {
 
-    public static final MiniModel INSTANCE = new MiniModel();
+    public static final MiniModel SIDING = new MiniModel();
     public IModel template;
 
     protected MiniModel() {
-        super(BlockMini.MINI_INFO, TextureMap.LOCATION_MISSING_TEXTURE);
+        super(BlockDynamicMini.MINI_INFO, TextureMap.LOCATION_MISSING_TEXTURE);
     }
 
     @Override

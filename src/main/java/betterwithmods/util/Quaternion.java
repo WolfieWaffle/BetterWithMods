@@ -241,6 +241,7 @@ public class Quaternion {
      */
     public static Quaternion fromOrientation(final Orientation orient) {
         final int ord = orient.ordinal();
+        quat_cache[ord] = null;
         if (quat_cache[ord] != null) {
             return quat_cache[ord];
         }

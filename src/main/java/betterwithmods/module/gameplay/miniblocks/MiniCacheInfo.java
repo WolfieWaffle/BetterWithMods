@@ -13,11 +13,14 @@ public class MiniCacheInfo implements IRenderComparable<MiniCacheInfo> {
 
     public MiniCacheInfo(TextureAtlasSprite texture, Orientation orientation, ItemStack block) {
         this.texture = texture;
-        this.orientation = orientation;
+        if(orientation == null)
+            this.orientation = Orientation.FACE_DOWN_POINT_SOUTH;
+        else
+            this.orientation = orientation;
         this.block = block;
     }
 
-    public static MiniCacheInfo from(TileMini mini) {
+    public static MiniCacheInfo from(TileDynamicMini mini) {
         return new MiniCacheInfo(RenderUtils.getSprite(mini.texture), mini.orientation, mini.texture);
     }
 

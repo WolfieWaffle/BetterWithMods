@@ -80,7 +80,7 @@ public enum Orientation implements IStringSerializable {
     private Orientation swapped;
     private EnumFacing[] dirRotations = new EnumFacing[EnumFacing.VALUES.length]; // Admitedly we could just use values() here. But that's ugly.
     
-    private static Orientation[] valuesCache = values();
+    public static Orientation[] valuesCache = values();
 
     Orientation(EnumFacing facing, EnumFacing top) {
         this.facing = facing;
@@ -219,7 +219,7 @@ public enum Orientation implements IStringSerializable {
     
     public static Orientation fromDirection(EnumFacing dir) {
         if (dir == null) {
-            return null;
+            return valuesCache[0];
         }
         return valuesCache[dir.ordinal()*4];
     }

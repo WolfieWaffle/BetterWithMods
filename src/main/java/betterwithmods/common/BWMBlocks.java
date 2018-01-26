@@ -8,12 +8,12 @@ import betterwithmods.common.blocks.mechanical.*;
 import betterwithmods.common.blocks.mechanical.multiblock.BlockDummy;
 import betterwithmods.common.blocks.mechanical.tile.*;
 import betterwithmods.common.blocks.mini.*;
-import betterwithmods.common.blocks.miniblocks.BlockDynamicMini;
-import betterwithmods.common.blocks.miniblocks.TileDynamicMini;
 import betterwithmods.common.blocks.tile.*;
 import betterwithmods.common.items.ItemHempSeed;
 import betterwithmods.common.items.ItemSimpleSlab;
 import betterwithmods.common.items.tools.ItemSteelSaw;
+import betterwithmods.module.gameplay.miniblocks.BlockDynamicMini;
+import betterwithmods.module.gameplay.miniblocks.TileDynamicMini;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.MapColor;
@@ -109,7 +109,6 @@ public final class BWMBlocks {
 	public static final Block CANDLE_HOLDER = new BlockCandleHolder().setRegistryName("candle_holder").setCreativeTab(BWCreativeTabs.BWTAB);
 	public static final Block MERGER = new BlockMerger().setRegistryName("steel_merger");
 	public static final Block SHAFT = new BlockShaft().setRegistryName("shaft");
-	public static final Block DYNAMIC_MINI = new BlockDynamicMini().setRegistryName("siding").setCreativeTab(BWCreativeTabs.BWTAB);
 
 	private static final List<Block> BLOCKS = new ArrayList<>();
 
@@ -206,7 +205,6 @@ public final class BWMBlocks {
 		registerBlock(INFERNAL_ENCHANTER);
 		registerBlock(CANDLE, new ItemBlockMeta(CANDLE));
 		registerBlock(CANDLE_HOLDER);
-		registerBlock(DYNAMIC_MINI);
 		registerBlock(MERGER);
 		registerBlock(SHAFT);
 	}
@@ -242,7 +240,6 @@ public final class BWMBlocks {
 		GameRegistry.registerTileEntity(TileEntityProxyBlock.class, "bwm.multiblock_dummy");
 		GameRegistry.registerTileEntity(TileMerger.class, "bwm.steel_merger");
 		GameRegistry.registerTileEntity(TileFurnace.class, "bwm.furnace");
-		GameRegistry.registerTileEntity(TileDynamicMini.class, "bwm.dynamic_mini");
 	}
 
 	/**

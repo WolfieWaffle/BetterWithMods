@@ -25,7 +25,7 @@ import java.util.Set;
 public class MiniBlocks extends Feature {
 
     public static final Set<ItemStack> MATERIALS = Sets.newHashSet();
-    public static Block SIDING = new BlockMini().setRegistryName("siding");
+    public static Block SIDING = new BlockDynamicMini().setRegistryName("siding");
 
     public MiniBlocks() {
         enabledByDefault=false;
@@ -34,7 +34,7 @@ public class MiniBlocks extends Feature {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         BWMBlocks.registerBlock(SIDING, new ItemBlockMeta(SIDING));
-        GameRegistry.registerTileEntity(TileMini.class, "bwm.miniblock");
+        GameRegistry.registerTileEntity(TileDynamicMini.class, "bwm.miniblock");
     }
 
     @Override
@@ -50,8 +50,8 @@ public class MiniBlocks extends Feature {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onPostBake(ModelBakeEvent event) {
-        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":siding", "normal"), MiniModel.INSTANCE);
-        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":siding", "inventory"), MiniModel.INSTANCE);
-        MiniModel.INSTANCE.template = RenderUtils.getModel(new ResourceLocation(BWMod.MODID, "block/mini/siding"));
+        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":siding", "normal"), MiniModel.SIDING);
+        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":siding", "inventory"), MiniModel.SIDING);
+        MiniModel.SIDING.template = RenderUtils.getModel(new ResourceLocation(BWMod.MODID, "block/mini/siding"));
     }
 }

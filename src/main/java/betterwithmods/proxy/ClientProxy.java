@@ -11,7 +11,6 @@ import betterwithmods.client.render.*;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWMItems;
 import betterwithmods.common.blocks.mechanical.tile.*;
-import betterwithmods.common.blocks.miniblocks.MiniModel;
 import betterwithmods.common.blocks.tile.TileEntityBeacon;
 import betterwithmods.common.entity.*;
 import betterwithmods.manual.api.ManualAPI;
@@ -21,6 +20,7 @@ import betterwithmods.manual.client.manual.provider.*;
 import betterwithmods.module.ModuleLoader;
 import betterwithmods.module.gameplay.breeding_harness.BreedingHarness;
 import betterwithmods.module.gameplay.breeding_harness.CapabilityHarness;
+import betterwithmods.module.gameplay.miniblocks.MiniModel;
 import betterwithmods.module.hardcore.crafting.HCFurnace;
 import betterwithmods.module.hardcore.creatures.EntityTentacle;
 import net.minecraft.block.state.IBlockState;
@@ -163,15 +163,6 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySpiderWeb.class, manager -> new RenderSnowball<>(manager, Item.getItemFromBlock(Blocks.WEB), Minecraft.getMinecraft().getRenderItem()));
         RenderingRegistry.registerEntityRenderingHandler(EntityJungleSpider.class, RenderJungleSpider::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTentacle.class, RenderTentacle::new);
-    }
-
-
-    @SubscribeEvent
-    public static void onPostBake(ModelBakeEvent event) {
-        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":mini/siding", "normal"), MiniModel.SIDING);
-        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":mini/siding", "inventory"), MiniModel.SIDING);
-
-        MiniModel.SIDING.template = RenderUtils.getModel(new ResourceLocation(BWMod.MODID + ":block/mini/siding"));
     }
 
     public static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition {
