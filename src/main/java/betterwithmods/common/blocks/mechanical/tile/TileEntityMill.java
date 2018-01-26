@@ -4,6 +4,7 @@ import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.ICrankable;
 import betterwithmods.api.tile.IMechanicalPower;
+import betterwithmods.api.util.StackIngredient;
 import betterwithmods.common.BWSounds;
 import betterwithmods.common.blocks.mechanical.BlockMechMachines;
 import betterwithmods.common.blocks.tile.TileBasicInventory;
@@ -176,7 +177,8 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
 
     private boolean grindContents() {
         MillManager mill = MillManager.getInstance();
-        List<Object> ingredients = mill.getValidCraftingIngredients(inventory);
+
+        List<StackIngredient> ingredients = mill.getValidCraftingIngredients(inventory);
 
         if (ingredients != null) {
             if (grindType == 1)

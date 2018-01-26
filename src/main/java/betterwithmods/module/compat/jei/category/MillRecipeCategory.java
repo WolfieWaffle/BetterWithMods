@@ -60,8 +60,6 @@ public class MillRecipeCategory extends BWMRecipeCategory<BulkRecipeWrapper> {
                 stacks.set(index, input.get(i));
             }
         }
-        stacks.set(outputSlots, wrapper.getRecipe().getOutput());
-        if (!wrapper.getRecipe().getSecondary().isEmpty())
-            stacks.set(outputSlots + 1, wrapper.getRecipe().getSecondary());
+        stacks.set(outputSlots, wrapper.getRecipe().getOutputs());
     }
 }

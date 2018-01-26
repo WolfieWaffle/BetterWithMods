@@ -1,7 +1,11 @@
 package betterwithmods.common.registry.bulk.manager;
 
+import betterwithmods.api.util.StackIngredient;
 import betterwithmods.common.registry.bulk.recipes.MillRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+
+import java.util.List;
 
 public class MillManager extends CraftingManagerBulk<MillRecipe> {
     private static final MillManager instance = new MillManager();
@@ -10,12 +14,8 @@ public class MillManager extends CraftingManagerBulk<MillRecipe> {
         return instance;
     }
 
-    public void addRecipe(int grindType, ItemStack output, Object[] inputs) {
-        addRecipe(grindType, output, ItemStack.EMPTY, inputs);
-    }
-
-    public void addRecipe(int grindType, ItemStack output, ItemStack secondary, Object[] inputs) {
-        addRecipe(new MillRecipe(grindType, output, secondary, inputs));
+    public void addRecipe(int grindType, NonNullList<ItemStack> outputs, List<StackIngredient> inputs) {
+        addRecipe(new MillRecipe(grindType, outputs, inputs));
     }
 
     @Override

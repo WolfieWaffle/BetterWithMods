@@ -45,6 +45,7 @@ public class InvUtils {
         return nonNullList;
     }
 
+
     public static boolean usePlayerItemStrict(EntityPlayer player, EnumFacing inv, ItemStack stack, int amount) {
         IItemHandlerModifiable inventory = (IItemHandlerModifiable) player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inv);
         if (inventory != null) {
@@ -306,40 +307,10 @@ public class InvUtils {
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack inSlot = inv.getStackInSlot(i);
             if (toCheck.isItemEqual(inSlot) || (toCheck.getItem() == inSlot.getItem() && toCheck.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
-//                if (toCheck.hasTagCompound() && ItemStack.areItemStackTagsEqual(toCheck, inSlot)) {
                 return inv.extractItem(i, sizeOfStack, simulate).getCount() >= sizeOfStack;
-//                } else {
-//                    return inv.extractItem(i, sizeOfStack, simulate).getCount() >= sizeOfStack;
-//                }
             }
         }
-//        for (int i = 0; i < inv.getSlots(); i++) {
-//            ItemStack stack = inv.getStackInSlot(i);
-//            if (!stack.isEmpty()) {
-//                if (ItemStack.areItemsEqual(toCheck, stack) || (toCheck.getItem() == stack.getItem() && toCheck.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
-//                    if (toCheck.hasTagCompound()) {
-//                        if (ItemStack.areItemStackTagsEqual(toCheck, stack)) {
-//                            if (stack.getCount() >= sizeOfStack) {
-//                                decrStackSize(inv, i, sizeOfStack);
-//                                return true;
-//                            }
-//                            sizeOfStack -= stack.getCount();
-//                            if (!simulate)
-//                                inv.setStackInSlot(i, ItemStack.EMPTY);
-//                        }
-//                    } else {
-//                        if (stack.getCount() >= sizeOfStack) {
-//                            if (!simulate)
-//                                decrStackSize(inv, i, sizeOfStack);
-//                            return true;
-//                        }
-//                        sizeOfStack -= stack.getCount();
-//                        if (!simulate)
-//                            inv.setStackInSlot(i, ItemStack.EMPTY);
-//                    }
-//                }
-//            }
-//        }
+
         return false;
     }
 
@@ -577,9 +548,7 @@ public class InvUtils {
     public static boolean matches(ItemStack one, ItemStack two) {
         if (one.isItemEqual(two))
             return true;
-        if (one.getItem() == two.getItem() && (one.getMetadata() == OreDictionary.WILDCARD_VALUE || two.getMetadata() == OreDictionary.WILDCARD_VALUE))
-            return true;
-        return false;
+        return one.getItem() == two.getItem() && (one.getMetadata() == OreDictionary.WILDCARD_VALUE || two.getMetadata() == OreDictionary.WILDCARD_VALUE);
     }
 
 }

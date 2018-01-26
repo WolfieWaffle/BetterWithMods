@@ -38,14 +38,6 @@ public class CauldronRecipes extends Feature {
         return CauldronManager.getInstance().addRecipe(recipe);
     }
 
-    public static CauldronRecipe addCauldronRecipe(ItemStack output, Object[] inputs) {
-        return CauldronManager.getInstance().addRecipe(output, inputs);
-    }
-
-    public static CauldronRecipe addCauldronRecipe(ItemStack output, ItemStack secondary, Object[] inputs) {
-        return CauldronManager.getInstance().addRecipe(output, secondary, inputs);
-    }
-
     public static void addStokedCauldronRecipe(ItemStack output, Object[] inputs) {
         StokedCauldronManager.getInstance().addRecipe(output, inputs);
     }
