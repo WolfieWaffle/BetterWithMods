@@ -17,6 +17,10 @@ import javax.annotation.Nullable;
  * The manual!
  */
 public final class ItemBookManual extends ItemBook {
+    public ItemBookManual() {
+        setMaxStackSize(1);
+    }
+
     public static boolean tryOpenManual(final World world, final EntityPlayer player, @Nullable final String path) {
         if (path == null) {
             return false;

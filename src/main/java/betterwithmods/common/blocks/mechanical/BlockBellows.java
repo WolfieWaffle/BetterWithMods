@@ -88,7 +88,6 @@ public class BlockBellows extends BlockRotate implements IBlockActive, IOverpowe
         return setFacingInBlock(state, living.getHorizontalFacing()).withProperty(ACTIVE, false).withProperty(EnumTier.TIER, EnumTier.VALUES[meta]);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.HORIZONTAL, facing);
     }
@@ -101,7 +100,6 @@ public class BlockBellows extends BlockRotate implements IBlockActive, IOverpowe
         return null;
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(DirUtils.HORIZONTAL);
     }
@@ -144,22 +142,7 @@ public class BlockBellows extends BlockRotate implements IBlockActive, IOverpowe
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         withTile(world, pos).ifPresent(TileBellows::onChange);
     }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-        if (DirUtils.rotateAroundY(this, world, pos, reverse)) {
-            world.scheduleBlockUpdate(pos, this, tickRate(world), 5);
-            world.scheduleBlockUpdate(pos, this, tickRate(world), 5);
-        }
-    }
-
-
-    @Override
+        @Override
     public void overpower(World world, BlockPos pos) {
         breakBellows(world, pos);
     }

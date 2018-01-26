@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "maven"
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12-2.0.15"
+version = "1.12-2.0.25"
 group = "betterwithmods"
 archivesBaseName = "BetterWithMods"
 
@@ -26,24 +26,26 @@ if (System.getenv().BUILD_NUMBER != null) {//adds the build number to the end of
 }
 
 minecraft {
-    version = "1.12-14.21.1.2426"
+    version = "1.12.2-14.23.1.2554"
     runDir = "run"
-    mappings = "snapshot_20170627"
+    mappings = "snapshot_20171125"
     replace "%VERSION%": "${project.version}"
     useDepAts = true
 }
 
 repositories {
-    maven { url "http://blamejared.com/maven" }
+    maven { url "http://maven.blamejared.com" }
     maven { url 'http://dvs1.progwml6.com/files/maven' }
     maven { url "http://maven.amadornes.com/" }
     maven { url "http://www.ryanliptak.com/maven/" }
+    maven { url "http://maven.tterrag.com" }
     mavenCentral()
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.12:4.7.2.77"
-    deobfCompile "applecore:AppleCore:1.12-2.2.2:deobf"
+    deobfCompile "mezz.jei:jei_1.12.2:4.8.3.128"
+    deobfCompile "applecore:AppleCore:1.12.2-3.1.0:deobf"
+    deobfCompile "team.chisel.ctm:CTM:MC1.12-0.2.3.9"
 }
 
 jar {
@@ -81,15 +83,15 @@ uploadArchives {
                     name project.archivesBaseName
                     packaging 'jar'
                     description 'BetterWithMods'
-                    url 'https://github.com/BeetoGuy/BetterWithMods'
+                    url 'https://github.com/BetterWithMods/BetterWithMods'
                     scm {
-                        url 'https://github.com/BeetoGuy/BetterWithMods.git'
-                        connection 'scm:git:git@github.com:BeetoGuy/BetterWithMods.git'
-                        developerConnection 'scm:git:git@github.com:BeetoGuy/BetterWithMods.git'
+                        url 'https://github.com/BetterWithMods/BetterWithMods.git'
+                        connection 'scm:git:git@github.com:BetterWithMods/BetterWithMods.git'
+                        developerConnection 'scm:git:git@github.com:BetterWithMods/BetterWithMods.git'
                     }
                     issueManagement {
                         system 'github'
-                        url 'https://github.com/BeetoGuy/BetterWithMods/issues'
+                        url 'https://github.com/BetterWithMods/BetterWithMods/issues'
                     }
                     developers {
                         developer {

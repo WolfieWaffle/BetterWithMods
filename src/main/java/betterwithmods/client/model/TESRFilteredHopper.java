@@ -17,6 +17,8 @@ public class TESRFilteredHopper extends TileEntitySpecialRenderer<TileEntityFilt
         if (te != null) {
             if (te.getSubtype() > 0) {
                 model = te.getModel();
+
+
                 if (model == null && te.filterType > 0) {
                     if (!te.getFilterStack().isEmpty()) {
                         model = new ModelTransparent(RenderUtils.getResourceLocation(te.getFilterStack()));

@@ -26,7 +26,7 @@ import java.util.List;
 import static net.minecraft.util.EnumFacing.*;
 
 /**
- * Created by tyler on 9/5/16.
+ * Created by primetoxinz on 9/5/16.
  */
 public class EntityMiningCharge extends Entity {
     private static final DataParameter<Integer> FUSE = EntityDataManager.createKey(EntityMiningCharge.class, DataSerializers.VARINT);
@@ -58,7 +58,7 @@ public class EntityMiningCharge extends Entity {
         this.prevPosY = y;
         this.prevPosZ = z;
         this.igniter = igniter;
-        setNoGravity(true);
+        setNoGravity(facing != UP);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class EntityMiningCharge extends Entity {
      */
     @Override
     public boolean canBeCollidedWith() {
-        return !this.isDead;
+        return false;
     }
 
     /**

@@ -9,21 +9,20 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.Set;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class HCTools extends Feature {
-
 
     private static final Set<Item> TOOLS = Sets.newHashSet(
             Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_SWORD, Items.DIAMOND_SHOVEL, Items.DIAMOND_HOE,
@@ -52,7 +51,7 @@ public class HCTools extends Feature {
             ToolMaterialOverride newValues = ToolMaterialOverride.getOverride(material.name());
             if (newValues == null) continue;
             ReflectionHelper.setPrivateValue(Item.ToolMaterial.class, material, newValues.getMaxUses(), "field_78002_g", "maxUses");
-            ReflectionHelper.setPrivateValue(Item.ToolMaterial.class, material, newValues.getEfficiencyOnProperMaterial(), "field_78010_h", "efficiencyOnProperMaterial");
+            ReflectionHelper.setPrivateValue(Item.ToolMaterial.class, material, newValues.getEfficiencyOnProperMaterial(), "field_78010_h", "efficiency");
             ReflectionHelper.setPrivateValue(Item.ToolMaterial.class, material, newValues.getEnchantability(), "field_78008_j", "enchantability");
         }
         // Change values already taken from material at that time
@@ -63,7 +62,7 @@ public class HCTools extends Feature {
             ToolMaterialOverride newValues = ToolMaterialOverride.getOverride(tool.getToolMaterialName());
             if (newValues == null) continue;
             tool.setMaxDamage(newValues.getMaxUses());
-            ReflectionHelper.setPrivateValue(ItemTool.class, tool, newValues.getEfficiencyOnProperMaterial(), "field_77864_a", "efficiencyOnProperMaterial");
+            ReflectionHelper.setPrivateValue(ItemTool.class, tool, newValues.getEfficiencyOnProperMaterial(), "field_77864_a", "efficiency");
         }
     }
 
@@ -86,12 +85,12 @@ public class HCTools extends Feature {
         removeLowTools = loadPropBool("Remove cheapest tools", "The minimum level of the hoe and the sword is iron, and the axe needs at least stone.", true);
 
         woodDurability = loadPropInt("Hardcore Hardness Wood Durability", "Number of usages for wooden tools. Does not change Pickaxe if earlyPickaxesRebalanced is enabled", "", 1, 1, 60);
-        stoneDurability = loadPropInt("Hardcore Hardness Stone Durability", "Number of usages for stone tools. Does not change Pickaxe if earlyPickaxesRebalanced is enabled", "", 50, 2, 132);
-        ironDurability = loadPropInt("Hardcore Hardness Iron Durability", "Number of usages for iron tools.", "", 500, 2, 251);
-        diamondDurability = loadPropInt("Hardcore Hardness Diamond Durability", "Number of usages for diamond tools.", "", 1561, 2, 1562);
-        goldDurability = loadPropInt("Hardcore Hardness Gold Durability", "Number of usages for golden tools.", "", 32, 2, 33);
+        stoneDurability = loadPropInt("Hardcore Hardness Stone Durability", "Number of usages for stone tools. Does not change Pickaxe if earlyPickaxesRebalanced is enabled", "", 50, 1, 132);
+        ironDurability = loadPropInt("Hardcore Hardness Iron Durability", "Number of usages for iron tools.", "", 500, 1, 251);
+        diamondDurability = loadPropInt("Hardcore Hardness Diamond Durability", "Number of usages for diamond tools.", "", 1561, 1, 1562);
+        goldDurability = loadPropInt("Hardcore Hardness Gold Durability", "Number of usages for golden tools.", "", 32, 1, 33);
 
-        changeAxeRecipe = loadPropBool("Change Axe Recipe", "Change the axe recipes to only require 2 materials", true);
+        changeAxeRecipe = loadRecipeCondition("changeAxeRecipe","Change Axe Recipe", "Change the axe recipes to only require 2 materials", true);
     }
 
     @Override
@@ -103,6 +102,12 @@ public class HCTools extends Feature {
     public void preInit(FMLPreInitializationEvent event) {
         if (removeLowTools)
             removeLowTierToolRecipes();
+        if (changeAxeRecipe) {
+            BWMRecipes.removeRecipe(new ResourceLocation("minecraft:stone_axe"));
+            BWMRecipes.removeRecipe(new ResourceLocation("minecraft:iron_axe"));
+            BWMRecipes.removeRecipe(new ResourceLocation("minecraft:golden_axe"));
+            BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_axe"));
+        }
     }
 
     @Override
@@ -112,12 +117,7 @@ public class HCTools extends Feature {
             Items.WOODEN_PICKAXE.setMaxDamage(1);
             Items.STONE_PICKAXE.setMaxDamage(5);
         }
-        if (changeAxeRecipe) {
-            addHardcoreRecipe(new ShapedOreRecipe(null, Items.STONE_AXE, "C ", "CS", " S", 'S', "stickWood", 'C', "cobblestone").setRegistryName("minecraft:stone_axe"));
-            addHardcoreRecipe(new ShapedOreRecipe(null, Items.IRON_AXE, "C ", "CS", " S", 'S', "stickWood", 'C', "ingotIron").setRegistryName("minecraft:iron_axe"));
-            addHardcoreRecipe(new ShapedOreRecipe(null, Items.GOLDEN_AXE, "C ", "CS", " S", 'S', "stickWood", 'C', "ingotGold").setRegistryName("minecraft:golden_axe"));
-            addHardcoreRecipe(new ShapedOreRecipe(null, Items.DIAMOND_AXE, "C ", "CS", " S", 'S', "stickWood", 'C', "gemDiamond").setRegistryName("minecraft:diamond_axe"));
-        }
+
     }
 
     /**
@@ -130,14 +130,13 @@ public class HCTools extends Feature {
         if (!earlyPickaxesRebalance) return;
         EntityPlayer player = event.getPlayer();
         ItemStack stack = player.getHeldItemMainhand();
-        if (stack.isEmpty() || stack.getItem() == null) return;
-        if (stack.getItem() == Items.WOODEN_PICKAXE) {
+        if (stack.isEmpty()) return;
+        if (stack.getMaxDamage() == 1) {
             destroyItem(stack, player);
         }
     }
 
     private void destroyItem(ItemStack stack, EntityLivingBase entity) {
-        //FIXME No sound triggered.
         int damage = stack.getMaxDamage();
         stack.damageItem(damage, entity);
     }
@@ -152,10 +151,10 @@ public class HCTools extends Feature {
      */
     private enum ToolMaterialOverride {
         WOOD(woodDurability, 1.01F, 0),
-        STONE(stoneDurability - 1, 1.01F, 5),
-        IRON(ironDurability - 1, 6.0F, 14),
-        DIAMOND(diamondDurability - 1, 8.0F, 14),
-        GOLD(goldDurability - 1, 12.0F, 22);
+        STONE(stoneDurability, 1.01F, 5),
+        IRON(ironDurability, 6.0F, 14),
+        DIAMOND(diamondDurability, 8.0F, 14),
+        GOLD(goldDurability, 12.0F, 22);
         private final int maxUses;
         private final float efficiencyOnProperMaterial;
         private final int enchantability;

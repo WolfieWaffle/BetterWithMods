@@ -5,7 +5,6 @@ import betterwithmods.api.tile.ISteamPower;
 import betterwithmods.common.fluid.BWFluidRegistry;
 import betterwithmods.common.fluid.FluidTankRestricted;
 import betterwithmods.common.registry.heat.BWMHeatRegistry;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -80,18 +79,16 @@ public class TileEntitySteamBoiler extends TileEntity implements ITickable, ISte
     public void calculateHeatUnits() {
         BlockPos pos = this.pos.offset(EnumFacing.DOWN);
         int heat = 0;
-        if (BWMHeatRegistry.contains(getWorld().getBlockState(pos.down()))) {
-            heat = BWMHeatRegistry.get(getWorld().getBlockState(pos.down())).value;
-        }
+        BWMHeatRegistry.HeatSource source = BWMHeatRegistry.get(world.getBlockState(pos));
+        if(source != null)
+            heat = source.getHeat();
         if (heat > 0) {
             for (int x = -1; x < 2; x++) {
                 for (int z = -1; z < 2; z++) {
                     if (x == 0 && z == 0)
                         continue;
                     BlockPos check = pos.add(x, 0, z);
-                    IBlockState toCheck = getWorld().getBlockState(check);
-                    if (BWMHeatRegistry.contains(toCheck))
-                        heat += BWMHeatRegistry.get(toCheck).value;
+                    heat += BWMHeatRegistry.getHeat(world.getBlockState(check));
                 }
             }
         }

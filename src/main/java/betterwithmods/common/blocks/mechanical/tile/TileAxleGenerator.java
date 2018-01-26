@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,6 +30,8 @@ public abstract class TileAxleGenerator extends TileBasic implements ITickable, 
     public float previousRotation = 0.0F;
     public float waterMod = 1;
     protected boolean isValid;
+
+    protected int tick;
 
     public abstract void calculatePower();
 
@@ -66,7 +69,8 @@ public abstract class TileAxleGenerator extends TileBasic implements ITickable, 
 
     @Override
     public void update() {
-        if (this.getBlockWorld().getTotalWorldTime() % 20L == 0L && getBlockWorld().getBlockState(pos).getBlock() instanceof BlockAxleGenerator) {
+        tick++;
+        if (tick % 20 == 0 && getBlockWorld().getBlockState(pos).getBlock() instanceof BlockAxleGenerator) {
             verifyIntegrity();
             calculatePower();
         }
@@ -78,12 +82,19 @@ public abstract class TileAxleGenerator extends TileBasic implements ITickable, 
                 this.currentRotation %= 360;
                 if (this.getBlockWorld().rand.nextInt(100) == 0)
                     this.getBlockWorld().playSound(null, pos, BWSounds.WOODCREAK, SoundCategory.BLOCKS, 0.5F, getBlockWorld().rand.nextFloat() * 0.25F + 0.25F);
+            } else {
+                previousRotation = 0;
+                currentRotation = 0;
             }
         }
     }
 
     public boolean isOverworld() {
         return world.provider.isSurfaceWorld();
+    }
+
+    public boolean isEnd() {
+        return world.provider.getDimensionType() == DimensionType.THE_END;
     }
 
     public boolean isNether() {
@@ -151,8 +162,7 @@ public abstract class TileAxleGenerator extends TileBasic implements ITickable, 
                 default:
                     return EnumFacing.UP;
             }
-        }
-        else
+        } else
             return EnumFacing.UP;
     }
 

@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by tyler on 9/11/16.
+ * Created by primetoxinz on 9/11/16.
  */
 public class ItemArcaneScroll extends Item {
 

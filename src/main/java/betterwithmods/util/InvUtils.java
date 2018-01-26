@@ -61,7 +61,6 @@ public class InvUtils {
         return false;
     }
 
-
     public static Optional<IItemHandler> getItemHandler(World world, BlockPos pos, EnumFacing facing) {
         if (!world.isRemote) {
             TileEntity tile = world.getTileEntity(pos);
@@ -582,4 +581,5 @@ public class InvUtils {
             return true;
         return false;
     }
+
 }

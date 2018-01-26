@@ -1,5 +1,6 @@
 package betterwithmods.common.blocks.tile;
 
+import betterwithmods.module.hardcore.beacons.CapabilityBeacon;
 import betterwithmods.module.hardcore.beacons.HCBeacons;
 import betterwithmods.module.hardcore.beacons.IBeaconEffect;
 import betterwithmods.module.hardcore.beacons.SpawnBeaconEffect;
@@ -95,6 +96,10 @@ public class TileEntityBeacon extends net.minecraft.tileentity.TileEntityBeacon 
             if (level > 0) {
                 effect = HCBeacons.getBeaconEffect(type);
                 if (level != prevLevel) {
+                    CapabilityBeacon storage = world.getCapability(CapabilityBeacon.BEACON_CAPABILITY, EnumFacing.UP);
+                    if (storage != null) {
+                        storage.addBeacon(pos, level);
+                    }
                     this.world.playBroadcastSound(1023, getPos(), 0);
                     if (effect != null)
                         effect.breakBlock(world, pos, prevLevel);
@@ -109,6 +114,10 @@ public class TileEntityBeacon extends net.minecraft.tileentity.TileEntityBeacon 
             } else {
                 this.segments.clear();
                 this.effect = null;
+                CapabilityBeacon storage = world.getCapability(CapabilityBeacon.BEACON_CAPABILITY, EnumFacing.UP);
+                if (storage != null) {
+                    storage.removeBeacon(pos);
+                }
             }
             if (prevEffect != null && effect != prevEffect) {
                 prevEffect.breakBlock(world, pos, prevLevel);
@@ -280,6 +289,10 @@ public class TileEntityBeacon extends net.minecraft.tileentity.TileEntityBeacon 
         breakBlock();
         MinecraftForge.EVENT_BUS.unregister(this);
         SpawnBeaconEffect.removeAll(getPos());
+        CapabilityBeacon storage = world.getCapability(CapabilityBeacon.BEACON_CAPABILITY, EnumFacing.UP);
+        if (storage != null) {
+            storage.removeBeacon(pos);
+        }
     }
 
     @SubscribeEvent

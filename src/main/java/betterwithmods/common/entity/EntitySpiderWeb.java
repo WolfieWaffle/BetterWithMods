@@ -9,7 +9,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 /**
- * Created by tyler on 4/22/17.
+ * Created by primetoxinz on 4/22/17.
  */
 public class EntitySpiderWeb extends EntityThrowable {
     public EntitySpiderWeb(World worldIn) {

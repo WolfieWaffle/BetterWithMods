@@ -17,7 +17,7 @@ import net.minecraft.world.storage.loot.LootTableList;
 import javax.annotation.Nullable;
 
 /**
- * Created by tyler on 9/21/16.
+ * Created by primetoxinz on 9/21/16.
  */
 public class EntityShearedCreeper extends EntityMob {
     public static final ResourceLocation LOOT = LootTableList.register(new ResourceLocation(BWMod.MODID, "entity/sheared_creeper"));

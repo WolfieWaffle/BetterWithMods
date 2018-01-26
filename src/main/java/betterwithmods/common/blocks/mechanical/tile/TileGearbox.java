@@ -1,11 +1,10 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IMechanicalPower;
 import betterwithmods.common.blocks.mechanical.BlockGearbox;
 import betterwithmods.common.blocks.tile.TileBasic;
-import betterwithmods.util.MechanicalUtil;
-import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -14,13 +13,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class TileGearbox extends TileBasic implements IMechanicalPower {
-    private int power;
-    private int maxPower;
-
-    private List<Integer> history = Lists.newArrayList(0, 0, 0, 0, 0);
+    protected int power;
+    protected int maxPower;
+    protected int tick;
 
     public TileGearbox() {
     }
@@ -30,21 +27,19 @@ public class TileGearbox extends TileBasic implements IMechanicalPower {
     }
 
     public void onChanged() {
-        if (this.getBlockWorld().getTotalWorldTime() % 20L != 0L)
+        tick++;
+        if (tick < 20)
             return;
+        tick = 0;
 
-        if (MechanicalUtil.isRedstonePowered(world, pos)) {
+        if (BWMAPI.IMPLEMENTATION.isRedstonePowered(world, pos)) {
             setPower(0);
             markDirty();
             return;
         }
         int power = this.getMechanicalInput(getFacing());
 
-        if (history.size() >= 5)
-            history.remove(0);
-        history.add(power);
-        int average = (int) Math.floor(history.stream().mapToDouble(i -> i).average().orElse(0));
-        if (average > getMaximumInput(getFacing())) {
+        if (power > getMaximumInput(getFacing())) {
             getBlock().overpower(world, pos);
         }
         if (power != this.power) {
@@ -74,7 +69,7 @@ public class TileGearbox extends TileBasic implements IMechanicalPower {
 
     @Override
     public int getMechanicalOutput(EnumFacing facing) {
-        if (facing != getFacing() && MechanicalUtil.isAxle(world, pos.offset(facing), facing.getOpposite()))
+        if (facing != getFacing() && BWMAPI.IMPLEMENTATION.isAxle(world, pos.offset(facing), facing.getOpposite()))
             return Math.min(power, maxPower);
         return -1;
     }
@@ -82,8 +77,8 @@ public class TileGearbox extends TileBasic implements IMechanicalPower {
     @Override
     public int getMechanicalInput(EnumFacing facing) {
         BlockPos pos = getBlockPos().offset(facing);
-        if (MechanicalUtil.getMechanicalPower(world, pos, facing.getOpposite()) != null && !(MechanicalUtil.getMechanicalPower(world, pos, facing.getOpposite()) instanceof TileGearbox))
-            return MechanicalUtil.getPowerOutput(world, pos, facing.getOpposite());
+        if (BWMAPI.IMPLEMENTATION.getMechanicalPower(world, pos, facing.getOpposite()) != null && !(BWMAPI.IMPLEMENTATION.getMechanicalPower(world, pos, facing.getOpposite()) instanceof TileGearbox))
+            return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos, facing.getOpposite());
         return 0;
     }
 
@@ -97,9 +92,6 @@ public class TileGearbox extends TileBasic implements IMechanicalPower {
         super.readFromNBT(tag);
         power = tag.getInteger("power");
         maxPower = tag.getInteger("maxPower");
-        history.clear();
-        for (int i : tag.getIntArray("history"))
-            history.add(i);
     }
 
     @Nonnull
@@ -108,7 +100,6 @@ public class TileGearbox extends TileBasic implements IMechanicalPower {
         NBTTagCompound t = super.writeToNBT(tag);
         tag.setInteger("power", power);
         tag.setInteger("maxPower", maxPower);
-        tag.setIntArray("history", history.stream().mapToInt(i -> i).toArray());
         return t;
     }
 

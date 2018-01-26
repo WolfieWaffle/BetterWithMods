@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/11/16
  */
 public class TurntableRecipeCategory implements IRecipeCategory<TurntableRecipeWrapper> {

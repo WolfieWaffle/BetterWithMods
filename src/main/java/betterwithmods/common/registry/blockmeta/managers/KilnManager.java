@@ -8,6 +8,7 @@ import java.util.List;
 
 public class KilnManager extends BlockMetaManager<KilnRecipe> {
     public static final KilnManager INSTANCE = new KilnManager();
+    public static final KilnManager UNSTOKED = new KilnManager();
 
     @Override
     public KilnRecipe createRecipe(Block block, int meta, List<ItemStack> outputs) {

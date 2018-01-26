@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
- * Created by tyler on 5/13/17.
+ * Created by primetoxinz on 5/13/17.
  */
 public class HCChickens extends Feature {
 

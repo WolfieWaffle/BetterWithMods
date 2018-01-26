@@ -3,11 +3,12 @@ package betterwithmods.module.tweaks;
 import betterwithmods.module.Module;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class Tweaks extends Module {
     @Override
     public void addFeatures() {
+        registerFeature(new FastStick());
         registerFeature(new AxeLeaves());
         registerFeature(new CreeperShearing());
         registerFeature(new Dung());
@@ -16,7 +17,6 @@ public class Tweaks extends Module {
         registerFeature(new EquipmentDrop());
         registerFeature(new ImprovedFlee());
         registerFeature(new HeadDrops());
-        registerFeature(new HighEfficiencyRecipes());
         registerFeature(new KilnCharcoal());
         registerFeature(new KilnSmelting());
         registerFeature(new MobSpawning());

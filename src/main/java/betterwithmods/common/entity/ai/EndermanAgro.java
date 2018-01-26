@@ -1,17 +1,13 @@
 package betterwithmods.common.entity.ai;
 
-import betterwithmods.common.BWMItems;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
 
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/20/16
  */
 public class EndermanAgro extends EntityAINearestAttackableTarget<EntityPlayer> {
@@ -25,17 +21,12 @@ public class EndermanAgro extends EntityAINearestAttackableTarget<EntityPlayer> 
         this.enderman = enderman;
     }
 
-    private boolean shouldEndermanAttackPlayer(@Nonnull EntityEnderman enderman, @Nonnull EntityPlayer player) {
-        ItemStack stack = player.inventory.armorInventory.get(3);
-        return !(!stack.isEmpty() && stack.getItem() == BWMItems.ENDER_SPECTACLES) && enderman.shouldAttackPlayer(player);
-    }
-
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean shouldExecute() {
         double d0 = this.getTargetDistance();
-        this.player = this.enderman.getEntityWorld().getNearestAttackablePlayer(this.enderman.posX, this.enderman.posY, this.enderman.posZ, d0, d0, null, player -> player != null && shouldEndermanAttackPlayer(enderman, player));
+        this.player = this.enderman.getEntityWorld().getNearestAttackablePlayer(this.enderman.posX, this.enderman.posY, this.enderman.posZ, d0, d0, null, player -> player != null && enderman.shouldAttackPlayer(player));
         return this.player != null;
     }
 
@@ -61,7 +52,7 @@ public class EndermanAgro extends EntityAINearestAttackableTarget<EntityPlayer> 
     @Override
     public boolean shouldContinueExecuting() {
         if (this.player != null) {
-            if (!shouldEndermanAttackPlayer(enderman, player)) {
+            if (!enderman.shouldAttackPlayer(player)) {
                 return false;
             } else {
                 this.enderman.faceEntity(this.player, 10.0F, 10.0F);
@@ -85,12 +76,12 @@ public class EndermanAgro extends EntityAINearestAttackableTarget<EntityPlayer> 
             }
         } else {
             if (this.targetEntity != null) {
-                if (shouldEndermanAttackPlayer(enderman, targetEntity)) {
-                    if (this.targetEntity.getDistanceSqToEntity(this.enderman) < 16.0D) {
+                if (enderman.shouldAttackPlayer(targetEntity)) {
+                    if (this.targetEntity.getDistanceSq(this.enderman) < 16.0D) {
                         this.enderman.teleportRandomly();
                     }
                     this.teleportTime = 0;
-                } else if (this.targetEntity.getDistanceSqToEntity(this.enderman) > 256.0D && this.teleportTime++ >= 30 && this.enderman.teleportToEntity(this.targetEntity)) {
+                } else if (this.targetEntity.getDistanceSq(this.enderman) > 256.0D && this.teleportTime++ >= 30 && this.enderman.teleportToEntity(this.targetEntity)) {
                     this.teleportTime = 0;
                 }
             }

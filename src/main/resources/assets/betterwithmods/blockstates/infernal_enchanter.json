@@ -17,27 +17,27 @@
         "submodel": {
           "candle1": {
             "textures": {
-              "all": "blocks/concrete_gray"
+              "all": "betterwithmods:blocks/candles/candle_gray"
             },
             "model": "betterwithmods:infernal_candle"
           },
           "candle2": {
             "textures": {
-              "all": "blocks/concrete_gray"
+              "all": "betterwithmods:blocks/candles/candle_gray"
             },
             "model": "betterwithmods:infernal_candle",
             "y": 90
           },
           "candle3": {
             "textures": {
-              "all": "blocks/concrete_gray"
+              "all": "betterwithmods:blocks/candles/candle_gray"
             },
             "model": "betterwithmods:infernal_candle",
             "y": 180
           },
           "candle4": {
             "textures": {
-              "all": "blocks/concrete_gray"
+              "all": "betterwithmods:blocks/candles/candle_gray"
             },
             "model": "betterwithmods:infernal_candle",
             "y": 270
@@ -66,6 +66,70 @@
           }
         }
       }
-    ]
+    ],
+    "active": {
+      "true": {
+        "submodel": {
+          "candle1": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle"
+          },
+          "candle2": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 90
+          },
+          "candle3": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 180
+          },
+          "candle4": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 270
+          }
+        }
+      },
+      "false": {
+        "submodel": {
+          "candle1": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle"
+          },
+          "candle2": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 90
+          },
+          "candle3": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 180
+          },
+          "candle4": {
+            "textures": {
+              "all": "betterwithmods:blocks/candles/candle_gray"
+            },
+            "model": "betterwithmods:infernal_candle",
+            "y": 270
+          }
+        }
+      }
+    }
   }
 }

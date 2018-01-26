@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/11/16
  */
 public class TurntableRecipeWrapper extends BlockMetaWrapper {

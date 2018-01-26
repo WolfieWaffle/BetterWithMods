@@ -1,6 +1,5 @@
 package betterwithmods.common.blocks.tile;
 
-import betterwithmods.module.hardcore.beacons.HCBeacons;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,20 +12,21 @@ import net.minecraftforge.common.DimensionManager;
 import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 
+import static betterwithmods.module.hardcore.beacons.EnderchestCap.ENDERCHEST_CAPABILITY;
+
 public class TileEnderchest extends TileEntityEnderChest {
 
     public enum Type {
-        //TODO drop contents if NONE
-        NONE((tile, player) -> tile.getCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.UP).getInventory()),
+        NONE((tile, player) -> tile.getCapability(ENDERCHEST_CAPABILITY, EnumFacing.UP).getInventory()),
         DIMENSION1((tile, player) -> {
             World world = tile.getWorld();
-            if (world.hasCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.SOUTH)) {
-                return world.getCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.SOUTH).getInventory();
+            if (world.hasCapability(ENDERCHEST_CAPABILITY, EnumFacing.SOUTH)) {
+                return world.getCapability(ENDERCHEST_CAPABILITY, EnumFacing.SOUTH).getInventory();
             }
             return null;
         }),
-        DIMENSION2((tile, player) -> tile.getWorld().getCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.NORTH).getInventory()),
-        GLOBAL((tile, player) -> DimensionManager.getWorld(0).getCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.DOWN).getInventory()),
+        DIMENSION2((tile, player) -> tile.getWorld().getCapability(ENDERCHEST_CAPABILITY, EnumFacing.NORTH).getInventory()),
+        GLOBAL((tile, player) -> DimensionManager.getWorld(0).getCapability(ENDERCHEST_CAPABILITY, EnumFacing.DOWN).getInventory()),
         PRIVATE((tile, player) -> player.getInventoryEnderChest());
 
         public static Type[] VALUES = values();
@@ -42,7 +42,6 @@ public class TileEnderchest extends TileEntityEnderChest {
         }
     }
 
-    @Nonnull
     private Type type = Type.NONE;
 
     @Override

@@ -1,6 +1,6 @@
 # Filtered Hopper
 
-![Hopper](block:betterwithmods:single_machine@4)
+%[Hopper](block:betterwithmods:single_machine@2)
 
 The Hopper will pick up items above it based on its filter. 
 It can be filtered by putting an item in the top slot.
@@ -24,7 +24,7 @@ The Trapdoor allows any Block through.
 ![Slats](block:betterwithmods:slats)
 Slats allow only flat items through, including paper, leather, strings and wool.
 
-![Wicker](block:betterwithmods:pane@2)
+![Wicker](block:betterwithmods:wicker)
 Wicker will allow any dust, sand, seeds, or piles through.
 This can also be used to separate the Flint and Sand out of Gravel.
 

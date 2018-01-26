@@ -2,6 +2,8 @@ package betterwithmods.common.blocks.mini;
 
 import betterwithmods.api.block.IAdvancedRotationPlacement;
 import betterwithmods.api.block.IMultiVariants;
+import betterwithmods.api.block.IRenderRotationPlacement;
+import betterwithmods.client.ClientEventHandler;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.blocks.BlockAesthetic;
 import betterwithmods.common.blocks.BlockRotate;
@@ -35,12 +37,12 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockMini extends BlockRotate implements IMultiVariants, IAdvancedRotationPlacement, IDamageDropped {
+public abstract class BlockMini extends BlockRotate implements IMultiVariants, IAdvancedRotationPlacement, IDamageDropped, IRenderRotationPlacement {
     public static final Material MINI = new Material(MapColor.WOOD);
     public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 15);
-    public static final PropertyOrientation SIDING_ORIENTATION = PropertyOrientation.create("orientation", 0, 5);
-    public static final PropertyOrientation MOULDING_ORIENTATION = PropertyOrientation.create("orientation", 0, 11);
-    public static final PropertyOrientation CORNER_ORIENTATION = PropertyOrientation.create("orientation", 0, 7);
+    public static final PropertyOrientation SIDING_ORIENTATION = PropertyOrientation.create("orientation", 0, 6);
+    public static final PropertyOrientation MOULDING_ORIENTATION = PropertyOrientation.create("orientation", 0, 12);
+    public static final PropertyOrientation CORNER_ORIENTATION = PropertyOrientation.create("orientation", 0, 8);
 
     public BlockMini(Material material) {
         super(material);
@@ -50,6 +52,8 @@ public abstract class BlockMini extends BlockRotate implements IMultiVariants, I
 
     @Override
     public void nextState(World world, BlockPos pos, IBlockState state) {
+
+
         world.setBlockState(pos, state.cycleProperty(getOrientationProperty()));
     }
 
@@ -242,13 +246,20 @@ public abstract class BlockMini extends BlockRotate implements IMultiVariants, I
     public IBlockState getRenderState(World world, BlockPos pos, EnumFacing facing, float flX, float flY, float flZ, int meta, EntityLivingBase placer) {
         return getStateForPlacement(world, pos, facing, flX, flY, flZ, meta, placer).withProperty(TYPE, meta);
     }
-    
+
+    @Override
+    public RenderFunction getRenderFunction() {
+        return ClientEventHandler::renderMiniBlock;
+    }
+
     public TileEntityMultiType getTile(IBlockAccess world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityMultiType)
             return (TileEntityMultiType) tile;
         return null;
     }
+
+
 
     public enum EnumType {
 

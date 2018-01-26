@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * Created by tyler on 5/3/17.
+ * Created by primetoxinz on 5/3/17.
  */
 public class HCJumping extends Feature {
     public HCJumping() {

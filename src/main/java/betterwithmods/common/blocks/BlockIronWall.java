@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Created by tyler on 5/16/17.
+ * Created by primetoxinz on 5/16/17.
  */
 public class BlockIronWall extends BWMBlock {
     public BlockIronWall() {

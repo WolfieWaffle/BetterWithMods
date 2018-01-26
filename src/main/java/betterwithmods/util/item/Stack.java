@@ -56,6 +56,9 @@ public class Stack {
         return type;
     }
 
+    public ItemStack getItemStack() {
+        return new ItemStack(getItem(), 1, getMeta());
+    }
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Stack))

@@ -55,5 +55,36 @@
         "ore": "ingotCopper"
       }
     ]
+  },
+  {
+    "conditions": [
+      {
+        "type": "config",
+        "enabled": "boatshovel"
+      }
+    ],
+    "name": "BOAT_SHOVEL",
+    "ingredient": [
+      {
+        "item": "minecraft:wooden_shovel"
+      }
+    ]
+  },
+  {
+    "conditions": [
+      {
+        "type": "forge:not",
+        "value": {
+          "type": "config",
+          "enabled": "boatshovel"
+        }
+      }
+    ],
+    "name": "BOAT_SHOVEL",
+    "ingredient": [
+      {
+        "item": "minecraft:air"
+      }
+    ]
   }
 ]

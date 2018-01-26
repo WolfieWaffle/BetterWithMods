@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/13/16
  */
 public class HopperInteractions {
@@ -70,11 +70,15 @@ public class HopperInteractions {
 
         public ItemStack getInput() {
             ItemStack i = input.copy();
+            if(!secondaryOutput.isEmpty())
+                i.setCount(8);
             return i;
         }
 
         public ItemStack getOutput() {
             ItemStack o = output.copy();
+            if(!secondaryOutput.isEmpty())
+                o.setCount(8);
             return o;
         }
 

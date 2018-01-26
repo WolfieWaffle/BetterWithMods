@@ -1,26 +1,31 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.block.IOverpower;
 import betterwithmods.api.capabilities.CapabilityAxle;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IAxle;
+import betterwithmods.api.tile.IAxleTick;
 import betterwithmods.api.tile.IMechanicalPower;
+import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.blocks.mechanical.BlockAxle;
 import betterwithmods.common.blocks.tile.TileBasic;
-import betterwithmods.util.MechanicalUtil;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by primetoxinz on 7/18/17.
  */
-public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
+public class TileAxle extends TileBasic implements IAxle, ITickable {
     private byte maxSignal;
     private int maxPower;
     private int minPower;
@@ -28,11 +33,10 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
     private byte signal;
     private int power;
 
+    public static List<IAxleTick> tickHandlers = Lists.newArrayList();
 
     public TileAxle() {
-        this.maxSignal = 3;
-        this.maxPower = 1;
-        this.minPower = 0;
+
     }
 
     public TileAxle(int maxPower, int minPower, byte maxSignal) {
@@ -49,10 +53,10 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
 
         for (EnumFacing facing : getDirections()) {
             BlockPos offset = pos.offset(facing);
-            IMechanicalPower mech = MechanicalUtil.getMechanicalPower(world, offset, facing);
+            IMechanicalPower mech = BWMAPI.IMPLEMENTATION.getMechanicalPower(world, offset, facing);
             if (mech != null) {
 
-                IAxle axle = MechanicalUtil.getAxle(world, offset, facing);
+                IAxle axle = BWMAPI.IMPLEMENTATION.getAxle(world, offset, facing);
                 if (axle != null) {
                     if (isFacing(axle)) {
                         byte next = axle.getSignal();
@@ -61,7 +65,9 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
                         }
                     }
                 }
+
                 int power = mech.getMechanicalOutput(facing.getOpposite());
+
                 if (power > 0) {
                     if (power > findPower) {
                         sources++;
@@ -70,6 +76,9 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
                                 findPower = power;
                         } else {
                             findPower = power;
+                            if (getBlock() == BWMBlocks.STEEL_AXLE && mech.getClass() == TileGearbox.class) {
+                                findPower = Math.max(1, findPower / 2);
+                            }
                         }
                     }
                     if (axle == null) {
@@ -101,6 +110,7 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
             setSignal(newSignal);
         markDirty();
     }
+
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -141,7 +151,7 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
     @Override
     public int getMechanicalOutput(EnumFacing facing) {
         if (facing.getAxis() == getAxis()) {
-            IAxle axle = MechanicalUtil.getAxle(world, pos.offset(facing), facing);
+            IAxle axle = BWMAPI.IMPLEMENTATION.getAxle(world, pos.offset(facing), facing);
             if (axle != null && axle.getSignal() > this.getSignal())
                 return 0;
             return power;
@@ -206,7 +216,7 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
         super.markDirty();
         ((BlockAxle) getBlockType()).setActive(world, pos, getPower() > 0);
         for (EnumFacing facing : getDirections()) {
-            if (!MechanicalUtil.isAxle(world, pos.offset(facing), facing.getOpposite())) {
+            if (!BWMAPI.IMPLEMENTATION.isAxle(world, pos.offset(facing), facing.getOpposite())) {
                 world.neighborChanged(pos.offset(facing), getBlockType(), pos);
             }
         }
@@ -234,6 +244,12 @@ public class TileAxle extends TileBasic implements IMechanicalPower, IAxle {
     @Override
     public Block getBlock() {
         return getBlockType();
+    }
+
+    @Override
+    public void update() {
+        if(!tickHandlers.isEmpty())
+            tickHandlers.forEach(t -> t.tick(world, pos, this));
     }
 }
 

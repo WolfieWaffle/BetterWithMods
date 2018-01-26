@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "changeAxeRecipe"
+    }
+  ],
+  "result": {
+    "item": "minecraft:stone_axe"
+  },
+  "pattern": [
+    "D ",
+    "DS",
+    " S"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "D": {
+      "item": "minecraft:cobblestone",
+      "data": 0
+    },
+    "S": {
+      "ore": "stickWood",
+      "type": "forge:ore_dict"
+    }
+  }
+}

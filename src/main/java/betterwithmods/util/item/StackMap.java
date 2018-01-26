@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 2/25/17
  */
 public class StackMap<T> implements Map<Stack, T> {

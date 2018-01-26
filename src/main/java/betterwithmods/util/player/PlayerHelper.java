@@ -1,11 +1,14 @@
 package betterwithmods.util.player;
 
-import betterwithmods.common.BWMBlocks;
+import betterwithmods.common.BWMRecipes;
+import betterwithmods.common.BWOreDictionary;
+import betterwithmods.common.registry.BrokenToolRegistry;
 import betterwithmods.module.ModuleLoader;
 import betterwithmods.module.hardcore.needs.HCArmor;
 import betterwithmods.module.hardcore.needs.HCGloom;
 import betterwithmods.module.hardcore.needs.HCInjury;
 import betterwithmods.module.hardcore.needs.hunger.HCHunger;
+import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -20,12 +23,16 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Set of methods dealing with EntityPlayer
@@ -36,6 +43,32 @@ public final class PlayerHelper {
     public final static UUID PENALTY_SPEED_UUID = UUID.fromString("c5595a67-9410-4fb2-826a-bcaf432c6a6f");
 
     private PlayerHelper() {
+
+    }
+
+    public static ItemStack getHolding(EntityPlayer player, EnumHand hand) {
+        if (hand != null)
+            return player.getHeldItem(hand);
+        return player.getHeldItem(EnumHand.MAIN_HAND);
+    }
+
+    public static Set<ItemStack> getHolding(EntityPlayer player) {
+        Set<ItemStack> holding = Sets.newHashSet();
+        holding.add(player.getHeldItem(EnumHand.MAIN_HAND));
+        holding.add(player.getHeldItem(EnumHand.OFF_HAND));
+        return holding.stream().filter(s -> !s.isEmpty()).collect(Collectors.toSet());
+    }
+
+    public static boolean isHolding(EntityPlayer player, List<ItemStack> stacks) {
+        Set<ItemStack> held = getHolding(player);
+        if (held.isEmpty() || stacks.isEmpty())
+            return false;
+        for (ItemStack stack : stacks) {
+            for (ItemStack h : held)
+                if (h.isItemEqual(stack))
+                    return true;
+        }
+        return false;
     }
 
     public static boolean isSurvival(EntityPlayer player) {
@@ -190,18 +223,20 @@ public final class PlayerHelper {
         return modifier;
     }
 
+
     /**
      * This pos-sensitive version should be used when it's available, as it uses {@link IBlockState#getActualState(IBlockAccess, BlockPos)}.
      *
      * @param player
      * @param pos
+     * @param state
      * @return
      */
-    public static boolean isCurrentToolEffectiveOnBlock(EntityPlayer player, BlockPos pos) {
-        ItemStack stack = player.getHeldItemMainhand();
-        World world = player.getEntityWorld();
-        IBlockState state = world.getBlockState(pos).getActualState(world, pos);
-        return isCurrentToolEffectiveOnBlock(stack, state) && ForgeHooks.isToolEffective(player.getEntityWorld(), pos, stack);
+    public static boolean isCurrentToolEffectiveOnBlock(EntityPlayer player, BlockPos pos, IBlockState state) {
+        ItemStack stack = BrokenToolRegistry.findItem(player, state);
+        if (player == null || state == null)
+            return false;
+        return isCurrentToolEffectiveOnBlock(stack, state) || ForgeHooks.isToolEffective(player.getEntityWorld(), pos, stack);
     }
 
     /**
@@ -212,21 +247,24 @@ public final class PlayerHelper {
      * @return Whether the tool can harvest well the block.
      */
     public static boolean isCurrentToolEffectiveOnBlock(ItemStack stack, IBlockState state) {
+
         if (stack == null) return false;
-        //Hardcore Stumping
-        if (state.getBlock() == BWMBlocks.STUMP) {
-            return false;
-        }
         if (stack.hasTagCompound()) {
             NBTTagCompound stats = stack.getSubCompound("Stats");
             if (stats != null) {
                 return stats.getByte("Broken") != 1;
             }
         }
+
+        ItemStack block = BWMRecipes.getStackFromState(state);
+
         for (String type : stack.getItem().getToolClasses(stack)) {
-            if (type == "mattock")
+            if (Objects.equals(type, "mattock"))
                 return state.getBlock().isToolEffective("shovel", state) || state.getBlock().isToolEffective("axe", state);
-            if (state.getBlock().isToolEffective(type, state))
+            if (Objects.equals(type, "bwmmattock"))
+                return state.getBlock().isToolEffective("shovel", state) || state.getBlock().isToolEffective("pickaxe", state);
+
+            if (state.getBlock().isToolEffective(type, state) || BWOreDictionary.isToolForOre(type, block))
                 return true;
         }
         return false;

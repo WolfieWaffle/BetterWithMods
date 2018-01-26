@@ -2,6 +2,7 @@ package betterwithmods.common.registry;
 
 import betterwithmods.client.container.anvil.ContainerSteelAnvil;
 import betterwithmods.util.InvUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
@@ -88,7 +89,7 @@ public class ToolDamageRecipe extends IForgeRegistryEntry.Impl<IRecipe> implemen
         return result.copy();
     }
 
-    public boolean shouldDamage(ItemStack stack) {
+    public boolean shouldDamage(ItemStack stack, EntityPlayer player, IBlockState state)  {
         return true;
     }
 
@@ -100,7 +101,7 @@ public class ToolDamageRecipe extends IForgeRegistryEntry.Impl<IRecipe> implemen
             ItemStack stack = inv.getStackInSlot(i);
             if (!stack.isEmpty() && isTool.test(stack)) {
                 ItemStack copy = stack.copy();
-                if (!shouldDamage(copy) || !copy.attemptDamageItem(1, new Random(), null)) {
+                if (!shouldDamage(copy, null, null) || !copy.attemptDamageItem(1, new Random(), null)) {
                     stacks.set(i, copy.copy());
                 }
             }

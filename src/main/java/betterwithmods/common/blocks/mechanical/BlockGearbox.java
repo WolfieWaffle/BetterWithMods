@@ -1,13 +1,16 @@
 package betterwithmods.common.blocks.mechanical;
 
+import betterwithmods.api.BWMAPI;
+import betterwithmods.api.block.IAdvancedRotationPlacement;
 import betterwithmods.api.block.IOverpower;
+import betterwithmods.api.block.IRenderRotationPlacement;
+import betterwithmods.client.ClientEventHandler;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWSounds;
 import betterwithmods.common.blocks.BlockRotate;
 import betterwithmods.common.blocks.EnumTier;
 import betterwithmods.common.blocks.mechanical.tile.TileGearbox;
 import betterwithmods.util.DirUtils;
-import betterwithmods.util.MechanicalUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -18,12 +21,10 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -36,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpower {
+public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpower, IAdvancedRotationPlacement, IRenderRotationPlacement {
     private final int maxPower;
     private EnumTier type;
 
@@ -49,7 +50,6 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
     }
 
 
-
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
         tooltip.add(I18n.format("tooltip.gearbox.name"));
@@ -57,14 +57,7 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
 
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float flX, float flY, float flZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        IBlockState state = super.getStateForPlacement(world, pos, side, flX, flY, flZ, meta, placer, hand);
-        return setFacingInBlock(state, side.getOpposite());
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
-        EnumFacing facing = DirUtils.convertEntityOrientationToFacing(entity, EnumFacing.NORTH);
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(DirUtils.FACING, facing));
+        return getStateForAdvancedRotationPlacement(getDefaultState(), placer.isSneaking() ? side : side.getOpposite(), flX, flY, flZ);
     }
 
     @Override
@@ -74,7 +67,6 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) withTile(world, pos).ifPresent(t -> System.out.println(t));
         return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 
@@ -109,44 +101,6 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
         return state.getValue(DirUtils.FACING);
     }
 
-    @Override
-    public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
-        return state.withProperty(DirUtils.FACING, facing);
-    }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-//    @Override
-//    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-//        EnumFacing facing = getFacing(world, pos);
-//        EnumFacing newFacing = DirUtils.rotateFacingAroundY(facing, reverse);
-//        if (newFacing != facing) {
-//            if (isGearboxOn(world, pos)) {
-//                setGearboxState(world, pos, false);
-//            }
-//
-//            world.setBlockState(pos, world.getBlockState(pos).withProperty(DirUtils.FACING, newFacing));
-//
-//            world.markBlockRangeForRenderUpdate(pos, pos);
-//
-//            world.scheduleBlockUpdate(pos, this, 10, 5);
-//
-//            MechanicalUtil.destoryHorizontalAxles(world, pos);
-//        }
-//    }
 
 
     private void emitGearboxParticles(World world, BlockPos pos, Random rand) {
@@ -164,8 +118,14 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
         if (state.getValue(ACTIVE)) {
             emitGearboxParticles(world, pos, rand);
-            if (rand.nextInt(50) == 0)
+
+            if (rand.nextInt(10) == 0 && world.isRaining() || world.isThundering()) {
+                world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, SoundCategory.BLOCKS, 0.25F, world.rand.nextFloat() * 0.25F + 0.25F, true);
+            }
+            if (rand.nextInt(50) == 0) {
                 world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, BWSounds.WOODCREAK, SoundCategory.BLOCKS, 0.25F, world.rand.nextFloat() * 0.25F + 0.25F, false);
+            }
+
         }
     }
 
@@ -175,7 +135,7 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
         boolean[] dirs = new boolean[6];
         for (int i = 0; i < 6; i++) {
             EnumFacing facing = EnumFacing.getFront(i);
-            dirs[i] = MechanicalUtil.isAxle(world, pos.offset(facing), facing.getOpposite()) && this.getFacing(world, pos) != facing;
+            dirs[i] = BWMAPI.IMPLEMENTATION.isAxle(world, pos.offset(facing), facing.getOpposite()) && this.getFacing(world, pos) != facing;
         }
         return state.withProperty(DirUtils.DOWN, dirs[0]).withProperty(DirUtils.UP, dirs[1]).withProperty(DirUtils.NORTH, dirs[2]).withProperty(DirUtils.SOUTH, dirs[3]).withProperty(DirUtils.WEST, dirs[4]).withProperty(DirUtils.EAST, dirs[5]);
     }
@@ -237,7 +197,7 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
 
     @Override
     public void overpower(World world, BlockPos pos) {
-        overpowerSound(world,pos);
+        overpowerSound(world, pos);
         EnumFacing facing = world.getBlockState(pos).getValue(DirUtils.FACING);
         Block block = this == BWMBlocks.WOODEN_GEARBOX ? BWMBlocks.WOODEN_BROKEN_GEARBOX : BWMBlocks.STEEL_BROKEN_GEARBOX;
         world.setBlockState(pos, block.getDefaultState().withProperty(DirUtils.FACING, facing));
@@ -284,5 +244,65 @@ public class BlockGearbox extends BlockRotate implements IBlockActive, IOverpowe
         }
     }
 
+    @Override
+    public IBlockState withRotation(IBlockState state, Rotation rot) {
+        EnumFacing facing = getFacingFromState(state);
+        if (facing.getAxis().isHorizontal())
+            return state.withProperty(DirUtils.FACING, rot.rotate(facing));
+        return state;
+    }
 
+    @Override
+    public IBlockState getStateForAdvancedRotationPlacement(IBlockState defaultState, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        IBlockState state = defaultState;
+        float hitXFromCenter = hitX - 0.5F;
+        float hitYFromCenter = hitY - 0.5F;
+        float hitZFromCenter = hitZ - 0.5F;
+        EnumFacing newFacing;
+        switch (facing.getAxis()) {
+            case Y:
+                if (inCenter(hitXFromCenter, hitZFromCenter, 1 / 16f)) {
+                    newFacing = facing;
+                } else if (isMax(hitXFromCenter, hitZFromCenter)) {
+                    newFacing = ((hitXFromCenter > 0) ? EnumFacing.EAST : EnumFacing.WEST);
+                } else {
+                    newFacing = ((hitZFromCenter > 0) ? EnumFacing.SOUTH : EnumFacing.NORTH);
+                }
+                break;
+            case X:
+                if (inCenter(hitYFromCenter, hitZFromCenter, 1 / 16f)) {
+                    newFacing = facing.getOpposite();
+                } else if (isMax(hitYFromCenter, hitZFromCenter)) {
+                    newFacing = ((hitYFromCenter > 0) ? EnumFacing.UP : EnumFacing.DOWN);
+                } else {
+                    newFacing = ((hitZFromCenter > 0) ? EnumFacing.SOUTH : EnumFacing.NORTH);
+                }
+                break;
+            case Z:
+                if (inCenter(hitYFromCenter, hitXFromCenter, 1 / 16f)) {
+                    newFacing = facing;
+                } else if (isMax(hitYFromCenter, hitXFromCenter)) {
+                    newFacing = ((hitYFromCenter > 0) ? EnumFacing.UP : EnumFacing.DOWN);
+                } else {
+                    newFacing = ((hitXFromCenter > 0) ? EnumFacing.EAST : EnumFacing.WEST);
+                }
+                break;
+            default:
+                newFacing = facing;
+                break;
+        }
+
+        return state.withProperty(DirUtils.FACING, newFacing);
+
+    }
+
+    @Override
+    public IBlockState getRenderState(World world, BlockPos pos, EnumFacing facing, float flX, float flY, float flZ, int meta, EntityLivingBase placer) {
+        return getStateForAdvancedRotationPlacement(getDefaultState(),facing,flX,flY,flZ);
+    }
+
+    @Override
+    public RenderFunction getRenderFunction() {
+        return ClientEventHandler::renderBasicGrid;
+    }
 }

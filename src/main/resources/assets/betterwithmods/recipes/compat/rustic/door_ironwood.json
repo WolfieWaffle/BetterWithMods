@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:ironwood_door",
+    "count": 3
+  },
+  "pattern": [
+    "SS",
+    "SS",
+    "SS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "betterwithmods:rustic_compat_siding",
+      "data": 1
+    }
+  }
+}

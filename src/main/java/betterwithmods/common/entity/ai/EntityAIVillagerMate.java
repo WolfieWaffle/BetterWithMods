@@ -79,7 +79,7 @@ public class EntityAIVillagerMate extends EntityAIBase {
         this.villager.getLookHelper().setLookPositionWithEntity(this.mate, 10.0F, (float) this.villager.getVerticalFaceSpeed());
         this.villager.getNavigator().tryMoveToEntityLiving(this.mate, this.moveSpeed);
         ++this.spawnBabyDelay;
-        if (this.spawnBabyDelay >= 60 && this.villager.getDistanceSqToEntity(this.mate) < 9.0D) {
+        if (this.spawnBabyDelay >= 60 && this.villager.getDistanceSq(this.mate) < 9.0D) {
             this.spawnBaby();
         }
     }
@@ -93,9 +93,9 @@ public class EntityAIVillagerMate extends EntityAIBase {
         double d0 = Double.MAX_VALUE;
         EntityVillager mate = null;
         for (EntityVillager current : list) {
-            if (canMateWith(this.villager, current) && this.villager.getDistanceSqToEntity(current) < d0) {
+            if (canMateWith(this.villager, current) && this.villager.getDistanceSq(current) < d0) {
                 mate = current;
-                d0 = this.villager.getDistanceSqToEntity(current);
+                d0 = this.villager.getDistanceSq(current);
             }
         }
         return mate;

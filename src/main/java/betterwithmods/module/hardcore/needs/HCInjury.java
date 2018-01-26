@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * Created by tyler on 5/24/17.
+ * Created by primetoxinz on 5/24/17.
  */
 public class HCInjury extends Feature {
 

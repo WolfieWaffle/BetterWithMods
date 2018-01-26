@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Random;
@@ -14,11 +15,12 @@ import java.util.Random;
 import static betterwithmods.util.WorldUtils.addDrop;
 
 /**
- * Created by tyler on 4/21/17.
+ * Created by primetoxinz on 4/21/17.
  */
+@Mod.EventBusSubscriber
 public class FeedWolfchopEvent {
     @SubscribeEvent
-    public void feedDog(PlayerInteractEvent.EntityInteractSpecific event) {
+    public static void feedDog(PlayerInteractEvent.EntityInteractSpecific event) {
         ItemStack stack = event.getItemStack();
         if (event.getTarget() instanceof EntityWolf && stack.getItem() == BWMItems.WOLF_CHOP) {
             Random rand = event.getWorld().rand;
@@ -36,7 +38,7 @@ public class FeedWolfchopEvent {
     }
 
     @SubscribeEvent
-    public void dropItem(LivingDropsEvent event) {
+    public static void dropItem(LivingDropsEvent event) {
         World world = event.getEntityLiving().getEntityWorld();
         if (event.getEntityLiving() instanceof EntityWolf) {
             addDrop(event, new ItemStack(BWMItems.WOLF_CHOP, world.rand.nextInt(2)));

@@ -186,31 +186,13 @@ public class BlockSaw extends BWMBlock implements IBlockActive, IOverpower {
         return getFacing(world.getBlockState(pos));
     }
 
-    @Override
+
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(DirUtils.FACING);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.FACING, facing);
-    }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return getFacing(world, pos) != EnumFacing.DOWN && getFacing(world, pos) != EnumFacing.UP;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return canRotateOnTurntable(world, pos);
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-        if (DirUtils.rotateAroundY(this, world, pos, reverse)) {
-            world.scheduleBlockUpdate(pos, this, tickRate(world), 5);
-        }
     }
 
     @Override

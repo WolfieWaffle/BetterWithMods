@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 /**
- * Created by tyler on 5/10/17.
+ * Created by primetoxinz on 5/10/17.
  */
 public class HarderSteelRecipe extends Feature {
 

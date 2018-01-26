@@ -19,7 +19,10 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.registry.RegistryDefaulted;
@@ -44,7 +47,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class HCBuckets extends Feature {
     private static boolean hardcoreFluidContainer;
@@ -163,12 +166,14 @@ public class HCBuckets extends Feature {
                         if (!player.capabilities.isCreativeMode) {
                             if (evt.getEmptyBucket().getItem() == Items.BUCKET) {
                                 evt.setFilledBucket(new ItemStack(Items.WATER_BUCKET));
+                                return;
                             } else if (isFluidContainer(evt.getEmptyBucket()) && hardcoreFluidContainer) {
                                 ItemStack fill = evt.getEmptyBucket().copy();
                                 IFluidHandler cap = fill.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
                                 if (cap != null)
                                     cap.fill(new FluidStack(FluidRegistry.WATER, 1000), true);
                                 evt.setFilledBucket(fill);
+                                return;
                             }
                             evt.setResult(Event.Result.DENY);
                         }
@@ -241,9 +246,7 @@ public class HCBuckets extends Feature {
             state = world.getBlockState(pos);
             if (world.provider.getDimensionType() == DimensionType.OVERWORLD) {
                 if (event.getEntityPlayer() instanceof EntityPlayerMP) {
-                    EntityPlayerMP playerMP = (EntityPlayerMP) event.getEntityPlayer();
-                    EnumActionResult result = playerMP.interactionManager.processRightClickBlock(playerMP, world, toCheck, event.getHand(), event.getPos(), event.getFace(), 0.5F, 0.5F, 0.5F);
-                    if (result == EnumActionResult.FAIL) {
+                    if (event.getUseBlock() == Event.Result.DENY) {
                         if (state.getBlock().isAir(state, world, pos) || state.getBlock().isReplaceable(world, pos)) {
                             Item item = toCheck.getItem();
                             if (item.getItemUseAction(toCheck) == EnumAction.NONE) {

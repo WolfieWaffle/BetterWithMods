@@ -17,8 +17,12 @@ public final class ToolsManager {
     private ToolsManager() {
     }
 
-    public static Item.ToolMaterial getToolMaterial(ItemTool tool) {
-        return Item.ToolMaterial.valueOf(tool.getToolMaterialName());
+
+    public static Item.ToolMaterial getToolMaterial(ItemStack tool) {
+        Item item = tool.getItem();
+        if (item instanceof ItemTool)
+            return Item.ToolMaterial.valueOf(((ItemTool) item).getToolMaterialName());
+        return null;
     }
 
     public static void setAxesAsEffectiveAgainst(Block... blocks) {
@@ -48,18 +52,16 @@ public final class ToolsManager {
 
     //Potential to crash if tool material is improperly assigned?
     public static float getSpeed(ItemStack stack) {
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemTool) {
-            ItemTool tool = (ItemTool) stack.getItem();
-            Item.ToolMaterial material = getToolMaterial(tool);
-            return material.getEfficiencyOnProperMaterial();
-        }
+        Item.ToolMaterial material = getToolMaterial(stack);
+        if (material != null)
+            return material.getEfficiency();
         return 1;
     }
 
     public static float getSpeed(ItemStack stack, IBlockState state) {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemTool) {
-            ItemTool tool = (ItemTool)stack.getItem();
-            return tool.getStrVsBlock(stack, state);
+            ItemTool tool = (ItemTool) stack.getItem();
+            return tool.getDestroySpeed(stack, state);
         }
         return 1;
     }

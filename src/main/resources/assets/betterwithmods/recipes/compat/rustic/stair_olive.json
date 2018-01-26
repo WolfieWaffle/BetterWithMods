@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:stairs_olive",
+    "count": 1
+  },
+  "pattern": [
+    "M ",
+    "MM"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "M": {
+      "item": "betterwithmods:rustic_compat_moulding",
+      "data": 0
+    }
+  }
+}

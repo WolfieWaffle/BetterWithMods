@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 /**
- * Created by tyler on 5/10/17.
+ * Created by primetoxinz on 5/10/17.
  */
 public class HCTorches extends Feature {
 

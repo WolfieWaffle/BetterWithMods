@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 public class EntityFallingGourd extends EntityFallingBlock {
     private static final DataParameter<Integer> FALLBLOCK = EntityDataManager.createKey(EntityFallingGourd.class, DataSerializers.VARINT);
-    private ItemStack seedStack;
+    private ItemStack seedStack = ItemStack.EMPTY;
 
     @SuppressWarnings("unused")
     public EntityFallingGourd(World worldIn) {

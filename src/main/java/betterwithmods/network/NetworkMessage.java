@@ -15,6 +15,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -55,7 +56,8 @@ public abstract class NetworkMessage<REQ extends NetworkMessage> implements Seri
 
     @Override
     public final IMessage onMessage(REQ message, MessageContext context) {
-        return message.handleMessage(context);
+        FMLCommonHandler.instance().getWorldThread(context.netHandler).addScheduledTask(() -> message.handleMessage(context));
+        return null;
     }
 
     @Override

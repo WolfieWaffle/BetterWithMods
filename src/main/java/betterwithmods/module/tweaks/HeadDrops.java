@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * Created by tyler on 5/13/17.
+ * Created by primetoxinz on 5/13/17.
  */
 public class HeadDrops extends Feature {
     private int sawHeadDropChance, battleAxeHeadDropChance;

@@ -56,7 +56,7 @@ public class EntityDynamite extends Entity implements IProjectile {
         this.motionZ = (MathHelper.cos(this.rotationYaw / 180.0F * pi) * MathHelper.cos(this.rotationPitch / 180.0F * pi) * 0.4F);
         this.motionY = (-MathHelper.sin(this.rotationPitch / 180.0F * pi) * 0.4F);
         this.stack = stack;
-        this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, 0.75F, 1.0F);
+        this.shoot(this.motionX, this.motionY, this.motionZ, 0.75F, 1.0F);
         if (isLit)
             fuse = 100;
     }
@@ -125,7 +125,7 @@ public class EntityDynamite extends Entity implements IProjectile {
     }
 
     @Override
-    public void setThrowableHeading(double dX, double dY,
+    public void shoot(double dX, double dY,
                                     double dZ, float angle, float f) {
         float sqrt = MathHelper.sqrt(dX * dX + dY * dY + dZ * dZ);
         dX /= sqrt;
@@ -203,4 +203,5 @@ public class EntityDynamite extends Entity implements IProjectile {
             InvUtils.ejectStack(this.getEntityWorld(), this.posX, this.posY, this.posZ, this.stack);
         this.setDead();
     }
+
 }

@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Created by tyler on 5/25/17.
+ * Created by primetoxinz on 5/25/17.
  */
 public class BehaviorSilkTouch implements IBehaviorCollect {
 

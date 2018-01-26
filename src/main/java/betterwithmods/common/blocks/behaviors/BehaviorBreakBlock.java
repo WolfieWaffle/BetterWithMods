@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
- * Created by tyler on 5/25/17.
+ * Created by primetoxinz on 5/25/17.
  */
 public class BehaviorBreakBlock implements IBehaviorCollect {
     @Override

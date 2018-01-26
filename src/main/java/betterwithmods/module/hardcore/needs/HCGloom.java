@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -17,6 +18,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,12 +28,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by tyler on 5/13/17.
+ * Created by primetoxinz on 5/13/17.
  */
 public class HCGloom extends Feature {
     private static final DataParameter<Integer> GLOOM_TICK = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.VARINT);
     private static final List<SoundEvent> sounds = Lists.newArrayList(SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundEvents.ENTITY_ENDERMEN_SCREAM, SoundEvents.ENTITY_SILVERFISH_AMBIENT, SoundEvents.ENTITY_WOLF_GROWL);
     private static Set<Integer> dimensionWhitelist;
+    private static List<ItemStack> gloomOverrideItems;
 
     private static boolean dangers;
 
@@ -45,16 +48,16 @@ public class HCGloom extends Feature {
 
     public static void incrementGloomTime(EntityPlayer player) {
         int time = getGloomTime(player);
-        if(dangers) {
+        if (dangers) {
             if (time >= GloomPenalty.TERROR.getTimeUpper())
                 setGloomTick(player, GloomPenalty.TERROR.getTimeUpper());
             else
-                setGloomTick(player,  time+ 1);
+                setGloomTick(player, time + 1);
         } else {
             if (time >= GloomPenalty.DREAD.getTimeUpper())
                 setGloomTick(player, GloomPenalty.DREAD.getTimeUpper());
             else
-                setGloomTick(player,  time+ 1);
+                setGloomTick(player, time + 1);
         }
     }
 
@@ -68,6 +71,11 @@ public class HCGloom extends Feature {
         dangers = loadPropBool("Deathly Gloom", "Gloom is deadly to the player", true);
     }
 
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+        gloomOverrideItems = loadItemStackList("Gloom Override Items", "Items in this list will override the gloom effect while held in your hand, this allows support for Dynamic Lightning and similar. Add one item per line  (ex minecraft:torch:0)", new ItemStack[0]);
+    }
+
     @SubscribeEvent
     public void onEntityInit(EntityEvent.EntityConstructing event) {
         if (event.getEntity() instanceof EntityPlayer) {
@@ -77,8 +85,7 @@ public class HCGloom extends Feature {
 
     @SubscribeEvent
     public void onRespawn(PlayerEvent.PlayerRespawnEvent e) {
-        //FIXME hopefully fixes permanent gloom after dying???
-        setGloomTick(e.player,0);
+        setGloomTick(e.player, 0);
     }
 
     @SubscribeEvent
@@ -89,10 +96,16 @@ public class HCGloom extends Feature {
 
         if (!PlayerHelper.isSurvival(player) || !dimensionWhitelist.contains(world.provider.getDimension()))
             return;
+
         if (!world.isRemote) {
+
             int light = world.getLight(player.getPosition().up());
             int tick = getGloomTime(player);
-            if (light <= 0 && !player.isPotionActive(MobEffects.NIGHT_VISION)) {
+            if (PlayerHelper.isHolding(player, gloomOverrideItems))
+                light = 15;
+            if(player.isPotionActive(MobEffects.NIGHT_VISION))
+                light = 15;
+            if (light <= 0) {
                 incrementGloomTime(player);
             } else if (tick != 0) {
                 setGloomTick(player, 0);

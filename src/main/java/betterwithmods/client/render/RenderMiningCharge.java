@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * Created by tyler on 9/5/16.
+ * Created by primetoxinz on 9/5/16.
  */
 public class RenderMiningCharge extends Render<EntityMiningCharge> {
     public RenderMiningCharge(RenderManager renderManagerIn) {

@@ -1,15 +1,15 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IMechanicalPower;
 import betterwithmods.common.blocks.mechanical.BlockCookingPot;
 import betterwithmods.common.blocks.tile.TileEntityVisibleInventory;
 import betterwithmods.common.registry.bulk.manager.CraftingManagerBulk;
 import betterwithmods.common.registry.heat.BWMHeatRegistry;
-import betterwithmods.common.registry.heat.BWMHeatSource;
+import betterwithmods.module.gameplay.Gameplay;
 import betterwithmods.util.DirUtils;
 import betterwithmods.util.InvUtils;
-import betterwithmods.util.MechanicalUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -193,7 +193,7 @@ public abstract class TileEntityCookingPot extends TileEntityVisibleInventory im
         if (!InvUtils.isFull(inventory)) {
             List<EntityItem> items = this.getCaptureItems(getBlockWorld(), getPos());
             for (EntityItem item : items)
-                insert &= InvUtils.insertFromWorld(inventory, item, 0, 18, false);
+                insert &= InvUtils.insertFromWorld(inventory, item, 0, 27, false);
         }
         if (insert) {
             this.getBlockWorld().playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((getBlockWorld().rand.nextFloat() - getBlockWorld().rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
@@ -271,28 +271,22 @@ public abstract class TileEntityCookingPot extends TileEntityVisibleInventory im
 
     public int getCurrentFireIntensity() {
         int fireFactor = 0;
-
         if (this.fireIntensity > 0) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
                     int yPos = -1;
                     BlockPos target = pos.add(x, yPos, z);
-                    Block block = this.getBlockWorld().getBlockState(target).getBlock();
-                    int meta = this.getBlockWorld().getBlockState(target).getBlock().damageDropped(this.getBlockWorld().getBlockState(target));
-                    if (BWMHeatRegistry.get(block, meta) != null)
-                        fireFactor += BWMHeatRegistry.get(block, meta).value;
+                    fireFactor += BWMHeatRegistry.getHeat(getBlockWorld().getBlockState(target));
                 }
             }
-            if (fireFactor < 5)
-                fireFactor = 5;
+            return Math.max(5, Math.round(fireFactor * Gameplay.cauldronMultipleFiresFactor));
         }
-
-        return fireFactor;
+        return Math.max(0,fireFactor);
     }
 
     private void performNormalFireUpdate(int fireIntensity) {
         if (this.containsValidIngredients) {
-            this.cookCounter += fireIntensity;
+            this.cookCounter += Math.round(fireIntensity * Gameplay.cauldronNormalSpeedFactor);
 
             if (this.cookCounter >= 4350) {
                 attemptToCookNormal();
@@ -304,7 +298,7 @@ public abstract class TileEntityCookingPot extends TileEntityVisibleInventory im
 
     private void performStokedFireUpdate(int fireIntensity) {
         if (this.containsValidIngredients) {
-            this.cookCounter += fireIntensity;
+            this.cookCounter += Math.round(fireIntensity * Gameplay.cauldronStokedSpeedFactor);
 
             if (this.cookCounter >= 4350) {
                 attemptToCookStoked();
@@ -374,24 +368,11 @@ public abstract class TileEntityCookingPot extends TileEntityVisibleInventory im
     }
 
     public int getFireIntensity() {
-        BlockPos down = pos.down();
-        Block block = this.getBlockWorld().getBlockState(down).getBlock();
-        int meta = block.damageDropped(this.getBlockWorld().getBlockState(down));
-        BWMHeatSource source = BWMHeatRegistry.get(block, meta);
-        if (source != null)
-            return source.value;
-        return -1;
+        return BWMHeatRegistry.getHeat(world.getBlockState(pos.down()));
     }
 
     private void validateFireIntensity() {
-        BlockPos down = pos.down();
-        Block block = this.getBlockWorld().getBlockState(down).getBlock();
-        int meta = block.damageDropped(this.getBlockWorld().getBlockState(down));
-        BWMHeatSource source = BWMHeatRegistry.get(block, meta);
-        if (source != null)
-            fireIntensity = source.value;
-        else
-            fireIntensity = -1;
+        fireIntensity = BWMHeatRegistry.getHeat(world.getBlockState(pos.down()));
     }
 
     @Override
@@ -406,7 +387,7 @@ public abstract class TileEntityCookingPot extends TileEntityVisibleInventory im
 
     @Override
     public int getMechanicalInput(EnumFacing facing) {
-        return MechanicalUtil.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
+        return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
     }
 
     @Override

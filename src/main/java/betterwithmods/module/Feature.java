@@ -12,8 +12,11 @@ package betterwithmods.module;
 
 import betterwithmods.BWMod;
 import betterwithmods.common.BWMRecipes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -22,6 +25,9 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class Feature {
 
@@ -40,6 +46,8 @@ public class Feature {
 
     public boolean forceLoad;
     protected boolean canDisable = true;
+
+    public boolean recipeCondition;
 
     public final void setupConstantConfig() {
         String[] incompat = getIncompatibleMods();
@@ -170,9 +178,23 @@ public class Feature {
         return ConfigHelper.loadPropIntList(propName, configCategory, comment, default_);
     }
 
+    public final List<ItemStack> loadItemStackList(String propName, String comment, ItemStack[] default_) {
+        return ConfigHelper.loadItemStackList(propName, configCategory, comment, default_);
+    }
+
+    public final HashMap<Ingredient, Integer> loadItemStackIntMap(String propName, String comment, String[] _default) {
+        return ConfigHelper.loadItemStackIntMap(propName, configCategory, comment, _default);
+    }
+
+    public final boolean loadRecipeCondition(String jsonName, String propName, String comment, boolean _default) {
+        return ConfigHelper.loadRecipeCondition(jsonName, propName, configCategory, comment, _default);
+    }
+
     public IRecipe addHardcoreRecipe(IRecipe recipe) {
         return registerHardcoreRecipe(getClass().getSimpleName(), recipe);
     }
 
-
+    public final List<ResourceLocation> loadRLList(String propName, String comment, String[] default_) {
+        return ConfigHelper.loadPropRLList(propName, configCategory, comment, default_);
+    }
 }

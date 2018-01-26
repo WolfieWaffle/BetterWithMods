@@ -2,7 +2,7 @@ package betterwithmods.api.tile;
 
 import net.minecraft.util.EnumFacing;
 
-public interface IAxle {
+public interface IAxle extends IMechanicalPower {
     byte getSignal();
 
     byte getMaximumSignal();
@@ -18,4 +18,5 @@ public interface IAxle {
     default boolean isFacing(IAxle axle) {
         return axle.getAxis() == this.getAxis();
     }
+
 }

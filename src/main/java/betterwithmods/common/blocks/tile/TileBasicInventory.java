@@ -10,7 +10,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.function.Predicate;
 
 /**
- * Created by tyler on 9/4/16.
+ * Created by primetoxinz on 9/4/16.
  */
 public abstract class TileBasicInventory extends TileBasic {
 
@@ -25,12 +25,14 @@ public abstract class TileBasicInventory extends TileBasic {
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+        if(capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && hasCapability.test(facing))
+            return true;
+        return  super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (hasCapability.test(facing) && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (hasCapability(capability,facing) && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
         return super.getCapability(capability, facing);
     }

@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 /**
- * Created by tyler on 5/14/17.
+ * Created by primetoxinz on 5/14/17.
  */
 public class SimpleStackHandler extends ItemStackHandler {
     private TileEntity tile;

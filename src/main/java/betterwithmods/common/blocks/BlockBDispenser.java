@@ -2,7 +2,6 @@ package betterwithmods.common.blocks;
 
 import betterwithmods.BWMod;
 import betterwithmods.api.block.IMultiVariants;
-import betterwithmods.api.block.ITurnable;
 import betterwithmods.api.tile.dispenser.IBehaviorCollect;
 import betterwithmods.api.tile.dispenser.IBehaviorEntity;
 import betterwithmods.client.BWCreativeTabs;
@@ -35,7 +34,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockBDispenser extends BlockDispenser implements ITurnable, IMultiVariants {
+public class BlockBDispenser extends BlockDispenser implements IMultiVariants {
     public static final RegistryDefaulted<Item, IBehaviorDispenseItem> BLOCK_DISPENSER_REGISTRY = new RegistryDefaulted<>(new BehaviorDefaultDispenseBlock());
     public static final RegistryDefaulted<Block, IBehaviorCollect> BLOCK_COLLECT_REGISTRY = new RegistryDefaulted<>(new BehaviorBreakBlock());
     public static final RegistryDefaulted<Class<? extends Entity>, IBehaviorEntity> ENTITY_COLLECT_REGISTRY = new RegistryDefaulted<>(new BehaviorEntity());
@@ -124,7 +123,7 @@ public class BlockBDispenser extends BlockDispenser implements ITurnable, IMulti
                     IBehaviorDispenseItem behavior = this.getBehavior(stack);
                     if (behavior != null) {
                         ItemStack stacks = behavior.dispense(impl, stack);
-                        InvUtils.insert(tile.inventory, stacks, false);
+                        //InvUtils.insert(tile.inventory, stacks, false);
                     }
                 }
             }
@@ -150,37 +149,7 @@ public class BlockBDispenser extends BlockDispenser implements ITurnable, IMulti
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityBlockDispenser();
     }
-
-    @Override
-    public EnumFacing getFacing(IBlockState state) {
-        return null;
-    }
-
-    @Override
-    public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
-        return null;
-    }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-
-    }
-
+    
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }

@@ -76,25 +76,23 @@ public class BlockFireStoked extends BlockFire {
             for (int i1 = -1; i1 <= 1; ++i1) {
                 for (int j1 = 1; j1 <= 1; ++j1) {
                     for (int k1 = 1; k1 <= 4; ++k1) {
-                        if (i1 != 0 || k1 != 0 || j1 != 0) {
-                            int l1 = 100;
-                            if (k1 > 1) {
-                                l1 += (k1 - (1)) * 100;
+                        int l1 = 100;
+                        if (k1 > 1) {
+                            l1 += (k1 - (1)) * 100;
+                        }
+                        BlockPos blockpos = pos.add(i1, k1, j1);
+                        int i2 = this.getNeighborEncouragement(world, blockpos);
+                        if (i2 > 0) {
+                            int j2 = (i2 + 40 + world.getDifficulty().getDifficultyId() * 7) / (meta + 30);
+                            if (flag1) {
+                                j2 /= 2;
                             }
-                            BlockPos blockpos = pos.add(i1, k1, j1);
-                            int i2 = this.getNeighborEncouragement(world, blockpos);
-                            if (i2 > 0) {
-                                int j2 = (i2 + 40 + world.getDifficulty().getDifficultyId() * 7) / (meta + 30);
-                                if (flag1) {
-                                    j2 /= 2;
+                            if (j2 > 0 && rand.nextInt(l1) <= j2 && (!world.isRaining() || !this.canDie(world, blockpos))) {
+                                int k2 = meta + rand.nextInt(5) / 4;
+                                if (k2 > 15) {
+                                    k2 = 15;
                                 }
-                                if (j2 > 0 && rand.nextInt(l1) <= j2 && (!world.isRaining() || !this.canDie(world, blockpos))) {
-                                    int k2 = meta + rand.nextInt(5) / 4;
-                                    if (k2 > 15) {
-                                        k2 = 15;
-                                    }
-                                    world.setBlockState(blockpos, Blocks.FIRE.getDefaultState().withProperty(AGE, k2));
-                                }
+                                world.setBlockState(blockpos, Blocks.FIRE.getDefaultState().withProperty(AGE, k2));
                             }
                         }
                     }
@@ -109,6 +107,26 @@ public class BlockFireStoked extends BlockFire {
             world.scheduleBlockUpdate(pos, this, tickRate(world) + world.rand.nextInt(10), 5);
         }
     }
+
+    public int getNeighborEncouragement(World worldIn, BlockPos pos)
+    {
+        if (!worldIn.isAirBlock(pos))
+        {
+            return 0;
+        }
+        else
+        {
+            int i = 0;
+
+            for (EnumFacing enumfacing : EnumFacing.values())
+            {
+                i = Math.max(worldIn.getBlockState(pos.offset(enumfacing)).getBlock().getFireSpreadSpeed(worldIn, pos.offset(enumfacing), enumfacing.getOpposite()), i);
+            }
+
+            return i;
+        }
+    }
+
 
     private void setFire(World worldIn, BlockPos pos, int chance, Random random, int age, EnumFacing face) {
         int i = worldIn.getBlockState(pos).getBlock().getFlammability(worldIn, pos, face);

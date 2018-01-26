@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -55,10 +56,18 @@ public class BlockDetector extends BlockRotate {
         return setFacingInBlock(state, DirUtils.convertEntityOrientationToFacing(entity, side));
     }
 
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nullable EnumFacing face, float hitX, float hitY, float hitZ) {
+        super.onBlockPlacedBy(world, pos, state, placer, stack, face, hitX, hitY, hitZ);
+    }
+
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
+        super.onBlockPlacedBy(world,pos,state,entity,stack);
         EnumFacing facing = DirUtils.convertEntityOrientationToFacing(entity, EnumFacing.NORTH);
         setFacingInBlock(state, facing);
+
     }
 
     @Override
@@ -120,35 +129,12 @@ public class BlockDetector extends BlockRotate {
         return 0;
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(DirUtils.FACING);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.FACING, facing);
-    }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-        if (DirUtils.rotateAroundY(this, world, pos, reverse))
-            world.scheduleBlockUpdate(pos, this, tickRate(world), 5);
     }
 
     public boolean isBlockOn(IBlockAccess world, BlockPos pos) {

@@ -1,5 +1,6 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.block.ISoulSensitive;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IMechanicalPower;
@@ -12,7 +13,6 @@ import betterwithmods.common.blocks.tile.TileEntityVisibleInventory;
 import betterwithmods.common.registry.HopperFilters;
 import betterwithmods.common.registry.HopperInteractions;
 import betterwithmods.util.InvUtils;
-import betterwithmods.util.MechanicalUtil;
 import betterwithmods.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -28,7 +28,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -53,7 +52,7 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
         this.filterType = 0;
         this.soulsRetained = 0;
         this.occupiedSlots = 0;
-        this.hasCapability = facing -> facing.getAxis().isVertical();
+        this.hasCapability = facing -> facing == EnumFacing.DOWN || facing == EnumFacing.UP;
         this.filter = new SimpleStackHandler(1, this);
     }
 
@@ -95,15 +94,6 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
         return power > 0;
     }
 
-//    private List<EntityItem> getCollidingItems(World world, BlockPos pos) {
-//        return world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos.getX(), pos.getY() + 1, pos.getZ(), pos.getX() + 1D, pos.getY() + 1.0001D, pos.getZ() + 1D), EntitySelectors.IS_ALIVE);
-//    }
-
-//    private List<EntityXPOrb> getCollidingXPOrbs(World world, BlockPos pos) {
-//        return world.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1D, pos.getY() + 1.5D, pos.getZ() + 1D));
-//    }
-
-
     public boolean isXPFull() {
         return experienceCount >= maxExperienceCount;
     }
@@ -111,14 +101,12 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     public void insert(Entity entity) {
         if (!InvUtils.isFull(inventory) && entity instanceof EntityItem) {
             EntityItem item = (EntityItem) entity;
-            if (item != null) {
-                if (HopperInteractions.attemptToCraft(filterType, getBlockWorld(), getBlockPos(), item)) {
+            if (HopperInteractions.attemptToCraft(filterType, getBlockWorld(), getBlockPos(), item)) {
+                this.getBlockWorld().playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((getBlockWorld().rand.nextFloat() - getBlockWorld().rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            }
+            if (canFilterProcessItem(item.getItem())) {
+                if (InvUtils.insertFromWorld(inventory, item, 0, 18, false))
                     this.getBlockWorld().playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((getBlockWorld().rand.nextFloat() - getBlockWorld().rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                }
-                if (canFilterProcessItem(item.getItem())) {
-                    if (InvUtils.insertFromWorld(inventory, item, 0, 18, false))
-                        this.getBlockWorld().playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((getBlockWorld().rand.nextFloat() - getBlockWorld().rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                }
             }
         }
 
@@ -344,6 +332,14 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
             getBlockWorld().notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
         }
 
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            if(!hopper.canFilterProcessItem(stack))
+                return stack;
+            return super.insertItem(slot, stack, simulate);
+        }
+
         @Override
         public int getSlotLimit(int slot) {
             return slot == 18 ? 1 : super.getSlotLimit(slot);
@@ -358,7 +354,7 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     @Override
     public int getMechanicalInput(EnumFacing facing) {
         if (facing.getAxis().isHorizontal())
-            return MechanicalUtil.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
+            return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
         return 0;
     }
 
@@ -374,18 +370,13 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nonnull EnumFacing facing) {
-        if (facing == EnumFacing.NORTH && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return true;
         if (capability == CapabilityMechanicalPower.MECHANICAL_POWER)
             return true;
         return super.hasCapability(capability, facing);
     }
 
-    @Nonnull
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nonnull EnumFacing facing) {
-        if (facing.getAxis().isHorizontal() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(filter);
         if (capability == CapabilityMechanicalPower.MECHANICAL_POWER)
             return CapabilityMechanicalPower.MECHANICAL_POWER.cast(this);
         return super.getCapability(capability,facing);
@@ -409,7 +400,8 @@ public class TileEntityFilteredHopper extends TileEntityVisibleInventory impleme
     @Override
     public void onBreak() {
         super.onBreak();
-        IItemHandler inv = getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH);
-        InvUtils.ejectInventoryContents(world, pos, inv);
+        InvUtils.ejectInventoryContents(world, pos, filter);
     }
+
+
 }

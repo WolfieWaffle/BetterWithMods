@@ -1,7 +1,7 @@
 package betterwithmods.common.blocks;
 
 import betterwithmods.common.blocks.tile.TileEnderchest;
-import betterwithmods.module.hardcore.beacons.HCBeacons;
+import betterwithmods.module.hardcore.beacons.EnderchestCap;
 import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,8 +41,8 @@ public class BlockEnderchest extends BlockEnderChest {
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileEnderchest && ((TileEnderchest) tile).getType() == TileEnderchest.Type.NONE) {
-            HCBeacons.Enderchest chest = tile.getCapability(HCBeacons.ENDERCHEST_CAPABILITY, EnumFacing.UP);
-            if(chest != null) {
+            EnderchestCap chest = tile.getCapability(EnderchestCap.ENDERCHEST_CAPABILITY, EnumFacing.UP);
+            if (chest != null) {
                 InventoryHelper.dropInventoryItems(worldIn, pos, chest.getInventory());
                 worldIn.updateComparatorOutputLevel(pos, this);
             }

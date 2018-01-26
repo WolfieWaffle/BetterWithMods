@@ -68,7 +68,7 @@ public class BlockDirtSlab extends BlockSimpleSlab implements IMultiVariants {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack held = playerIn.getHeldItem(hand);
-        if (state.getValue(VARIANT) != DirtSlabType.PATH && GrassPath.isQualityShovel(held)) {
+        if (state.getValue(VARIANT) != DirtSlabType.PATH && GrassPath.getShovelQuality(held) > 1) {
             worldIn.playSound(playerIn, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
             playerIn.swingArm(hand);
             if (!worldIn.isRemote) {

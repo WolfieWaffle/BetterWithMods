@@ -6,7 +6,7 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Created by tyler on 5/24/17.
+ * Created by primetoxinz on 5/24/17.
  */
 public class CompatFeature extends Feature {
     protected final String modid;

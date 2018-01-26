@@ -6,6 +6,7 @@ import betterwithmods.module.CompatFeature;
 import betterwithmods.module.hardcore.needs.HCTools;
 import betterwithmods.module.tweaks.MobSpawning;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -33,9 +34,8 @@ public class Quark extends CompatFeature {
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         if (HCTools.removeLowTools) {
-            //TODO
-//            BWMRecipes.removeRecipes(new ItemStack(Items.STONE_HOE));
-//            BWMRecipes.removeRecipes(new ItemStack(Items.STONE_SWORD));
+            BWMRecipes.removeRecipe(new ItemStack(Items.STONE_HOE));
+            BWMRecipes.removeRecipe(new ItemStack(Items.STONE_SWORD));
         }
     }
 

@@ -25,15 +25,17 @@ import net.minecraft.world.World;
 
 import static betterwithmods.util.DirUtils.FACING;
 
-public class BlockAnchor extends BWMBlock{
+public class BlockAnchor extends BWMBlock {
     public static final PropertyBool LINKED = PropertyBool.create("linked");
     private static final float HEIGHT = 0.375F;
+
     private static final AxisAlignedBB D_AABB = new AxisAlignedBB(0.0F, 1.0F - HEIGHT, 0.0F, 1.0F, 1.0F, 1.0F);
     private static final AxisAlignedBB U_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, HEIGHT, 1.0F);
     private static final AxisAlignedBB N_AABB = new AxisAlignedBB(0.0F, 0.0F, 1.0F - HEIGHT, 1.0F, 1.0F, 1.0F);
     private static final AxisAlignedBB S_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, HEIGHT);
     private static final AxisAlignedBB W_AABB = new AxisAlignedBB(1.0F - HEIGHT, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     private static final AxisAlignedBB E_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, HEIGHT, 1.0F, 1.0F);
+    private static final AxisAlignedBB[] BOXES = new AxisAlignedBB[]{D_AABB, U_AABB, N_AABB, S_AABB, W_AABB, E_AABB};
 
     public BlockAnchor() {
         super(Material.ROCK);
@@ -46,21 +48,7 @@ public class BlockAnchor extends BWMBlock{
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         EnumFacing facing = state.getValue(FACING);
-        switch (facing) {
-            case DOWN:
-                return D_AABB;
-            case UP:
-                return U_AABB;
-            case NORTH:
-                return N_AABB;
-            case SOUTH:
-                return S_AABB;
-            case WEST:
-                return W_AABB;
-            case EAST:
-            default:
-                return E_AABB;
-        }
+        return BOXES[facing.getIndex()];
     }
 
     @Override
@@ -79,7 +67,6 @@ public class BlockAnchor extends BWMBlock{
         return this.setFacingInBlock(state, side);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(FACING, facing);
     }
@@ -116,32 +103,11 @@ public class BlockAnchor extends BWMBlock{
     }
 
     @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        EnumFacing facing = getFacing(world.getBlockState(pos));
-        return facing != EnumFacing.UP && facing != EnumFacing.DOWN;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-    }
-
-    @Override
     public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         EnumFacing facing = getFacing(world.getBlockState(pos));
         return side == facing.getOpposite();
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(FACING);
     }
@@ -190,19 +156,8 @@ public class BlockAnchor extends BWMBlock{
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        boolean isConnected;
-        switch (state.getValue(FACING)) {
-            case UP:
-                isConnected = isRope(world, pos, EnumFacing.UP) || isAnchor(world, pos, EnumFacing.UP) || isPulley(world, pos, EnumFacing.UP);
-                break;
-            case DOWN:
-            case NORTH:
-            case SOUTH:
-            case WEST:
-            case EAST:
-            default:
-                isConnected = isRope(world, pos, EnumFacing.DOWN) || isAnchor(world, pos, EnumFacing.DOWN);
-        }
+        EnumFacing facing = state.getValue(FACING);
+        boolean isConnected = facing == EnumFacing.UP ? isRope(world, pos, EnumFacing.UP) || isAnchor(world, pos, EnumFacing.UP) || isPulley(world, pos, EnumFacing.UP) : isRope(world, pos, EnumFacing.DOWN) || isAnchor(world, pos, EnumFacing.DOWN);
         return state.withProperty(LINKED, isConnected);
     }
 

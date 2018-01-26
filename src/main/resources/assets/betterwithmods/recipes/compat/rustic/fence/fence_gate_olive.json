@@ -1,0 +1,30 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:fence_gate_olive",
+    "count": 3
+  },
+  "pattern": [
+    "MSM"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "betterwithmods:rustic_compat_siding",
+      "data": 0
+    },
+    "M": {
+      "item": "betterwithmods:rustic_compat_moulding",
+      "data": 0
+    }
+  }
+}

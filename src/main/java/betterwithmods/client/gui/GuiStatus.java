@@ -1,23 +1,17 @@
 package betterwithmods.client.gui;
 
 import betterwithmods.BWMod;
-import betterwithmods.module.hardcore.needs.HCMovement;
 import betterwithmods.util.player.PlayerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.init.Items;
 import net.minecraftforge.client.GuiIngameForge;
-import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Created by tyler on 5/13/17.
+ * Created by primetoxinz on 5/13/17.
  */
 @Mod.EventBusSubscriber(modid = BWMod.MODID, value = Side.CLIENT)
 @SideOnly(Side.CLIENT)

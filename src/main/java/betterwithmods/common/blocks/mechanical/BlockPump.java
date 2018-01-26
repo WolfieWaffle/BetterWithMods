@@ -59,26 +59,6 @@ public class BlockPump extends BlockRotate implements IBlockActive, IMultiVarian
     }
 
     @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public void rotateAroundYAxis(World world, BlockPos pos, boolean reverse) {
-        DirUtils.rotateAroundY(this, world, pos, reverse);
-    }
-
-    @Override
     public int tickRate(World world) {
         return 5;
     }
@@ -97,7 +77,6 @@ public class BlockPump extends BlockRotate implements IBlockActive, IMultiVarian
         setFacingInBlock(state, facing);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.HORIZONTAL, facing);
     }

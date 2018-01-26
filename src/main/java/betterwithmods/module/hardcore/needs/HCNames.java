@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * Created by tyler on 5/21/17.
+ * Created by primetoxinz on 5/21/17.
  */
 public class HCNames extends Feature {
     private static final String TEAM = "BWMTeam";

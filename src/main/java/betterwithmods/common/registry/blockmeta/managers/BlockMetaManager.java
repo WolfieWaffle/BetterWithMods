@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/11/16
  */
 public abstract class BlockMetaManager<T extends BlockMetaRecipe> {

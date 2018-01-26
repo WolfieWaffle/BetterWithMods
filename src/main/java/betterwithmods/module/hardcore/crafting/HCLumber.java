@@ -1,13 +1,12 @@
 package betterwithmods.module.hardcore.crafting;
 
-import betterwithmods.common.BWMRecipes;
+import betterwithmods.api.util.IWood;
 import betterwithmods.common.BWOreDictionary;
+import betterwithmods.common.registry.BrokenToolRegistry;
 import betterwithmods.common.registry.ChoppingRecipe;
 import betterwithmods.module.Feature;
-import betterwithmods.util.InvUtils;
+import betterwithmods.util.player.PlayerHelper;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -18,8 +17,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.Objects;
+
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class HCLumber extends Feature {
     public static int plankAmount, barkAmount, sawDustAmount;
@@ -27,14 +28,13 @@ public class HCLumber extends Feature {
     public static int axePlankAmount, axeBarkAmount, axeSawDustAmount;
 
     public static boolean hasAxe(BlockEvent.HarvestDropsEvent event) {
-        if (!event.getWorld().isRemote && !event.isSilkTouching()) {
-            EntityPlayer player = event.getHarvester();
-            if (player != null) {
-                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-                return stack.getItem().getHarvestLevel(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), "axe", player, event.getState()) >= 0 || stack.getItem().getToolClasses(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)).contains("axe");
-            }
+        if(event.getHarvester() == null)
+            return false;
+        if (event.isSilkTouching())
+            return true;
+        else {
+            return PlayerHelper.isCurrentToolEffectiveOnBlock(event.getHarvester(), event.getPos(), event.getState());
         }
-        return event.isSilkTouching();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class HCLumber extends Feature {
 
     @Override
     public void init(FMLInitializationEvent event) {
-
+        BrokenToolRegistry.init();
     }
 
     @Override
@@ -63,10 +63,8 @@ public class HCLumber extends Feature {
         if (!Loader.isModLoaded("primal")) {
             for (IRecipe recipe : BWOreDictionary.logRecipes) {
                 ItemStack plank = recipe.getRecipeOutput();
-                BWOreDictionary.woods.stream().filter(w -> w.getPlank(plankAmount).isItemEqual(plank) && hasLog(recipe, w.getLog(1))).forEach(wood -> {
-                    if (wood != null) {
-                        addHardcoreRecipe(new ChoppingRecipe(wood, axePlankAmount).setRegistryName(recipe.getRegistryName()));
-                    }
+                BWOreDictionary.woods.stream().filter(w -> w.getPlank(axePlankAmount).isItemEqual(plank) && hasLog(recipe, w.getLog(1))).forEach(wood -> {
+                    addHardcoreRecipe(new ChoppingRecipe(wood, axePlankAmount).setRegistryName(Objects.requireNonNull(recipe.getRegistryName())));
                 });
             }
         }
@@ -78,9 +76,7 @@ public class HCLumber extends Feature {
             for (IRecipe recipe : BWOreDictionary.logRecipes) {
                 ItemStack plank = recipe.getRecipeOutput();
                 BWOreDictionary.woods.stream().filter(w -> w.getPlank(4).isItemEqual(plank) && hasLog(recipe, w.getLog(1))).forEach(wood -> {
-                    if (wood != null) {
-                        addHardcoreRecipe(new ChoppingRecipe(wood, 4).setRegistryName(recipe.getRegistryName()));
-                    }
+                    addHardcoreRecipe(new ChoppingRecipe(wood, 4).setRegistryName(Objects.requireNonNull(recipe.getRegistryName())));
                 });
             }
         }
@@ -89,7 +85,7 @@ public class HCLumber extends Feature {
     private boolean hasLog(IRecipe recipe, ItemStack log) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         for (Ingredient ingredient : ingredients) {
-            if (ingredient.getMatchingStacks() != null && ingredient.getMatchingStacks().length > 0) {
+            if (ingredient.getMatchingStacks().length > 0) {
                 for (ItemStack stack : ingredient.getMatchingStacks()) {
                     if (stack.isItemEqual(log))
                         return true;
@@ -109,16 +105,14 @@ public class HCLumber extends Feature {
     }
 
     @SubscribeEvent
-    public void harvestLog(BlockEvent.HarvestDropsEvent evt) {
-        if (!evt.getWorld().isRemote) {
-            if (hasAxe(evt) || Loader.isModLoaded("primal"))
-                return;
-            ItemStack stack = BWMRecipes.getStackFromState(evt.getState());
-
-            BWOreDictionary.Wood wood = BWOreDictionary.woods.stream().filter(w -> InvUtils.matches(w.getLog(1),stack)).findFirst().orElse(null);
+    public void harvestLog(BlockEvent.HarvestDropsEvent event) {
+        if (!event.getWorld().isRemote) {
+            IWood wood = BWOreDictionary.getWoodFromState(event.getState());
             if (wood != null) {
-                evt.getDrops().clear();
-                evt.getDrops().addAll(Lists.newArrayList(wood.getPlank(plankAmount), wood.getSawdust(sawDustAmount), wood.getBark(barkAmount)));
+                if (hasAxe(event) || Loader.isModLoaded("primal"))
+                    return;
+                event.getDrops().clear();
+                event.getDrops().addAll(Lists.newArrayList(wood.getPlank(plankAmount), wood.getSawdust(sawDustAmount), wood.getBark(barkAmount)));
             }
         }
     }

@@ -1,9 +1,9 @@
 package betterwithmods.module.compat;
 
 import betterwithmods.common.BWMItems;
-import betterwithmods.common.BWMRecipes;
 import betterwithmods.common.BWOreDictionary;
 import betterwithmods.common.items.ItemBark;
+import betterwithmods.common.registry.Wood;
 import betterwithmods.module.CompatFeature;
 import betterwithmods.module.gameplay.CauldronRecipes;
 import betterwithmods.module.gameplay.MillRecipes;
@@ -59,9 +59,9 @@ public class Harvestcraft extends CompatFeature {
         OreDictionary.registerOre("foodDonut", new ItemStack(BWMItems.DONUT));
 //        BWMRecipes.addShapelessOreRecipe(new ItemStack(BWMItems.CHOCOLATE, 2), "foodCocoapowder", "listAllmilk", Items.SUGAR, "toolSaucepan");
 
-        BWOreDictionary.woods.add(new BWOreDictionary.Wood(new ItemStack(logMaple),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.SPRUCE.getMetadata()), ItemBark.getStack("spruce",1)));
-        BWOreDictionary.woods.add(new BWOreDictionary.Wood(new ItemStack(logCinnamon),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.JUNGLE.getMetadata()), ItemBark.getStack("jungle",1)));
-        BWOreDictionary.woods.add(new BWOreDictionary.Wood(new ItemStack(logPaperbark),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.JUNGLE.getMetadata()), ItemBark.getStack("jungle",1)));
+        BWOreDictionary.woods.add(new Wood(new ItemStack(logMaple),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.SPRUCE.getMetadata()), ItemBark.getStack("spruce",1)));
+        BWOreDictionary.woods.add(new Wood(new ItemStack(logCinnamon),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.JUNGLE.getMetadata()), ItemBark.getStack("jungle",1)));
+        BWOreDictionary.woods.add(new Wood(new ItemStack(logPaperbark),new ItemStack(Blocks.PLANKS,1, BlockPlanks.EnumType.JUNGLE.getMetadata()), ItemBark.getStack("jungle",1)));
     }
 
 }

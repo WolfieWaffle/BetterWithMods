@@ -1,14 +1,13 @@
 package betterwithmods.module.tweaks;
 
 import betterwithmods.module.Feature;
-import betterwithmods.util.item.ToolsManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -23,14 +22,15 @@ import static betterwithmods.module.hardcore.needs.HCMovement.dirtpathQuality;
 
 public class GrassPath extends Feature {
 
-    public static boolean isQualityShovel(ItemStack stack) {
-        if (stack.getItem() instanceof ItemTool) {
-            ItemTool tool = (ItemTool) stack.getItem();
-
-            boolean hard = !dirtpathQuality || ToolsManager.getToolMaterial(tool).ordinal() > 1;
-            return tool.getToolClasses(stack).contains("shovel") && hard;
+    public static int getShovelQuality(ItemStack stack) {
+        Item item = stack.getItem();
+        if (!item.getToolClasses(stack).contains("shovel"))
+            return -1;
+        if (!dirtpathQuality) {
+            return 3;
+        } else {
+            return item.getHarvestLevel(stack, "shovel", null, null);
         }
-        return false;
     }
 
     @Override
@@ -75,8 +75,13 @@ public class GrassPath extends Feature {
         if (stack.isEmpty())
             return;
 
-        if (!isQualityShovel(stack))
+        int quality = getShovelQuality(stack);
+        if (quality == -1)
             return;
+        if (quality < 2) {
+            event.setCanceled(true);
+            return;
+        }
 
         IBlockState iBlockState = world.getBlockState(blockPos);
         if (world.getBlockState(blockPos.up()).getMaterial() == Material.AIR) {

@@ -20,37 +20,44 @@
     "type": {
       "0": {
         "textures": {
-          "side": "blocks/planks_oak"
+          "side": "blocks/planks_oak",
+          "particle": "#side"
         }
       },
       "1": {
         "textures": {
-          "side": "blocks/planks_spruce"
+          "side": "blocks/planks_spruce",
+          "particle": "#side"
         }
       },
       "2": {
         "textures": {
-          "side": "blocks/planks_birch"
+          "side": "blocks/planks_birch",
+          "particle": "#side"
         }
       },
       "3": {
         "textures": {
-          "side": "blocks/planks_jungle"
+          "side": "blocks/planks_jungle",
+          "particle": "#side"
         }
       },
       "4": {
         "textures": {
-          "side": "blocks/planks_acacia"
+          "side": "blocks/planks_acacia",
+          "particle": "#side"
         }
       },
       "5": {
         "textures": {
-          "side": "blocks/planks_big_oak"
+          "side": "blocks/planks_big_oak",
+          "particle": "#side"
         }
       },
       "6": {
         "textures": {
-          "side": "blocks/planks_big_oak"
+          "side": "blocks/planks_big_oak",
+          "particle": "#side"
         }
       },
       "7": {},

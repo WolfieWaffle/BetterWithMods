@@ -43,8 +43,8 @@ public class RenderExtendingRope extends Render<EntityExtendingRope> {
         BufferBuilder vertexbuffer = tessellator.getBuffer();
 
         vertexbuffer.begin(7, DefaultVertexFormats.BLOCK);
-        BlockPos blockpos = new BlockPos(0, entity.getEntityBoundingBox().maxY, 0);
-        GlStateManager.translate(x - 0.5, (float) (y - (double) blockpos.getY()), z - 0.5);
+        BlockPos blockpos = new BlockPos(entity.posX, entity.getEntityBoundingBox().maxY, entity.posZ);
+        GlStateManager.translate(x - blockpos.getX() - 0.5, (float) (y- (double) blockpos.getY()), z - blockpos.getZ() - 0.5);
         GlStateManager.translate(-0.005, 0, -0.005);
         BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 

@@ -1,14 +1,20 @@
 tile.bwm:stokedFire.name=猛火
 tile.bwm:hand_crank.name=手推曲柄
-tile.bwm:axle.name=传动轴
-tile.bwm:gearbox.name=变速箱
+tile.bwm:wooden_axle.name=木质传动轴
+tile.bwm:steel_axle.name=钢质传动轴
+tile.bwm:wooden_gearbox.name=木质变速箱
+tile.bwm:steel_gearbox.name=钢质变速箱
+tile.bwm:wooden_broken_gearbox.name=损坏的木质变速箱
+tile.bwm:steel_broken_gearbox.name=损坏的钢质变速箱
+
+
 tile.bwm:single_machine.0.name=磨石
-tile.bwm:single_machine.2.name=坩埚
-tile.bwm:single_machine.4.name=滤筛漏斗
-tile.bwm:single_machine.6.name=螺杆旋转台
+tile.bwm:single_machine.1.name=滑车
+tile.bwm:single_machine.2.name=滤筛漏斗
+tile.bwm:single_machine.3.name=螺杆旋转台
 tile.bwm:pane.0.name=网格栅栏
 tile.bwm:pane.1.name=板条栅栏
-tile.bwm:pane.2.name=筚板
+tile.bwm:wicker.name=筚板
 tile.bwm:grate.0.name=橡木网格栅栏
 tile.bwm:grate.1.name=云杉木网格栅栏
 tile.bwm:grate.2.name=白桦木网格栅栏
@@ -28,7 +34,8 @@ tile.bwm:cooking_pot.1.name=釜锅
 tile.bwm:cooking_pot.2.name=神秘容器
 
 tile.bwm:kiln.name=窑
-tile.bwm:bellows.name=风箱
+tile.bwm:bellows.0.name=风箱
+tile.bwm:bellows.1.name=弹簧动力风箱
 tile.bwm:saw.name=螺杆锯
 tile.bwm:steel_anvil.name=熔魂钢钢砧
 tile.bwm:aesthetic.0.name=十字纹格方块
@@ -42,7 +49,13 @@ tile.bwm:aesthetic.7.name=白色圆石
 tile.bwm:aesthetic.8.name=末影之眼块
 tile.bwm:aesthetic.9.name=填充块
 tile.bwm:aesthetic.10.name=肥皂块
+tile.bwm:aesthetic.11.name=粪便块
+tile.bwm:aesthetic.12.name=筚板块
 tile.bwm:advanced_bellows.name=弹簧动力风箱
+
+tile.bwm:steel_block.name=硬化下界淤泥块
+tile.bwm:cut_steel_block.name=切削的硬化下界淤泥
+tile.bwm:steel_pressure_plate.name=熔魂钢压力板
 
 tile.bwm:windmill.windmill.name=风车
 tile.bwm:windmill.waterwheel.name=水车
@@ -90,6 +103,8 @@ tile.bwm:unfired_pottery.0.name=未烧制的坩埚
 tile.bwm:unfired_pottery.1.name=未烧制的培植皿
 tile.bwm:unfired_pottery.2.name=未烧制的陶瓮
 tile.bwm:unfired_pottery.3.name=未烧制的花瓶
+tile.bwm:unfired_pottery.4.name=未烧制的红砖
+tile.bwm:unfired_pottery.5.name=未烧制的地狱砖
 
 tile.bwm:anchor.name=滑车锚
 tile.bwm:rope.name=麻绳
@@ -212,7 +227,10 @@ tile.bwm:dirt_slab.2.name=菌丝台阶
 
 tile.bwm:broken_gearbox.name=破损变速箱
 
+tile.bwm:stake.name=标线桩
+
 tile.bwm:iron_wall.name=铁墙
+tile.bwm:nether_growth.name=生长的地狱孢子
 
 tile.bwm:ie_siding.0.name=防腐木板半板（水平花纹）
 tile.bwm:ie_moulding.0.name=防腐木板木条（水平花纹）
@@ -226,6 +244,18 @@ tile.bwm:ie_siding.2.name=防腐木板半板（板条花纹）
 tile.bwm:ie_moulding.2.name=防腐木板木条（板条花纹）
 tile.bwm:ie_corner.2.name=防腐木板边角（板条花纹）
 
+tile.bwm:steel_saw.name=熔魂钢锯片
+
+tile.bwm:blood_log.name=血木原木
+tile.bwm:blood_leaves.name=血木树叶
+tile.bwm:blood_sapling.name=血木树苗
+
+tile.bwm:nether_clay.name=下界淤泥块
+
+tile.bwm:cobble.0.name=花岗岩圆石
+tile.bwm:cobble.1.name=闪长岩圆石
+tile.bwm:cobble.2.name=安山岩圆石
+
 
 tile.bwm:rustic_compat_siding.0.name=橄榄木半板
 tile.bwm:rustic_compat_siding.1.name=铁树木半板
@@ -237,7 +267,6 @@ tile.bwm:rustic_compat_corner.0.name=橄榄木边角
 tile.bwm:rustic_compat_corner.1.name=铁树木边角
 tile.bwm:rustic_compat_corner.2.name=页岩边角
 
-tile.bwm:nether_growth.name=生长的地狱孢子
 
 
 tile.bwm:bop_compat_siding.0.name=神圣橡木半板
@@ -291,6 +320,10 @@ tile.bwm:bop_compat_corner.13.name=桃花心木边角
 tile.bwm:bop_compat_corner.14.name=檀木边角
 tile.bwm:bop_compat_corner.15.name=桉树边角
 
+tile.bwm:deadweight.name=铁砧
+tile.bwm:deadweight.intact.name=铁砧
+tile.bwm:deadweight.slightlyDamaged.name=轻微损坏的铁砧
+tile.bwm:deadweight.veryDamaged.name=重度损坏的铁砧
 
 item.bwm:material.gear.name=木齿轮
 item.bwm:material.nethercoal.name=下界煤
@@ -307,6 +340,7 @@ item.bwm:material.windmill_blade.name=风车叶片
 item.bwm:material.glue.name=生物黏胶
 item.bwm:material.tallow.name=动物油脂
 item.bwm:material.ingot_steel.name=熔魂钢锭
+item.bwm:material.plate_steel.name=熔魂钢板
 item.bwm:material.ground_netherrack.name=地狱岩渣
 item.bwm:material.hellfire_dust.name=炼狱火之烬
 item.bwm:material.concentrated_hellfire.name=浓缩炼狱之火
@@ -348,6 +382,9 @@ item.bwm:material.chain_mail.name=链甲片
 item.bwm:material.steel_gear.name=融魂钢齿轮
 item.bwm:material.steel_spring.name=融魂钢弹簧
 item.bwm:material.soap.name=肥皂
+item.bwm:material.mystery_gland.name=神秘腺体
+item.bwm:material.witch_wart.name=女巫疣
+item.bwm:material.poison_sac.name=毒囊
 
 
 item.bwm:donut.name=甜甜圈
@@ -383,9 +420,9 @@ item.bwm:apple_pie.name=苹果派
 
 item.bwm:manual.name=唯一之书
 
-item.bwm:windmill.windmill.name=风车
-item.bwm:windmill.waterwheel.name=水车
-item.bwm:windmill.windmill_vertical.name=竖轴风车
+item.bwm:axle_generator.windmill.name=风车
+item.bwm:axle_generator.waterwheel.name=水车
+item.bwm:axle_generator.windmill_vertical.name=竖轴风车
 
 item.bwm:bark.oak.name=橡木树皮
 item.bwm:bark.spruce.name=云杉树皮
@@ -405,6 +442,7 @@ item.bwm:steel_shovel.name=熔魂钢铲
 item.bwm:steel_sword.name=熔魂钢剑
 item.bwm:steel_mattock.name=熔魂钢鹤嘴锄
 item.bwm:steel_battleaxe.name=熔魂钢战斧
+item.bwm:steel_hacksaw.name=精致钢锯
 
 item.bwm:steel_helmet.name=熔魂钢头盔
 item.bwm:steel_chest.name=熔魂钢胸甲
@@ -470,6 +508,7 @@ modifier.mending.name=修复
 modifier.mending.desc=§o抢人头！§r\n吸收经验修复工具。
 
 entity.entity_sheared_creeper.name=剪过的爬行者
+entity.bwm_jungle_spider.name=丛林蜘蛛
 tile.bwm:single_machine=机械装置
 
 subtitles.bwm.wood.creak=木头吱吱作响
@@ -481,12 +520,23 @@ subtitles.bwm.oof=哦
 death.attack.growth=%s 被成长所吞噬
 death.attack.gloom=%s 被害怕所吞没
 death.attack.saw=%s 忘记了木材店的安全教训
+death.attack.steel_saw.0=%s变成了一块板
+death.attack.steel_saw.1=%s忘了炼钢厂的安全教训
 death.attack.chopping_block=%s 丢掉了他的脑袋
 death.blasting_oil=%s 正在爆炸
+death.acid_rain=%s应该装上一把钢伞
+death.squid.attack=%s被鱿鱼吃了。
 
 bwm.message.immersive.0=只能用来桥接机械动力
 bwm.message.immersive.1=和应用于沉浸工程的动能发电机
 bwm.message.exhaustion=你太疲惫不堪了。
+
+bwm.message.needs_bait=鱼可能不会咬钩，需要一些诱饵。
+
+bwm.message.waterwheel.0=没有足够的空间放置水车。 需要一个5×5的工作区域。
+bwm.message.windmill.0=没有足够的空间放置风车。 需要一个13x13的工作区域。
+bwm.message.vertical_windmill.0=没有足够的空间放置风车。需要一个9x9且高度为7的区域才能工作。
+bwm.message.vertical_windmill.1=这里需要垂直放置一些轴（需要7根）。
 
 bwm.config.hardcore.tooltip=硬核功能
 bwm.config.debug.tooltip=某些功能的调试信息
@@ -494,6 +544,8 @@ bwm.config.vanilla_tweaks.tooltip=原版Minecraft的变化
 bwm.config.pulley.tooltip=滑车能影响的平台的大小
 
 bwm.effect.true_sight=真实视觉
+bwm.effect.fortune=时运
+bwm.effect.looting=掠夺
 
 bwm.item.containment=包含：
 

@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Random;
 
 /**
- * Created by tyler on 5/3/17.
+ * Created by primetoxinz on 5/3/17.
  */
 public class EggDrops extends Feature {
 

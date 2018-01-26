@@ -16,7 +16,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/14/16
  */
 public class ItemSoulforgeArmor extends ItemArmor {

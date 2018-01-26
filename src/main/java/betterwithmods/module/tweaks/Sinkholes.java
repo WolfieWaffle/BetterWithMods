@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
- * Created by tyler on 5/6/17.
+ * Created by primetoxinz on 5/6/17.
  */
 public class Sinkholes extends Feature {
     @SubscribeEvent

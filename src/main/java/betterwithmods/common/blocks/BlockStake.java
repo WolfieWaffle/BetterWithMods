@@ -26,7 +26,7 @@ import static net.minecraft.util.EnumFacing.Axis.Z;
 
 
 /**
- * Created by tyler on 5/17/17.
+ * Created by primetoxinz on 5/17/17.
  */
 public class BlockStake extends BWMBlock {
 

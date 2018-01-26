@@ -94,7 +94,7 @@ public class BlockPlatform extends BWMBlock {
                 entityIn.motionY = .05;
                 return;
             }
-            if (entityIn.isCollidedHorizontally)
+            if (entityIn.collidedHorizontally)
                 entityIn.motionY = .2;
         }
     }

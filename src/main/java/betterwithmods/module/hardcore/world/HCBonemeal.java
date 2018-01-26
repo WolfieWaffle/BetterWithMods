@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Set;
 
 /**
- * Created by tyler on 5/14/17.
+ * Created by primetoxinz on 5/14/17.
  */
 public class HCBonemeal extends Feature {
     public static Set<ItemStack> FERTILIZERS = Sets.newHashSet(new ItemStack(BWMItems.FERTILIZER), new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));

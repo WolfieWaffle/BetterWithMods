@@ -120,12 +120,10 @@ public class BlockInvisibleLight extends BWMBlock {
         return world.getBlockState(pos).getValue(DirUtils.FACING);
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(DirUtils.FACING);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.FACING, facing);
     }

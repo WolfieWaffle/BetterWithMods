@@ -6,6 +6,7 @@ import betterwithmods.common.blocks.tile.TileEntityVase;
 import betterwithmods.util.ColorUtils;
 import betterwithmods.util.InvUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,6 +30,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import java.util.Random;
+
 /**
  * Created by Christian on 24.09.2016.
  */
@@ -41,6 +44,7 @@ public class BlockVase extends BWMBlock implements IMultiVariants {
         this.setHardness(2.0F);
         this.setHarvestLevel("pickaxe", -1);
         this.setDefaultState(this.blockState.getBaseState().withProperty(ColorUtils.COLOR, EnumDyeColor.WHITE));
+        this.setSoundType(SoundType.GLASS);
     }
 
     public static ItemStack getStack(EnumDyeColor type) {
@@ -173,6 +177,11 @@ public class BlockVase extends BWMBlock implements IMultiVariants {
                 return tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(0) != null ? 15 : 0;
             }
         }
+        return 0;
+    }
+
+    @Override
+    public int quantityDropped(Random random) {
         return 0;
     }
 }

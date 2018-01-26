@@ -71,7 +71,7 @@ public class EntityAIFlee extends EntityAIBase {
             double sqDistToPos = this.theEntityCreature.getDistanceSq(this.randPosX, this.randPosY, this.randPosZ);
 
             if (sqDistToPos > 2.0D) {
-                double sqDistToTarget = this.theEntityCreature.getDistanceSqToEntity(target);
+                double sqDistToTarget = this.theEntityCreature.getDistanceSq(target);
                 double sqDistOfTargetToPos = target.getDistanceSq(this.randPosX, this.randPosY, this.randPosZ);
 
                 if (sqDistToTarget < sqDistOfTargetToPos) {

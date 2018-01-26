@@ -32,6 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
 public class BlockMechMachines extends BWMBlock implements IBlockActive, IMultiVariants, IOverpower {
@@ -165,7 +166,10 @@ public class BlockMechMachines extends BWMBlock implements IBlockActive, IMultiV
         if (world.isRemote) {
             return true;
         } else {
-            if (world.getTileEntity(pos) != null && world.getTileEntity(pos).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)) {
+
+            boolean isInventory = Arrays.stream(EnumFacing.VALUES).anyMatch( f -> world.getTileEntity(pos).hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
+
+            if (!player.isSneaking() && world.getTileEntity(pos) != null && isInventory) {
                 player.openGui(BWMod.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
             } else {
                 if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntityTurntable && hand == EnumHand.MAIN_HAND) {
@@ -255,33 +259,6 @@ public class BlockMechMachines extends BWMBlock implements IBlockActive, IMultiV
             world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, fX, fY, fZ, 0.0D, 0.0D, 0.0D);
         }
     }
-
-    @Override
-    public EnumFacing getFacing(IBlockState state) {
-        return null;
-    }
-
-    @Override
-    public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
-        return state;
-    }
-
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return false;
-    }
-
-
 
     @Override
     protected BlockStateContainer createBlockState() {

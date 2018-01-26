@@ -2,7 +2,7 @@ package betterwithmods.module.tweaks;
 
 import betterwithmods.BWMod;
 import betterwithmods.module.Feature;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class DarkQuartz extends Feature {
 
@@ -12,7 +12,7 @@ public class DarkQuartz extends Feature {
     }
 
     @Override
-    public void initClient(FMLInitializationEvent event) {
+    public void preInitClient(FMLPreInitializationEvent event) {
         overrideBlock("quartz_ore");
         overrideBlock("quartz_block_bottom");
         overrideBlock("quartz_block_top");
@@ -23,7 +23,6 @@ public class DarkQuartz extends Feature {
         overrideBlock("quartz_block_lines");
         overrideItem("quartz");
     }
-
 
 
     @Override

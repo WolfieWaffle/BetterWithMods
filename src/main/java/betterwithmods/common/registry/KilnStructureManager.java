@@ -2,6 +2,7 @@ package betterwithmods.common.registry;
 
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.blocks.tile.TileCamo;
+import betterwithmods.common.registry.heat.BWMHeatRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -30,9 +31,11 @@ public class KilnStructureManager {
         return KILN_BLOCKS.contains(state);
     }
 
-    public static void createKiln(World world, BlockPos pos) {
+    public static boolean createKiln(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos);
-        if (isKilnBlock(state) && isValidKiln(world, pos)) {
+        if(!isKilnBlock(state))
+            return false;
+        if (isValidKiln(world, pos)) {
             IBlockState kiln = BWMBlocks.KILN.getDefaultState();
             world.setBlockState(pos, kiln);
             TileEntity tile = world.getTileEntity(pos);
@@ -40,7 +43,16 @@ public class KilnStructureManager {
                 ((TileCamo) tile).setCamoState(state);
                 world.notifyBlockUpdate(pos, kiln, kiln, 8);
             }
+            return true;
         }
+        return false;
+    }
+
+    //@Param BlockPos pos - the position of the kiln block
+    public static boolean hasHeat(IBlockAccess world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos.down());
+        BWMHeatRegistry.HeatSource source = BWMHeatRegistry.get(state);
+        return source != null;
     }
 
     public static boolean isValidKiln(IBlockAccess world, BlockPos pos) {
@@ -52,7 +64,7 @@ public class KilnStructureManager {
             if (isKilnBlock(state))
                 numBrick++;
         }
-        return numBrick > 2;
+        return numBrick > 2 && hasHeat(world, pos);
     }
 
 

@@ -1,5 +1,6 @@
 package betterwithmods.manual.client.manual.segment;
 
+import betterwithmods.client.gui.GuiManual;
 import betterwithmods.manual.client.manual.Document;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TextSegment extends BasicTextSegment {
+
     private final Segment parent;
     private final String text;
 
@@ -143,10 +145,11 @@ public class TextSegment extends BasicTextSegment {
     private float parentScale() {
         final Segment parent = parent();
         if (parent instanceof TextSegment) {
-            return scale().orElse(1f) * ((TextSegment) parent).resolvedScale();
-        } else {
-            return 1f;
+            float scale = scale().orElse(GuiManual.FONT_SCALE) * ((TextSegment) parent).resolvedScale();
+            if (scale >= GuiManual.FONT_SCALE)
+                return scale;
         }
+        return GuiManual.FONT_SCALE;
     }
 
     private String resolvedFormat() {

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 3/20/17
  */
 public class TileEntityDragonVessel extends TileEntity implements ITickable {

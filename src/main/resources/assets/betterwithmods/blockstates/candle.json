@@ -2,7 +2,8 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "side": "blocks/concrete_white",
+      "side": "betterwithmods:blocks/candles/candle_white",
+      "wick": "betterwithmods:blocks/candles/wick",
       "particle": "#side"
     },
     "model": "betterwithmods:candle",
@@ -20,82 +21,82 @@
     "color": {
       "white": {
         "textures": {
-          "side": "minecraft:blocks/concrete_white"
+          "side": "betterwithmods:blocks/candles/candle_white"
         }
       },
       "orange": {
         "textures": {
-          "side": "minecraft:blocks/concrete_orange"
+          "side": "betterwithmods:blocks/candles/candle_orange"
         }
       },
       "magenta": {
         "textures": {
-          "side": "minecraft:blocks/concrete_magenta"
+          "side": "betterwithmods:blocks/candles/candle_magenta"
         }
       },
       "light_blue": {
         "textures": {
-          "side": "minecraft:blocks/concrete_light_blue"
+          "side": "betterwithmods:blocks/candles/candle_light_blue"
         }
       },
       "yellow": {
         "textures": {
-          "side": "minecraft:blocks/concrete_yellow"
+          "side": "betterwithmods:blocks/candles/candle_yellow"
         }
       },
       "lime": {
         "textures": {
-          "side": "minecraft:blocks/concrete_lime"
+          "side": "betterwithmods:blocks/candles/candle_lime"
         }
       },
       "pink": {
         "textures": {
-          "side": "minecraft:blocks/concrete_pink"
+          "side": "betterwithmods:blocks/candles/candle_pink"
         }
       },
       "gray": {
         "textures": {
-          "side": "minecraft:blocks/concrete_gray"
+          "side": "betterwithmods:blocks/candles/candle_gray"
         }
       },
       "silver": {
         "textures": {
-          "side": "minecraft:blocks/concrete_silver"
+          "side": "betterwithmods:blocks/candles/candle_silver"
         }
       },
       "cyan": {
         "textures": {
-          "side": "minecraft:blocks/concrete_cyan"
+          "side": "betterwithmods:blocks/candles/candle_cyan"
         }
       },
       "purple": {
         "textures": {
-          "side": "minecraft:blocks/concrete_purple"
+          "side": "betterwithmods:blocks/candles/candle_purple"
         }
       },
       "blue": {
         "textures": {
-          "side": "minecraft:blocks/concrete_blue"
+          "side": "betterwithmods:blocks/candles/candle_blue"
         }
       },
       "brown": {
         "textures": {
-          "side": "minecraft:blocks/concrete_brown"
+          "side": "betterwithmods:blocks/candles/candle_brown"
         }
       },
       "green": {
         "textures": {
-          "side": "minecraft:blocks/concrete_green"
+          "side": "betterwithmods:blocks/candles/candle_green"
         }
       },
       "red": {
         "textures": {
-          "side": "minecraft:blocks/concrete_red"
+          "side": "betterwithmods:blocks/candles/candle_red"
         }
       },
       "black": {
         "textures": {
-          "side": "minecraft:blocks/concrete_black"
+          "side": "betterwithmods:blocks/candles/candle_black"
         }
       }
     }

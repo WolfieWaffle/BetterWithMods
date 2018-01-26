@@ -22,7 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/18/16
  */
 public class ItemCompositeBow extends ItemBow {
@@ -101,7 +101,7 @@ public class ItemCompositeBow extends ItemBow {
                     if (!worldIn.isRemote) {
                         ItemArrow itemarrow = (ItemArrow) (itemstack.getItem() instanceof ItemArrow ? itemstack.getItem() : Items.ARROW);
                         EntityArrow entityarrow = itemarrow.createArrow(worldIn, itemstack, player);
-                        entityarrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity * 3.0F, 1.0F);
+                        entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, velocity * 3.0F, 1.0F);
 
                         if (velocity >= 1.0F)
                             entityarrow.setIsCritical(true);

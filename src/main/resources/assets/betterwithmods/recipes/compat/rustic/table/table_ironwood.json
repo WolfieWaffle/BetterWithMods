@@ -1,0 +1,31 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:table_ironwood",
+    "count": 2
+  },
+  "pattern": [
+    "SSS",
+    "M M"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "betterwithmods:rustic_compat_siding",
+      "data": 1
+    },
+    "M": {
+      "item": "betterwithmods:rustic_compat_moulding",
+      "data": 1
+    }
+  }
+}

@@ -49,7 +49,6 @@ public class BWIMCHandler {
                 if (IMC_HANDLER.containsKey(k)) {
                     IMC_HANDLER.get(k).accept(ObfuscationReflectionHelper.getPrivateValue(IMCMessage.class, m, 3));
                 }
-                //TODO reimplement IMC for recipes
             } catch (Throwable t) {
                 bigWarning(log, Level.ERROR, "Bad IMC message (%s)\nfrom %s", m.key, m.getSender());
                 log.catching(t);

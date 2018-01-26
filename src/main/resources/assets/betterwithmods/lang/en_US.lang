@@ -57,7 +57,7 @@ tile.bwm:steel_block.name=Soulforged Steel Block
 tile.bwm:cut_steel_block.name=Cut Soulforged Steel Block
 tile.bwm:steel_pressure_plate.name=Steel Pressure Plate
 
-tile.bwm:windmill.windmill.name=Windmill
+tile.bwm:windmill.windmill.name=Horizontal Windmill
 tile.bwm:windmill.waterwheel.name=Waterwheel
 tile.bwm:windmill.windmill_vertical.name=Vertical Windmill
 
@@ -245,6 +245,7 @@ tile.bwm:dirt_slab.2.name=Mycelium Slab
 
 tile.bwm:infernal_enchanter.name=Infernal Enchanter
 tile.bwm:candle_holder.name=Candle Holder
+tile.bwm:shaft.name=Shaft
 
 tile.bwm:broken_gearbox.name=Broken Gearbox
 
@@ -357,7 +358,7 @@ item.bwm:material.scoured_leather.name=Scoured Leather
 item.bwm:material.leather_strap.name=Leather Strap
 item.bwm:material.leather_belt.name=Leather Belt
 item.bwm:material.wood_blade.name=Wood Blade
-item.bwm:material.windmill_blade.name=Windmill Blade
+item.bwm:material.windmill_blade.name=Wind Sail
 item.bwm:material.glue.name=Glue
 item.bwm:material.tallow.name=Tallow
 item.bwm:material.ingot_steel.name=Soulforged Steel Ingot
@@ -558,6 +559,8 @@ bwm.message.immersive.1=and Immersive Engineering Kinetic Dynamos
 bwm.message.exhaustion=You are too exhausted to turn it.
 
 bwm.message.needs_bait=The fish probably won't nibble, needs some bait.
+bwm.message.needs_open_sky=Didn't catch anything, should try a topside water source.
+bwm.message.needs_deep_water=Didn't catch anything, this water source is too shallow.
 
 bwm.message.waterwheel.0=Not enough room to place the waterwheel. Need a 5x5 area to work.
 bwm.message.windmill.0=Not enough room to place the windmill. Need a 13x13 area to work.
@@ -569,6 +572,7 @@ bwm.config.debug.tooltip=Debug Info for certain features
 bwm.config.vanilla_tweaks.tooltip=Changes to how Vanilla Minecraft works
 bwm.config.pulley.tooltip=Limitations of the platforms of the pulley 
 
+bwm.effect.slow_fall=Slow Fall
 bwm.effect.true_sight=True Sight
 bwm.effect.fortune=Fortune
 bwm.effect.looting=Looting

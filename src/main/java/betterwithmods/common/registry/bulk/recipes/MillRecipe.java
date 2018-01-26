@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 
 /**
- * Created by tyler on 5/16/17.
+ * Created by primetoxinz on 5/16/17.
  */
 public class MillRecipe extends BulkRecipe {
     private int grindType;

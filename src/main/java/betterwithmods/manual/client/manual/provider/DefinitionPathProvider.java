@@ -6,6 +6,7 @@ import betterwithmods.common.blocks.BlockAesthetic;
 import betterwithmods.common.blocks.BlockEnderchest;
 import betterwithmods.common.blocks.mechanical.BlockCookingPot;
 import betterwithmods.common.blocks.mechanical.BlockMechMachines;
+import betterwithmods.common.blocks.mechanical.BlockWindmill;
 import betterwithmods.common.blocks.mini.BlockMini;
 import betterwithmods.manual.api.manual.PathProvider;
 import com.google.common.collect.Sets;
@@ -71,9 +72,13 @@ public class DefinitionPathProvider implements PathProvider {
                 return "%LANGUAGE%/blocks/minimized_wood.md";
             }
         }
-        if( block instanceof BlockEnderchest || state.equals(BlockAesthetic.getVariant(BlockAesthetic.EnumType.ENDERBLOCK))) {
+        if (block instanceof BlockEnderchest || state.equals(BlockAesthetic.getVariant(BlockAesthetic.EnumType.ENDERBLOCK))) {
             return "%LANGUAGE%/hardcore/beacons.md";
         }
+        if (block instanceof BlockWindmill) {
+            return "%LANGUAGE%/blocks/windmill.md";
+        }
+
         String path = stack.getUnlocalizedName().replace("tile.bwm:", "");
         return "%LANGUAGE%/blocks/" + path + ".md";
     }

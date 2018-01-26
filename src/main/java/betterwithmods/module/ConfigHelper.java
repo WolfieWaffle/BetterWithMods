@@ -10,13 +10,47 @@
  */
 package betterwithmods.module;
 
+import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.JsonUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.crafting.IConditionFactory;
+import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
 
 public class ConfigHelper {
 
     public static boolean needsRestart;
     public static boolean allNeedRestart = false;
 
+
+    public static HashMap<String, Boolean> CONDITIONS = Maps.newHashMap();
+
+    public static boolean loadRecipeCondition(String jsonString, String propName, String category, String desc, boolean default_) {
+        boolean value = loadPropBool(propName, category, desc, default_);
+        CONDITIONS.put(jsonString, value);
+        return value;
+    }
+
+    public static class ConditionConfig implements IConditionFactory {
+        @Override
+        public BooleanSupplier parse(JsonContext context, JsonObject json) {
+            String enabled = JsonUtils.getString(json, "enabled");
+            return () -> CONDITIONS.getOrDefault(enabled, false);
+        }
+    }
 
     public static int[] loadPropIntList(String propName, String category, String comment, int[] default_) {
         Property prop = ModuleLoader.config.get(category, propName, default_, comment);
@@ -76,8 +110,87 @@ public class ConfigHelper {
         Property prop = ModuleLoader.config.get(category, propName, default_);
         prop.setComment(desc);
         setNeedsRestart(prop);
-
         return prop.getStringList();
+    }
+
+    public static List<ResourceLocation> loadPropRLList(String propName, String category, String desc, String[] default_) {
+        String[] l = loadPropStringList(propName,category,desc, default_);
+        return Arrays.stream(l).map(ConfigHelper::rlFromString).collect(Collectors.toList());
+    }
+
+    public static ResourceLocation rlFromString(String loc) {
+        String[] split = loc.split(":");
+        if (split.length > 1) {
+            return new ResourceLocation(split[0], split[1]);
+        }
+        return null;
+    }
+
+    private static ItemStack stackFromString(String name) {
+        String[] split = name.split(":");
+        if (split.length > 1) {
+            int meta = 0;
+            if (split.length > 2) {
+                if (split[2].equalsIgnoreCase("*"))
+                    meta = OreDictionary.WILDCARD_VALUE;
+                else
+                    meta = Integer.parseInt(split[2]);
+            }
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(split[0], split[1]));
+            if (item != null) {
+                return new ItemStack(item, 1, meta);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private static Ingredient ingredientfromString(String name) {
+        if (name.startsWith("ore:"))
+            return new OreIngredient(name.substring(4));
+        String[] split = name.split(":");
+        if (split.length > 1) {
+            int meta = 0;
+            if (split.length > 2) {
+                if (split[2].equalsIgnoreCase("*"))
+                    meta = OreDictionary.WILDCARD_VALUE;
+                else
+                    meta = Integer.parseInt(split[2]);
+            }
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(split[0], split[1]));
+            if (item != null) {
+                return Ingredient.fromStacks(new ItemStack(item, 1, meta));
+            }
+        }
+        return Ingredient.EMPTY;
+    }
+
+    private static String fromStack(ItemStack stack) {
+        if (stack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
+            return String.format("%s:*", stack.getItem().getRegistryName());
+        } else if (stack.getMetadata() == 0) {
+            return stack.getItem().getRegistryName().toString();
+        } else {
+            return String.format("%s:%s", stack.getItem().getRegistryName(), stack.getMetadata());
+        }
+    }
+
+    public static List<ItemStack> loadItemStackList(String propName, String category, String desc, ItemStack[] default_) {
+        String[] strings_ = new String[default_.length];
+        Arrays.stream(default_).map(ConfigHelper::fromStack).collect(Collectors.toList()).toArray(strings_);
+        return Arrays.stream(loadPropStringList(propName, category, desc, strings_)).map(ConfigHelper::stackFromString).collect(Collectors.toList());
+    }
+
+
+    public static HashMap<Ingredient, Integer> loadItemStackIntMap(String propName, String category, String desc, String[] _default) {
+        HashMap<Ingredient, Integer> map = Maps.newHashMap();
+        String[] l = loadPropStringList(propName, category, desc, _default);
+        for (String s : l) {
+            String[] a = s.split("=");
+            if (a.length == 2) {
+                map.put(ConfigHelper.ingredientfromString(a[0]), Integer.parseInt(a[1]));
+            }
+        }
+        return map;
     }
 
     private static void setNeedsRestart(Property prop) {

@@ -1,5 +1,6 @@
 package betterwithmods.common.blocks.mechanical;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.block.IMultiVariants;
 import betterwithmods.api.block.IOverpower;
 import betterwithmods.common.BWMItems;
@@ -9,7 +10,6 @@ import betterwithmods.module.ModuleLoader;
 import betterwithmods.module.gameplay.Gameplay;
 import betterwithmods.module.hardcore.needs.hunger.HCHunger;
 import betterwithmods.util.InvUtils;
-import betterwithmods.util.MechanicalUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -124,12 +124,10 @@ public class BlockCrank extends BWMBlock implements IMultiVariants, IOverpower {
 
     public boolean checkForOverpower(World world, BlockPos pos) {
         int potentialDevices = 0;
-        for (int i = 0; i < 6; i++) {
-            BlockPos offset = pos.offset(EnumFacing.getFront(i));
-            if (i != 0) {
-                if (MechanicalUtil.getMechanicalPower(world, offset, EnumFacing.getFront(i).getOpposite()) != null) {
-                    potentialDevices++;
-                }
+        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+            BlockPos offset = pos.offset(facing);
+            if (BWMAPI.IMPLEMENTATION.canInput(world, offset, facing)) {
+                potentialDevices++;
             }
         }
         return potentialDevices > 1;
@@ -140,8 +138,7 @@ public class BlockCrank extends BWMBlock implements IMultiVariants, IOverpower {
         int stage = state.getValue(STAGE);
         if (stage > 0) {
             if (stage < 7) {
-                if (stage <= 6)
-                    world.playSound(null, pos, SoundEvents.BLOCK_WOOD_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 1.0F, 2.0F);
+                world.playSound(null, pos, SoundEvents.BLOCK_WOOD_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 1.0F, 2.0F);
                 if (stage <= 5)
                     world.scheduleBlockUpdate(pos, this, tickRate(world) + stage, 5);
                 else
@@ -155,7 +152,7 @@ public class BlockCrank extends BWMBlock implements IMultiVariants, IOverpower {
                 world.playSound(null, pos, SoundEvents.BLOCK_WOOD_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.7F);
             }
         }
-        world.notifyNeighborsOfStateChange(pos,this,false);
+        world.notifyNeighborsOfStateChange(pos, this, false);
     }
 
     @Override

@@ -5,7 +5,7 @@ import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 /**
- * Created by tyler on 5/14/17.
+ * Created by primetoxinz on 5/14/17.
  */
 public class RSBlockGlow extends Feature {
     @Override

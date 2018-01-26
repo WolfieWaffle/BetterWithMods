@@ -5,7 +5,9 @@ import betterwithmods.client.BWGuiHandler;
 import betterwithmods.common.blocks.tile.TileEntityInfernalEnchanter;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,11 +22,38 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
- * Created by tyler on 9/11/16.
+ * Created by primetoxinz on 9/11/16.
  */
 public class BlockInfernalEnchanter extends BWMBlock implements ITileEntityProvider {
+
+    public static final PropertyBool ACTIVE = PropertyBool.create("active");
+
     public BlockInfernalEnchanter() {
         super(Material.IRON);
+        setHardness(5.0F);
+        setResistance(2000.0F);
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, ACTIVE);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(ACTIVE) ? 1 : 0;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(ACTIVE, meta == 1);
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        if(state.getValue(ACTIVE))
+            return 15;
+        return super.getLightValue(state, world, pos);
     }
 
     @Override
@@ -74,4 +103,6 @@ public class BlockInfernalEnchanter extends BWMBlock implements ITileEntityProvi
     public boolean isFullBlock(IBlockState state) {
         return false;
     }
+
+
 }

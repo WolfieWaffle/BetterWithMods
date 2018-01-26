@@ -20,11 +20,12 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.Calendar;
 
 /**
- * Created by tyler on 5/10/17.
+ * Created by primetoxinz on 5/10/17.
  */
 public class HCArmor extends Feature {
     public static final StackMap<Integer> weights = new StackMap<>(0);
@@ -33,6 +34,8 @@ public class HCArmor extends Feature {
     public static final ItemStack[] IRON_ARMOR = new ItemStack[]{new ItemStack(Items.IRON_HELMET), new ItemStack(Items.IRON_CHESTPLATE), new ItemStack(Items.IRON_LEGGINGS), new ItemStack(Items.IRON_BOOTS)};
 
     public static boolean changeArmorSpawns;
+
+    public static boolean shieldRebalance;
 
     public static float getWeight(ItemStack stack) {
         if (!ModuleLoader.isFeatureEnabled(HCArmor.class))
@@ -108,6 +111,11 @@ public class HCArmor extends Feature {
 
     @Override
     public void init(FMLInitializationEvent event) {
+        if (shieldRebalance) {
+            addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.SHIELD),
+                    "SWS", "WIW", " W ", 'S', "strapLeather", 'W', "sidingWood", 'I', "ingotIron"
+            ).setRegistryName("minecraft:shield"));
+        }
         initWeights();
     }
 
@@ -138,7 +146,9 @@ public class HCArmor extends Feature {
 
     @Override
     public void setupConfig() {
-        changeArmorSpawns = loadPropBool("Change Armor Spawns", "Changes Entity armor spawning: Zombies only spawn with Iron armor, Skeletons never wear armor.", true);
+        changeArmorSpawns = loadPropBool("Change Armor Spawns", "Changes Entity armor spawning: Zombies only spawn with Iron armor, Skeletons never wear armor.", false);
+
+        shieldRebalance = loadPropBool("Shield Rebalance", "Experimental recipes for rebalacing shields", false);
     }
 
     @Override

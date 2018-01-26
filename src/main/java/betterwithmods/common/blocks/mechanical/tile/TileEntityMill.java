@@ -1,5 +1,6 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.ICrankable;
 import betterwithmods.api.tile.IMechanicalPower;
@@ -9,7 +10,7 @@ import betterwithmods.common.blocks.tile.TileBasicInventory;
 import betterwithmods.common.registry.bulk.manager.MillManager;
 import betterwithmods.common.registry.bulk.recipes.MillRecipe;
 import betterwithmods.util.InvUtils;
-import betterwithmods.util.MechanicalUtil;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -24,8 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TileEntityMill extends TileBasicInventory implements ITickable, IMechanicalPower, ICrankable {
 
@@ -36,6 +37,7 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
     private int grindType = 0;
     private boolean validateContents;
     private boolean containsIngredientsToGrind;
+    public boolean blocked;
 
     public TileEntityMill() {
         this.grindCounter = 0;
@@ -55,17 +57,35 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
         return (BlockMechMachines) this.getBlockType();
     }
 
+    private boolean findIfBlocked() {
+        int count = 0;
+        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+            if (world.isSideSolid(pos.offset(facing),facing.getOpposite())) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
     @Override
     public void update() {
         if (this.getBlockWorld().isRemote)
             return;
 
         this.power = calculateInput();
-
+        this.blocked = findIfBlocked();
         getBlock().setActive(world, pos, isActive());
 
         if (this.validateContents)
             validateContents();
+
+        if (isBlocked()) {
+            return;
+        }
 
         if (isActive())
             if (getBlockWorld().rand.nextInt(20) == 0)
@@ -94,6 +114,8 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
+        if (tag.hasKey("blocked"))
+            this.blocked = tag.getBoolean("blocked");
         if (tag.hasKey("GrindCounter"))
             this.grindCounter = tag.getInteger("GrindCounter");
         this.power = tag.getInteger("power");
@@ -104,6 +126,7 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
         super.writeToNBT(tag);
         tag.setInteger("GrindCounter", this.grindCounter);
         tag.setInteger("power", power);
+        tag.setBoolean("blocked", blocked);
         return tag;
     }
 
@@ -127,29 +150,20 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
         }
     }
 
+    private boolean canEject(EnumFacing facing) {
+        if(world.isAirBlock(pos.offset(facing)))
+            return true;
+        return !world.isBlockFullCube(pos.offset(facing)) && !world.isSideSolid(pos.offset(facing), facing.getOpposite());
+    }
+
     private void ejectStack(ItemStack stack) {
-        List<EnumFacing> validDirections = new ArrayList<>();
-        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-            IBlockState check = getBlockWorld().getBlockState(pos.offset(facing));
-            if (check.getBlock().isReplaceable(getBlockWorld(), pos.offset(facing)) || getBlockWorld().isAirBlock(pos.offset(facing)))
-                validDirections.add(facing);
+        List<EnumFacing> validDirections = Lists.newArrayList(EnumFacing.HORIZONTALS).stream().filter(this::canEject).collect(Collectors.toList());
+        if(validDirections.isEmpty()) {
+            blocked = true;
+            return;
         }
 
-        if (validDirections.isEmpty()) {
-            IBlockState down = getBlockWorld().getBlockState(pos.offset(EnumFacing.DOWN));
-            if (down.getBlock().isReplaceable(getBlockWorld(), pos.offset(EnumFacing.DOWN)) || getBlockWorld().isAirBlock(pos.offset(EnumFacing.DOWN)))
-                validDirections.add(EnumFacing.DOWN);
-        }
-
-        BlockPos offset;
-        if (validDirections.size() > 1)
-            offset = pos.offset(validDirections.get(getBlockWorld().rand.nextInt(validDirections.size())));
-        else if (validDirections.isEmpty())
-            offset = pos.offset(EnumFacing.UP);
-        else
-            offset = pos.offset(validDirections.get(0));
-
-        InvUtils.ejectStackWithOffset(getBlockWorld(), offset, stack);
+        InvUtils.ejectStackWithOffset(getBlockWorld(), pos.offset(validDirections.get(getBlockWorld().rand.nextInt(validDirections.size()))), stack);
     }
 
     public double getGrindProgress() {
@@ -205,9 +219,9 @@ public class TileEntityMill extends TileBasicInventory implements ITickable, IMe
     @Override
     public int getMechanicalInput(EnumFacing facing) {
         if (facing.getAxis().isVertical())
-            return MechanicalUtil.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
+            return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
         if (world.getTileEntity(pos.offset(facing)) instanceof TileCrank) {
-            return MechanicalUtil.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
+            return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
         }
         return 0;
     }

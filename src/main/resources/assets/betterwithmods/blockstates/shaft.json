@@ -1,0 +1,33 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "side": "betterwithmods:blocks/shaft",
+      "particle": "#side"
+    },
+    "model": "betterwithmods:shaft_disconnected",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {
+        "transform": "forge:default-block"
+      }
+    ],
+    "connection": {
+      "connected": {
+        "model": "betterwithmods:shaft_connected"
+      },
+      "disconnected": {
+        "model": "betterwithmods:shaft_disconnected"
+      }
+    },
+    "ground": {
+      "true": {},
+      "false": {}
+    }
+  }
+}

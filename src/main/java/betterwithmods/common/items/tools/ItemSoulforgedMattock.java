@@ -5,16 +5,18 @@ import betterwithmods.common.BWMItems;
 import betterwithmods.common.BWOreDictionary;
 import betterwithmods.module.hardcore.creatures.HCEnchanting;
 import betterwithmods.util.item.ToolsManager;
+import betterwithmods.util.player.PlayerHelper;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 public class ItemSoulforgedMattock extends ItemTool {
@@ -31,8 +33,15 @@ public class ItemSoulforgedMattock extends ItemTool {
     }
 
     @Override
+    public float getDestroySpeed(ItemStack stack, IBlockState state) {
+        if (PlayerHelper.isCurrentToolEffectiveOnBlock(stack, state))
+            return efficiency;
+        return EFFECTIVE.contains(state.getBlock()) ? this.efficiency : 1.0F;
+    }
+
+    @Override
     public Set<String> getToolClasses(ItemStack stack) {
-        return ImmutableSet.of("mattock", "pickaxe", "shovel");
+        return ImmutableSet.of("bwmmattock", "pickaxe", "shovel");
     }
 
     public boolean canHarvestBlock(IBlockState blockIn) {
@@ -40,13 +49,14 @@ public class ItemSoulforgedMattock extends ItemTool {
         return toolMaterial.getHarvestLevel() >= block.getHarvestLevel(blockIn);
     }
 
-    public float getStrVsBlock(ItemStack stack, IBlockState state) {
-        Material material = state.getMaterial();
-        return material != Material.IRON && material != Material.ANVIL && material != Material.ROCK ? super.getStrVsBlock(stack, state) : this.efficiencyOnProperMaterial;
-    }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return HCEnchanting.canEnchantSteel();
+    }
+
+    @Override
+    public int getHarvestLevel(ItemStack stack, String toolClass, @Nullable EntityPlayer player, @Nullable IBlockState blockState) {
+        return toolMaterial.getHarvestLevel();
     }
 }

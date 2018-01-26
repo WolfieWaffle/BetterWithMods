@@ -3,7 +3,7 @@ package betterwithmods.api;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * Created by tyler on 5/14/17.
+ * Created by primetoxinz on 5/14/17.
  */
 public class FeatureEnabledEvent extends Event {
     private String module;

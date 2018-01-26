@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/13/16
  */
 public class HopperFilters {

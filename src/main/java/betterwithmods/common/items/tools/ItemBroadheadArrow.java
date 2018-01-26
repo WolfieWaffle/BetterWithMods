@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/18/16
  */
 public class ItemBroadheadArrow extends ItemArrow {

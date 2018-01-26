@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BlockHemp extends BlockCrops implements IPlantable, IMultiLocations {
+
+public class BlockHemp extends BlockCrops implements IPlantable, IMultiLocations{
     public static final PropertyBool TOP = PropertyBool.create("top");
     public static double growthChance, lampModifier, fertileModifier, neighborModifier;
-
 
 
     public BlockHemp() {
@@ -42,7 +42,7 @@ public class BlockHemp extends BlockCrops implements IPlantable, IMultiLocations
 
     @Override
     public boolean isMaxAge(IBlockState state) {
-        return state.getValue(TOP);
+        return state.getValue(TOP) || state.getValue(AGE) > 6;
     }
 
     @Override
@@ -185,5 +185,6 @@ public class BlockHemp extends BlockCrops implements IPlantable, IMultiLocations
         int meta = state.getValue(AGE);
         return meta > 6 ? this.getCrop() : this.getSeed();
     }
+
 
 }

@@ -1,10 +1,10 @@
 package betterwithmods.common.blocks.mechanical.tile;
 
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IMechanicalPower;
 import betterwithmods.common.blocks.mechanical.BlockPump;
 import betterwithmods.common.blocks.tile.TileBasic;
-import betterwithmods.util.MechanicalUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +47,7 @@ public class TilePump extends TileBasic implements IMechanicalPower {
     @Override
     public int getMechanicalInput(EnumFacing facing) {
         if (facing == EnumFacing.DOWN)
-            return MechanicalUtil.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
+            return BWMAPI.IMPLEMENTATION.getPowerOutput(world, pos.offset(facing), facing.getOpposite());
         return 0;
     }
 

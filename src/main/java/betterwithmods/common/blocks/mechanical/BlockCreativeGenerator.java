@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
- * Created by tyler on 8/5/16.
+ * Created by primetoxinz on 8/5/16.
  */
 public class BlockCreativeGenerator extends BWMBlock  {
     public BlockCreativeGenerator() {

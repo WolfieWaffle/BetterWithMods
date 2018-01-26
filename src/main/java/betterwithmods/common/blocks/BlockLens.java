@@ -2,6 +2,7 @@ package betterwithmods.common.blocks;
 
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.util.DirUtils;
+import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -13,11 +14,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -84,12 +87,52 @@ public class BlockLens extends BlockRotate {
 
             BlockPos offset = pos.offset(dir);
             if (isLit(world, pos) && (world.isAirBlock(offset) || world.getBlockState(offset).getBlock() == BWMBlocks.LIGHT_SOURCE)) {
+                int currentRange = RANGE;
                 for (int i = 1; i < RANGE; i++) {
+                    BlockPos bPos = pos.offset(dir, i);
+                    if (!world.isAirBlock(bPos)) {
+                        currentRange = i + 1;
+                        break;
+                    }
+                }
+
+                AxisAlignedBB bb = FULL_BLOCK_AABB.offset(pos);
+                int mod = dir.getAxisDirection().getOffset();
+                switch(dir.getAxis()) {
+                    case X:
+                        bb = bb.expand(mod * currentRange,0,0);
+                        break;
+                    case Y:
+                        bb = bb.expand(0, mod * currentRange,0);
+                        break;
+                    case Z:
+                        bb = bb.expand(0, 0, mod * currentRange);
+                        break;
+                }
+                List<Entity> box = world.getEntitiesWithinAABB(Entity.class, bb);
+                HashMap<Integer, Entity> map = Maps.newHashMap();
+                for (Entity e : box) {
+                    int distance = 0;
+                    switch (dir.getAxis()) {
+                        case X:
+                            distance = (int) (pos.getX() - e.posX);
+                            break;
+                        case Y:
+                            distance = (int) (pos.getY() - e.posY);
+                            break;
+                        case Z:
+                            distance = (int) (pos.getZ() - e.posZ);
+                            break;
+                    }
+                    map.put(Math.abs(distance), e);
+                }
+
+
+                for (int i = 1; i < currentRange; i++) {
                     BlockPos bPos = pos.offset(dir, i);
                     IBlockState lightState = BWMBlocks.LIGHT_SOURCE.getDefaultState();
                     if (world.isAirBlock(bPos)) {
-                        List<Entity> entity = world.getEntitiesWithinAABB(Entity.class, FULL_BLOCK_AABB.offset(bPos));
-                        if (entity.size() > 0) {
+                        if (map.containsKey(i)) {
                             world.setBlockState(bPos, lightState.withProperty(DirUtils.FACING, expectedFacing).withProperty(BlockInvisibleLight.SUNLIGHT, sunlight));
                             break;
                         } else if (world.getBlockState(bPos).getBlock() == BWMBlocks.LIGHT_SOURCE && world.getBlockState(bPos).getValue(DirUtils.FACING).ordinal() < expectedFacing.ordinal()) {
@@ -144,12 +187,10 @@ public class BlockLens extends BlockRotate {
         return getFacing(world.getBlockState(pos));
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return state.getValue(DirUtils.FACING);
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state.withProperty(DirUtils.FACING, facing);
     }
@@ -265,6 +306,6 @@ public class BlockLens extends BlockRotate {
 
     @Override
     public void nextState(World world, BlockPos pos, IBlockState state) {
-        world.setBlockState(pos, state.withProperty(LIT,false).cycleProperty(DirUtils.FACING));
+        world.setBlockState(pos, state.withProperty(LIT, false).cycleProperty(DirUtils.FACING));
     }
 }

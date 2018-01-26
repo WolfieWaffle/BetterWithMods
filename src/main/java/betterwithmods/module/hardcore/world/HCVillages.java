@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by tyler on 5/21/17.
+ * Created by primetoxinz on 5/21/17.
  */
 public class HCVillages extends Feature {
 	public static AtomicInteger semiabandonedRadius = new AtomicInteger(), normalRadius = new AtomicInteger();

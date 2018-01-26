@@ -34,6 +34,40 @@
           "texture": "#side"
         }
       }
+    },
+    {
+      "from": [
+        7.9,
+        6,
+        7.9
+      ],
+      "to": [
+        8.1,
+        8,
+        8.1
+      ],
+      "faces": {
+        "down": {
+          "texture": "#wick",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#wick",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#wick"
+        },
+        "south": {
+          "texture": "#wick"
+        },
+        "west": {
+          "texture": "#wick"
+        },
+        "east": {
+          "texture": "#wick"
+        }
+      }
     }
   ]
 }

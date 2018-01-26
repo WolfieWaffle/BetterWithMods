@@ -1,11 +1,17 @@
 package betterwithmods.common;
 
+import betterwithmods.api.util.IWood;
+import betterwithmods.api.util.IWoodProvider;
 import betterwithmods.common.blocks.BlockAesthetic;
 import betterwithmods.common.blocks.BlockRawPastry;
 import betterwithmods.common.items.ItemBark;
 import betterwithmods.common.items.ItemMaterial;
 import betterwithmods.common.registry.OreStack;
+import betterwithmods.common.registry.Wood;
+import betterwithmods.util.InvUtils;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -20,9 +26,10 @@ import net.minecraftforge.oredict.OreIngredient;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
- * Created by tyler on 5/10/17.
+ * Created by primetoxinz on 5/10/17.
  */
 public class BWOreDictionary {
 
@@ -32,13 +39,21 @@ public class BWOreDictionary {
     public static List<Ore> oreNames;
     public static List<Ore> ingotNames;
 
-    public static List<Wood> woods = new ArrayList<>();
+    public static List<IWood> woods = new ArrayList<>();
+    public static List<IWoodProvider> woodProviders = new ArrayList<>();
+
 
     public static List<ItemStack> planks;
     public static List<ItemStack> logs;
     public static List<IRecipe> logRecipes = new ArrayList<>();
 
+    public static HashMultimap<String, String> toolEffectiveOre = HashMultimap.create();
+
+
     public static void registerOres() {
+
+        toolEffectiveOre.putAll("axe", Lists.newArrayList("logWood", "plankWood"));
+        toolEffectiveOre.putAll("mattock", Lists.newArrayList("stone", "cobblestone"));
 
         registerOre("book", BWMItems.MANUAL);
         registerOre("dung", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DUNG));
@@ -72,6 +87,8 @@ public class BWOreDictionary {
         registerOre("dustCharcoal", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.CHARCOAL_DUST));
         registerOre("foodCocoapowder", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.COCOA_POWDER));
         registerOre("dustCarbon", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.COAL_DUST), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.CHARCOAL_DUST));
+        registerOre("dustCoal", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.COAL_DUST));
+        registerOre("dustCharcoal", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.CHARCOAL_DUST));
         registerOre("gemNetherCoal", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.NETHERCOAL));
         registerOre("materialNetherSludge", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.NETHER_SLUDGE));
         registerOre("foodChocolatebar", new ItemStack(BWMItems.CHOCOLATE));
@@ -92,6 +109,9 @@ public class BWOreDictionary {
         registerOre("hideTanned", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.TANNED_LEATHER));
         registerOre("hideBelt", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.LEATHER_BELT));
         registerOre("hideScoured", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SCOURED_LEATHER));
+        registerOre("hideStrap", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.LEATHER_STRAP));
+        registerOre("leather", ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.LEATHER_CUT));
+
 
         registerOre("slabWood", new ItemStack(BWMBlocks.WOOD_SIDING, 1, OreDictionary.WILDCARD_VALUE));
         registerOre("sidingWood", new ItemStack(BWMBlocks.WOOD_SIDING, 1, OreDictionary.WILDCARD_VALUE));
@@ -132,11 +152,12 @@ public class BWOreDictionary {
         registerOre("blockNetherSludge", new ItemStack(BWMBlocks.NETHER_CLAY));
         registerOre("cobblestone", new ItemStack(BWMBlocks.COBBLE, 1, OreDictionary.WILDCARD_VALUE));
 
-        registerOre("slats", new ItemStack(BWMBlocks.SLATS, 1,OreDictionary.WILDCARD_VALUE));
-        registerOre("grates", new ItemStack(BWMBlocks.GRATE,1, OreDictionary.WILDCARD_VALUE));
+        registerOre("slats", new ItemStack(BWMBlocks.SLATS, 1, OreDictionary.WILDCARD_VALUE));
+        registerOre("grates", new ItemStack(BWMBlocks.GRATE, 1, OreDictionary.WILDCARD_VALUE));
         registerOre("wicker", new ItemStack(BWMBlocks.WICKER));
 
-        registerOre("candle", new ItemStack(BWMBlocks.CANDLE,1,OreDictionary.WILDCARD_VALUE));
+        registerOre("blockCandle", new ItemStack(BWMBlocks.CANDLE, 1, OreDictionary.WILDCARD_VALUE));
+        registerOre("stickWood", new ItemStack(BWMBlocks.SHAFT));
     }
 
     private static ItemStack getPlankOutput(ItemStack log) {
@@ -227,7 +248,7 @@ public class BWOreDictionary {
     }
 
     public static int listContains(Object obj, List<Object> list) {
-        if (list != null && list.size() > 0 && !list.isEmpty()) {
+        if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 if (obj instanceof ItemStack && list.get(i) instanceof ItemStack) {
                     ItemStack stack = (ItemStack) obj;
@@ -268,59 +289,35 @@ public class BWOreDictionary {
         return false;
     }
 
+    public static List<String> getOres(ItemStack stack) {
+        return IntStream.of(OreDictionary.getOreIDs(stack)).mapToObj(OreDictionary::getOreName).collect(Collectors.toList());
+    }
+
     public static boolean hasSuffix(ItemStack stack, String suffix) {
         return listContains(stack, getOreNames(suffix));
     }
 
-
-    public static class Wood {
-        public ItemStack log, plank, bark;
-        boolean isSoulDust = false;
-
-        public Wood(ItemStack log, ItemStack plank) {
-            this.log = log;
-            this.plank = plank;
-
-            //TODO add custom bark render for all bark
-            this.bark = ItemBark.getStack("oak", 1);
-        }
-
-        public Wood(ItemStack log, ItemStack plank, ItemStack bark) {
-            this.log = log;
-            this.plank = plank;
-            this.bark = bark;
-        }
-
-        public Wood(ItemStack log, ItemStack plank, ItemStack bark, boolean isSoulDust) {
-            this(log, plank, bark);
-            this.isSoulDust = isSoulDust;
-        }
-
-        public ItemStack getLog(int count) {
-            ItemStack copy = log.copy();
-            copy.setCount(count);
-            return copy;
-        }
-
-        public ItemStack getPlank(int count) {
-            ItemStack copy = plank.copy();
-            copy.setCount(count);
-            return copy;
-        }
-
-        public ItemStack getBark(int count) {
-            ItemStack copy = bark.copy();
-            copy.setCount(count);
-            return copy;
-        }
-
-        public ItemStack getSawdust(int count) {
-            return isSoulDust ? ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SOUL_DUST) : ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SAWDUST, count);
-        }
-
-
+    public static boolean isToolForOre(String tool, ItemStack stack) {
+        return toolEffectiveOre.get(tool).stream().anyMatch(getOres(stack)::contains);
     }
 
+    public static IWood getWoodFromState(IBlockState state) {
+
+        ItemStack stack = BWMRecipes.getStackFromState(state);
+        IWood wood = null;
+        if(!stack.isEmpty()) {
+            wood = woods.stream().filter(w -> InvUtils.matches(w.getLog(1), stack)).findFirst().orElse(null);
+        }
+        if(wood == null) {
+            for (IWoodProvider provider : woodProviders) {
+                if (provider.match(state)) {
+                    wood = provider.getWood(state);
+                    break;
+                }
+            }
+        }
+        return wood;
+    }
 
     public static class Ore extends OreIngredient {
         private String prefix;

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by tyler on 5/21/17.
+ * Created by primetoxinz on 5/21/17.
  */
 public class Church extends AbandonedVillagePiece {
     public Church() {

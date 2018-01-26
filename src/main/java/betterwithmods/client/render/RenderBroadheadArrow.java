@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/18/16
  */
 public class RenderBroadheadArrow extends RenderArrow<EntityBroadheadArrow> {

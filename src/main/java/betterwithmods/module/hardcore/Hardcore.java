@@ -9,10 +9,11 @@ import betterwithmods.module.hardcore.creatures.*;
 import betterwithmods.module.hardcore.needs.*;
 import betterwithmods.module.hardcore.needs.hunger.HCHunger;
 import betterwithmods.module.hardcore.world.*;
+import betterwithmods.module.hardcore.world.strata.HCStrata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class Hardcore extends CompatModule {
     public Hardcore() {
@@ -21,7 +22,8 @@ public class Hardcore extends CompatModule {
 
     @Override
     public void addCompatFeatures() {
-        registerCompatFeature("applecore", "betterwithmods.module.hardcore.needs.hunger.HCHunger");
+        registerCompatFeature("applecore", HCHunger.class.getName());
+        registerCompatFeature("hardcorebuoy", HCBuoy.class.getName());
     }
 
     @Override
@@ -64,8 +66,12 @@ public class Hardcore extends CompatModule {
         registerFeature(new HCMovement());
         registerFeature(new HCCobblestone());
         registerFeature(new HCDeadweight());
-//        registerFeature(new HCSquid());
         registerFeature(new HCEnchanting());
+        registerFeature(new HCStrata());
+        registerFeature(new HCFurnace());
+        registerFeature(new HCBoating());
+//        registerFeature(new HCSquid());
+//        registerFeature(new HCVillagers());
         this.load();
     }
 

@@ -112,9 +112,9 @@ public final class WorldUtils {
         EntityGhast ghast = new EntityGhast(world);
         double failures = 1;
         for (int i = 0; i < 200; i++) {
-            double xPos = pos.getX() + (world.rand.nextDouble() - world.rand.nextDouble()) * Math.min(failures,30);
+            double xPos = pos.getX() + (world.rand.nextDouble() - world.rand.nextDouble()) * Math.min(failures, 30);
             double yPos = pos.getY() + failures;
-            double zPos = pos.getZ() + (world.rand.nextDouble() - world.rand.nextDouble()) * Math.min(failures,30);
+            double zPos = pos.getZ() + (world.rand.nextDouble() - world.rand.nextDouble()) * Math.min(failures, 30);
 
             ghast.setLocationAndAngles(xPos, yPos, zPos, world.rand.nextFloat() * 360.0F, 0.0F);
             AxisAlignedBB box = ghast.getEntityBoundingBox().offset(ghast.getPosition().up(5));
@@ -180,6 +180,45 @@ public final class WorldUtils {
         EntityItem item = new EntityItem(evt.getEntityLiving().getEntityWorld(), evt.getEntityLiving().posX, evt.getEntityLiving().posY, evt.getEntityLiving().posZ, drop);
         item.setDefaultPickupDelay();
         evt.getDrops().add(item);
+    }
+
+    public static boolean isTimeFrame(World world, TimeFrame frame) {
+        return frame.isBetween((int) world.getWorldTime());
+    }
+
+    public static boolean isMoonPhase(World world, MoonPhase phase) {
+        return phase.ordinal() == world.provider.getMoonPhase(world.getWorldTime());
+    }
+
+    public enum MoonPhase {
+        Full,
+        WaningGibbous,
+        LastQuarter,
+        WaningCrescent,
+        New,
+        WaxingCrescent,
+        FirstQuarter,
+        WaxingGibbous
+    }
+
+    public enum TimeFrame {
+        DAWN(0, 3600),
+        NOON(5000, 7000),
+        DUSK(10200, 12700),
+        MIDNIGHT(17000, 19000),
+        NIGHT(13001, 24000),
+        DAY(0, 13000);
+
+        private int start, end;
+
+        TimeFrame(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public boolean isBetween(int time) {
+            return time >= start && time <= end;
+        }
     }
 
 }

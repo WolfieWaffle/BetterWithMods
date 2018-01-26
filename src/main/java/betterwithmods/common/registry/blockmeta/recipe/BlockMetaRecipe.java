@@ -2,30 +2,22 @@ package betterwithmods.common.registry.blockmeta.recipe;
 
 import betterwithmods.util.InvUtils;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/11/16
  */
-public class BlockMetaRecipe {
-    private final Block block;
-    private final int meta;
+public class BlockMetaRecipe extends BlockMeta{
     private final NonNullList<ItemStack> outputs;
 
     public BlockMetaRecipe(ItemStack stack, List<ItemStack> outputs) {
-        Block block = null;
-        if (stack.getItem() instanceof ItemBlock)
-            block = ((ItemBlock) stack.getItem()).getBlock();
-        this.block = block;
-        this.meta = stack.getMetadata();
+        super(stack);
         this.outputs = InvUtils.asNonnullList(outputs);
     }
 
@@ -34,23 +26,12 @@ public class BlockMetaRecipe {
     }
 
     public BlockMetaRecipe(Block block, int meta, NonNullList<ItemStack> outputs) {
-        this.block = block;
-        this.meta = meta;
+        super(block,meta);
         this.outputs = outputs;
-    }
-
-    public boolean equals(Block block, int meta) {
-        return this.block == block && (this.meta == meta || meta == OreDictionary.WILDCARD_VALUE || this.meta == OreDictionary.WILDCARD_VALUE);
     }
 
     public NonNullList<ItemStack> getOutputs() {
         return outputs;
-    }
-
-    public ItemStack getStack() {
-        if (block == null)
-            return ItemStack.EMPTY;
-        return new ItemStack(block, 1, meta);
     }
 
     @Override

@@ -19,6 +19,10 @@ import betterwithmods.manual.api.prefab.manual.ResourceContentProvider;
 import betterwithmods.manual.api.prefab.manual.TextureTabIconRenderer;
 import betterwithmods.manual.client.manual.provider.*;
 import betterwithmods.module.ModuleLoader;
+import betterwithmods.module.gameplay.breeding_harness.BreedingHarness;
+import betterwithmods.module.gameplay.breeding_harness.CapabilityHarness;
+import betterwithmods.module.hardcore.crafting.HCFurnace;
+import betterwithmods.module.hardcore.creatures.EntityTentacle;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -28,6 +32,7 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -35,8 +40,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ColorizerGrass;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -66,12 +73,14 @@ public class ClientProxy implements IProxy {
     public static final String[] DEFAULT_RESOURCE_PACKS = new String[]{"field_110449_ao", "defaultResourcePacks"};
     private static ResourceProxy resourceProxy;
 
-    @Override
-    public void preInit(FMLPreInitializationEvent event) {
+    static {
         List<IResourcePack> packs = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), DEFAULT_RESOURCE_PACKS);
         resourceProxy = new ResourceProxy();
         packs.add(resourceProxy);
+    }
 
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
         ModuleLoader.preInitClient(event);
         registerRenderInformation();
         initRenderers();
@@ -80,6 +89,9 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void init(FMLInitializationEvent event) {
+        List<IResourcePack> packs = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), DEFAULT_RESOURCE_PACKS);
+        System.out.println(packs.stream().map(IResourcePack::getPackName).toString());
+
         ModuleLoader.initClient(event);
         registerColors();
         ManualAPI.addProvider(new DefinitionPathProvider());
@@ -94,6 +106,7 @@ public class ClientProxy implements IProxy {
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         ModuleLoader.postInitClient(event);
+        RenderUtils.registerFilters();
     }
 
     @SubscribeEvent
@@ -106,17 +119,19 @@ public class ClientProxy implements IProxy {
     }
 
     private void registerRenderInformation() {
-        RenderUtils.registerFilters();
+
         OBJLoader.INSTANCE.addDomain(BWMod.MODID);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillHorizontal.class, new TESRWindmill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillVertical.class, new TESRVerticalWindmill());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWaterwheel.class, new TESRWaterwheel());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFilteredHopper.class, new TESRFilteredHopper());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurntable.class, new TESRTurntable());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrucible.class, new TESRCookingPot());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCauldron.class, new TESRCookingPot());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCookingPot.class, new TESRCookingPot());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBeacon.class, new TESRBeacon());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSteelSaw.class, new TESRSteelSaw());
+        if (ModuleLoader.isFeatureEnabled(HCFurnace.class)) {
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFurnace.class, new TESRFurnaceContent());
+        }
     }
 
     private void registerColors() {
@@ -147,6 +162,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityBroadheadArrow.class, RenderBroadheadArrow::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySpiderWeb.class, manager -> new RenderSnowball<>(manager, Item.getItemFromBlock(Blocks.WEB), Minecraft.getMinecraft().getRenderItem()));
         RenderingRegistry.registerEntityRenderingHandler(EntityJungleSpider.class, RenderJungleSpider::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityTentacle.class, RenderTentacle::new);
     }
 
 
@@ -188,4 +204,27 @@ public class ClientProxy implements IProxy {
         resourceProxy.addResource(space, dir, file, ext);
     }
 
+    @Override
+    public void addResourceOverride(String space, String domain, String dir, String file, String ext) {
+        resourceProxy.addResource(space, domain, dir, file, ext);
+    }
+
+
+    @Override
+    public void syncHarness(int entityId, ItemStack harness) {
+        Entity entity = getEntityByID(entityId);
+        if (entity != null) {
+            CapabilityHarness cap = BreedingHarness.getCapability(entity);
+            if (cap != null) {
+                cap.setHarness(harness);
+            }
+        }
+    }
+
+    private Entity getEntityByID(int id) {
+        World world = Minecraft.getMinecraft().world;
+        if (world == null)
+            return null;
+        return world.getEntityByID(id);
+    }
 }

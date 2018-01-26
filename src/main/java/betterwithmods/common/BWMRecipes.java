@@ -2,6 +2,7 @@ package betterwithmods.common;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -29,6 +31,7 @@ public final class BWMRecipes {
     private static File RECIPE_DIR = null;
     private static final Map<String, List<IRecipe>> HARDCORE_RECIPES = new HashMap<>();
     public static final List<ItemStack> REMOVE_RECIPE_BY_OUTPUT = Lists.newArrayList();
+    public static final List<ResourceLocation> REMOVE_RECIPE_BY_RL = Lists.newArrayList();
 
     public static List<IRecipe> getHardcoreRecipes(String ID) {
         if (HARDCORE_RECIPES.containsKey(ID))
@@ -67,16 +70,39 @@ public final class BWMRecipes {
     public static void removeRecipe(ItemStack output) {
         REMOVE_RECIPE_BY_OUTPUT.add(output);
     }
+
+    public static void removeRecipe(ResourceLocation loc) {
+        REMOVE_RECIPE_BY_RL.add(loc);
+    }
+
+    public static void removeRecipe(String loc) {
+        removeRecipe(new ResourceLocation(loc));
+    }
+
     // Replace calls to GameRegistry.addShapeless/ShapedRecipe with these methods, which will dump it to a json in your dir of choice
 // Also works with OD, replace GameRegistry.addRecipe(new ShapedOreRecipe/ShapelessOreRecipe with the same calls
 
     public static void addFurnaceRecipe(ItemStack input, ItemStack output) {
-        FurnaceRecipes.instance().getSmeltingList().put(input,output);
+        FurnaceRecipes.instance().getSmeltingList().put(input, output);
+    }
+
+    public static void removeFurnaceRecipe(Item input) {
+        removeFurnaceRecipe(new ItemStack(input));
     }
 
     public static void removeFurnaceRecipe(ItemStack input) {
         //for some reason mojang put fucking wildcard for their ore meta
         FurnaceRecipes.instance().getSmeltingList().entrySet().removeIf(next -> next.getKey().isItemEqual(input) || (next.getKey().getItem() == input.getItem() && next.getKey().getMetadata() == OreDictionary.WILDCARD_VALUE));
+    }
+
+    public static Set<IBlockState> getStatesFromStack(ItemStack stack) {
+        if (stack.getItem() instanceof ItemBlock) {
+            if (stack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
+                return Sets.newHashSet(((ItemBlock) stack.getItem()).getBlock().getBlockState().getValidStates());
+            }
+            return Sets.newHashSet(getStateFromStack(stack));
+        }
+        return Sets.newHashSet();
     }
 
     public static IBlockState getStateFromStack(ItemStack stack) {
@@ -94,7 +120,7 @@ public final class BWMRecipes {
 
     private static void setupDir() {
         if (RECIPE_DIR == null) {
-            RECIPE_DIR = new File("/home/tyler/Programming/BetterWithMods-1.12/src/main/resources/assets/betterwithmods/recipes/output");
+            RECIPE_DIR = new File("/home/primetoxinz/Programming/BetterWithMods-1.12/src/main/resources/assets/betterwithmods/recipes/output");
         }
 
         if (!RECIPE_DIR.exists()) {

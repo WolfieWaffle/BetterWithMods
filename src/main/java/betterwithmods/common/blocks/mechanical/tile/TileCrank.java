@@ -3,7 +3,6 @@ package betterwithmods.common.blocks.mechanical.tile;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IAxle;
 import betterwithmods.api.tile.ICrankable;
-import betterwithmods.api.tile.IMechanicalPower;
 import betterwithmods.common.blocks.mechanical.BlockCrank;
 import betterwithmods.common.blocks.tile.TileBasic;
 import net.minecraft.block.Block;
@@ -17,7 +16,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by primetoxinz on 7/24/17.
  */
-public class TileCrank extends TileBasic implements IMechanicalPower, IAxle {
+public class TileCrank extends TileBasic implements IAxle {
     @Override
     public int getMechanicalOutput(EnumFacing facing) {
 	    if (!(world.getTileEntity(pos.offset(facing)) instanceof ICrankable))
@@ -46,15 +45,12 @@ public class TileCrank extends TileBasic implements IMechanicalPower, IAxle {
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nonnull EnumFacing facing) {
-        if (capability == CapabilityMechanicalPower.MECHANICAL_POWER)
-            return true;
-        return super.hasCapability(capability, facing);
+        return capability == CapabilityMechanicalPower.MECHANICAL_POWER && facing != EnumFacing.UP;
     }
 
-    @Nonnull
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nonnull EnumFacing facing) {
-        if (capability == CapabilityMechanicalPower.MECHANICAL_POWER)
+        if (hasCapability(capability,facing))
             return CapabilityMechanicalPower.MECHANICAL_POWER.cast(this);
         return super.getCapability(capability, facing);
     }

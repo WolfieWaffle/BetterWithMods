@@ -45,7 +45,7 @@ public final class BWMItems {
     public static final Item STEEL_SWORD = new ItemSoulforgedSword().setRegistryName("steel_sword");
     public static final Item STEEL_MATTOCK = new ItemSoulforgedMattock().setRegistryName("steel_mattock");
     public static final Item STEEL_BATTLEAXE = new ItemSoulforgedBattleAxe().setRegistryName("steel_battleaxe");
-    public static final Item CREEPER_OYSTER = (new ItemAltNameFood(6, false).setPotionEffect(new PotionEffect(MobEffects.POISON, 5, 0), 1)).setCreativeTab(CreativeTabs.FOOD).setRegistryName("creeper_oyster");
+    public static final Item CREEPER_OYSTER = (new ItemAltNameFood(6, false).setPotionEffect(new PotionEffect(MobEffects.POISON, 100, 0), 1)).setCreativeTab(CreativeTabs.FOOD).setRegistryName("creeper_oyster");
     public static final Item ENDER_SPECTACLES = new ItemEnderSpectacles().setRegistryName("ender_spectacles");
     public static final Item STEEL_HELMET = new ItemSoulforgeArmor(EntityEquipmentSlot.HEAD).setRegistryName("steel_helmet");
     public static final Item STEEL_CHEST = new ItemSoulforgeArmor(EntityEquipmentSlot.CHEST).setRegistryName("steel_chest");
@@ -115,7 +115,6 @@ public final class BWMItems {
         registerItem(STEEL_BOOTS);
         registerItem(CREEPER_OYSTER);
         registerItem(ENDER_SPECTACLES);
-        registerItem(BREEDING_HARNESS);
         registerItem(RAW_EGG);
         registerItem(COOKED_EGG);
         registerItem(RAW_SCRAMBLED_EGG);

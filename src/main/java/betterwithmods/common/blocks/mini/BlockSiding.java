@@ -30,7 +30,7 @@ public class BlockSiding extends BlockMini {
             case Y:
                 if (inCenter(hitXFromCenter, hitZFromCenter, 0.25f)) {
                     state = state.withProperty(facingProperty, facing.getOpposite().getIndex());
-                } else if (isMax(hitXFromCenter,hitZFromCenter)) {
+                } else if (isMax(hitXFromCenter, hitZFromCenter)) {
                     state = state.withProperty(facingProperty, ((hitXFromCenter > 0) ? EnumFacing.EAST : EnumFacing.WEST).getIndex());
                 } else {
                     state = state.withProperty(facingProperty, ((hitZFromCenter > 0) ? EnumFacing.SOUTH : EnumFacing.NORTH).getIndex());
@@ -39,7 +39,7 @@ public class BlockSiding extends BlockMini {
             case X:
                 if (inCenter(hitYFromCenter, hitZFromCenter, 0.25f)) {
                     state = state.withProperty(facingProperty, facing.getOpposite().getIndex());
-                } else if (isMax(hitYFromCenter,hitZFromCenter)) {
+                } else if (isMax(hitYFromCenter, hitZFromCenter)) {
                     state = state.withProperty(facingProperty, ((hitYFromCenter > 0) ? EnumFacing.UP : EnumFacing.DOWN).getIndex());
                 } else {
                     state = state.withProperty(facingProperty, ((hitZFromCenter > 0) ? EnumFacing.SOUTH : EnumFacing.NORTH).getIndex());
@@ -48,7 +48,7 @@ public class BlockSiding extends BlockMini {
             case Z:
                 if (inCenter(hitYFromCenter, hitXFromCenter, 0.25f)) {
                     state = state.withProperty(facingProperty, facing.getOpposite().getIndex());
-                } else if (isMax(hitYFromCenter,hitXFromCenter)) {
+                } else if (isMax(hitYFromCenter, hitXFromCenter)) {
                     state = state.withProperty(facingProperty, ((hitYFromCenter > 0) ? EnumFacing.UP : EnumFacing.DOWN).getIndex());
                 } else {
                     state = state.withProperty(facingProperty, ((hitXFromCenter > 0) ? EnumFacing.EAST : EnumFacing.WEST).getIndex());
@@ -62,24 +62,19 @@ public class BlockSiding extends BlockMini {
         return state;
     }
 
+    private static final AxisAlignedBB[] boxes = new AxisAlignedBB[]{
+            new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D),
+            new AxisAlignedBB(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D),
+            new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D),
+            new AxisAlignedBB(0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D),
+            new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D),
+            new AxisAlignedBB(0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D),
+    };
+
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        //TODO Cache AABB
-        int ori = getActualState(state,source,pos).getValue(getOrientationProperty());
-        switch (ori) {
-            case 1:
-                return new AxisAlignedBB(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
-            case 2:
-                return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
-            case 3:
-                return new AxisAlignedBB(0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
-            case 4:
-                return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
-            case 5:
-                return new AxisAlignedBB(0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-            default:
-                return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-        }
+        int i = getActualState(state, source, pos).getValue(getOrientationProperty());
+        return boxes[i];
     }
 
 }

@@ -74,8 +74,6 @@ public class BlockAesthetic extends BWMBlock implements IMultiVariants {
 
     @Override
     public boolean canDropFromExplosion(Explosion explosionIn) {
-        //TODO might need to take steel blocks out of this or get a state based method added by forge
-        //needed to make steel wither-proof
         return false;
     }
 

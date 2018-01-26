@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Created by tyler on 5/21/17.
+ * Created by primetoxinz on 5/21/17.
  */
 public class HCSeeds extends Feature {
     private static final Random RANDOM = new Random();

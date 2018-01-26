@@ -1,5 +1,6 @@
 package betterwithmods.module.hardcore.crafting;
 
+import betterwithmods.common.BWMRecipes;
 import betterwithmods.common.items.ItemMaterial;
 import betterwithmods.module.Feature;
 import betterwithmods.module.ModuleLoader;
@@ -10,34 +11,37 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class HCDiamond extends Feature {
+    public HCDiamond() {
+        recipeCondition = true;
+    }
+
     @Override
     public String getFeatureDescription() {
         return "Makes it so diamonds have to me made into an ingot alloy to be used in certain recipes";
     }
 
     @Override
-    public void init(FMLInitializationEvent event) {
-        if (HCTools.changeAxeRecipe) {
-            addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_AXE), "D ", "DS", " S", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setMirrored(true).setRegistryName(new ResourceLocation("minecraft", "diamond_axe")));
-        } else {
-            addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_AXE), "DD", "DS", " S", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setMirrored(true).setRegistryName(new ResourceLocation("minecraft", "diamond_axe")));
-        }
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_HOE), "DD", " S", " S", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setMirrored(true).setRegistryName(new ResourceLocation("minecraft", "diamond_hoe")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_PICKAXE), "DDD", " S ", " S ", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setRegistryName(new ResourceLocation("minecraft", "diamond_pickaxe")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_SHOVEL), "D", "S", "S", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setRegistryName(new ResourceLocation("minecraft", "diamond_shovel")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_SWORD), "D", "D", "S", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT), 'S', "stickWood").setRegistryName(new ResourceLocation("minecraft", "diamond_sword")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_HELMET), "DDD", "D D", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT)).setRegistryName(new ResourceLocation("minecraft", "diamond_helmet")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_CHESTPLATE), "D D", "DDD", "DDD", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT)).setRegistryName(new ResourceLocation("minecraft", "diamond_chestplate")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_LEGGINGS), "DDD", "D D", "D D", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT)).setRegistryName(new ResourceLocation("minecraft", "diamond_leggings")));
-        addHardcoreRecipe(new ShapedOreRecipe(null, new ItemStack(Items.DIAMOND_BOOTS), "D D", "D D", 'D', ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT)).setRegistryName(new ResourceLocation("minecraft", "diamond_boots")));
+    public void preInit(FMLPreInitializationEvent event) {
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_axe"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_hoe"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_pickaxe"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_sword"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_shovel"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_helmet"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_chestplate"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_leggings"));
+        BWMRecipes.removeRecipe(new ResourceLocation("minecraft:diamond_boots"));
+    }
 
+    @Override
+    public void init(FMLInitializationEvent event) {
         if (ModuleLoader.isFeatureEnabled(MetalReclaming.class) && MetalReclaming.reclaimCount > 0) {
             if (HCTools.changeAxeRecipe) {
                 CrucibleRecipes.addStokedCrucibleRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.DIAMOND_INGOT, 2), new Object[]{new ItemStack(Items.DIAMOND_AXE, 1, OreDictionary.WILDCARD_VALUE)});

@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 3/3/17
  */
 public class BlockCookingPot extends BWMBlock implements IMultiVariants {
@@ -104,6 +104,8 @@ public class BlockCookingPot extends BWMBlock implements IMultiVariants {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if(player.isSneaking())
+            return false;
         if (world.isRemote) {
             return true;
         } else {

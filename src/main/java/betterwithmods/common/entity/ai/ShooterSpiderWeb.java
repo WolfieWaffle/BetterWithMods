@@ -8,7 +8,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * Created by tyler on 4/22/17.
+ * Created by primetoxinz on 4/22/17.
  */
 public class ShooterSpiderWeb extends EntityAIBase {
     private EntitySpider spider;
@@ -41,7 +41,7 @@ public class ShooterSpiderWeb extends EntityAIBase {
         double d = spider.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
         boolean canSee = spider.getEntitySenses().canSee(target);
         if (d <= (maxRadius * maxRadius)) {
-            spider.getNavigator().clearPathEntity();
+            spider.getNavigator().clearPath();
         } else {
             spider.getNavigator().tryMoveToEntityLiving(target, 1.0F);
         }
@@ -77,7 +77,7 @@ public class ShooterSpiderWeb extends EntityAIBase {
 	    double d2 = d0 - web.posY;
 	    double d3 = target.posZ - spider.posZ;
 	    float f = MathHelper.sqrt(d1 * d1 + d3 * d3) * 0.2F;
-	    web.setThrowableHeading(d1, d2 + (double)f, d3, 1.0F, 2);
+	    web.shoot(d1, d2 + (double)f, d3, 1.0F, 2);
 	    spider.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1.0F, 1.0F / (spider.getRNG().nextFloat() * 0.4F + 0.8F));
 	    spider.world.spawnEntity(web);
     }

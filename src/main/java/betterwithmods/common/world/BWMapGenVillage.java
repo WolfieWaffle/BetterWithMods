@@ -24,7 +24,7 @@ import static net.minecraft.world.gen.structure.StructureVillagePieces.Road;
 import static net.minecraft.world.gen.structure.StructureVillagePieces.Torch;
 
 /**
- * Created by tyler on 5/21/17.
+ * Created by primetoxinz on 5/21/17.
  */
 public class BWMapGenVillage extends MapGenVillage {
     public static List<StructureVillagePieces.PieceWeight> getPiecesAbandoned(Random random, int size) {

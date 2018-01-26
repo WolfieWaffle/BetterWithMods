@@ -1,7 +1,7 @@
 package betterwithmods.util.player;
 
 /**
- * Created by tyler on 5/13/17.
+ * Created by primetoxinz on 5/13/17.
  */
 public enum GloomPenalty implements IPlayerPenalty {
     NO_PENALTY(1.0f, 0, 0, "", true),

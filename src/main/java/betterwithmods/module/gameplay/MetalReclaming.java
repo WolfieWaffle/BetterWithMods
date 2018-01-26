@@ -14,7 +14,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import static betterwithmods.module.gameplay.CrucibleRecipes.addStokedCrucibleRecipe;
 
 /**
- * Created by tyler on 4/20/17.
+ * Created by primetoxinz on 4/20/17.
  */
 public class MetalReclaming extends Feature {
     public static int reclaimCount;

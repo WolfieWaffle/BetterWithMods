@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:chair_acacia",
+    "count": 4
+  },
+  "pattern": [
+    "S  ",
+    "SSS",
+    "M M"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "item": "betterwithmods:wood_siding",
+      "data": 4
+    },
+    "M": {
+      "item": "betterwithmods:wood_moulding",
+      "data": 4
+    }
+  }
+}

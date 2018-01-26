@@ -132,7 +132,7 @@ public class BlockAxle extends BlockRotate implements IOverpower, IBlockActive {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) withTile(world, pos).ifPresent(t -> System.out.println(t));
+        if (!world.isRemote) withTile(world, pos).ifPresent(System.out::println);
         return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
     }
 
@@ -213,7 +213,7 @@ public class BlockAxle extends BlockRotate implements IOverpower, IBlockActive {
             IBlockState state = getActualState(world.getBlockState(pos), world, pos);
             pow = state.getValue(ACTIVE) ? 3 : 0;
         } else {
-            pow = withTile(world, pos).map(TileAxle::getPower).orElse(0);
+            pow = withTile(world, pos).map(TileAxle::getSignal).orElse((byte) 0);
         }
         for (int i = 0; i < pow; i++) {
             float flX = pos.getX() + rand.nextFloat();

@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class PlaceClay extends Feature {
@@ -52,7 +53,7 @@ public class PlaceClay extends Feature {
     }
 
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlaceClay(PlayerInteractEvent.RightClickBlock event) {
         if (event.isCanceled())
             return;
@@ -64,6 +65,8 @@ public class PlaceClay extends Feature {
                 ItemBlock item = (ItemBlock) Item.getItemFromBlock(BWMBlocks.UNFIRED_POTTERY);
                 EnumActionResult result = item.onItemUse(container, event.getWorld(), event.getPos(), event.getHand(), event.getFace(), (float) event.getHitVec().x, (float) event.getHitVec().y, (float) event.getHitVec().z);
                 if (result == EnumActionResult.SUCCESS) {
+                    if (!event.getEntityPlayer().capabilities.isCreativeMode)
+                        event.getItemStack().shrink(1);
                     event.getEntityPlayer().swingArm(event.getHand());
                 }
             }
@@ -75,6 +78,8 @@ public class PlaceClay extends Feature {
                 ItemBlock item = (ItemBlock) Item.getItemFromBlock(BWMBlocks.UNFIRED_POTTERY);
                 EnumActionResult result = item.onItemUse(container, event.getWorld(), event.getPos(), event.getHand(), event.getFace(), (float) event.getHitVec().x, (float) event.getHitVec().y, (float) event.getHitVec().z);
                 if (result == EnumActionResult.SUCCESS) {
+                    if (!event.getEntityPlayer().capabilities.isCreativeMode)
+                        event.getItemStack().shrink(1);
                     event.getEntityPlayer().swingArm(event.getHand());
                 }
             }

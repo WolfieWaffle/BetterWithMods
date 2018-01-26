@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * Created by tyler on 5/25/17.
+ * Created by primetoxinz on 5/25/17.
  */
 @FunctionalInterface
 public interface IBehaviorEntity {

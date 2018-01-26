@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import java.util.Set;
 
 /**
- * Created by tyler on 4/21/17.
+ * Created by primetoxinz on 4/21/17.
  */
 public class NuggetCompression extends Feature {
 

@@ -63,24 +63,22 @@ public class HopperRecipes extends Feature {
 
         HopperFilters.addFilter(1, Blocks.LADDER, 0, HopperRecipes::isItem);
         HopperFilters.addFilter(2, Blocks.TRAPDOOR, 0, stack -> !isItem(stack));
-
+        HopperFilters.addFilter(3, BWMBlocks.GRATE, OreDictionary.WILDCARD_VALUE, stack -> stack.getMaxStackSize() == 1);
         HopperFilters.addFilter(4, BWMBlocks.SLATS, OreDictionary.WILDCARD_VALUE, HopperRecipes::isFlat);
         HopperFilters.addFilter(5, new ItemStack(BWMBlocks.WICKER, 1), HopperRecipes::isDust);
-
-        HopperFilters.addFilter(3, BWMBlocks.GRATE, OreDictionary.WILDCARD_VALUE, stack -> stack.getMaxStackSize() == 1);
         HopperFilters.addFilter(7, Blocks.IRON_BARS, 0, stack -> stack.getMaxStackSize() > 1);
-
         HopperFilters.addFilter(6, Blocks.SOUL_SAND, 0, stack -> stack.isItemEqual(new ItemStack(Blocks.SOUL_SAND)));
 
-        HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.GROUND_NETHERRACK,8), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.HELLFIRE_DUST,8),new ItemStack(BWMBlocks.URN, 1, 8)));
+        HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.GROUND_NETHERRACK,1), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.HELLFIRE_DUST,1),new ItemStack(BWMBlocks.URN, 1, 8)));
         HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.GROUND_NETHERRACK), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.HELLFIRE_DUST)));
-        HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SOUL_DUST,8), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SAWDUST,8),new ItemStack(BWMBlocks.URN, 1, 8)));
+        HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SOUL_DUST,1), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SAWDUST,1),new ItemStack(BWMBlocks.URN, 1, 8)));
         HopperInteractions.addHopperRecipe(new HopperInteractions.SoulUrnRecipe(ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SOUL_DUST), ItemMaterial.getMaterial(ItemMaterial.EnumMaterial.SAWDUST)));
         HopperInteractions.addHopperRecipe(new HopperInteractions.HopperRecipe(5, new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT), new ItemStack(Blocks.SAND), new ItemStack(Blocks.SAND, 1, 1)) {
             @Override
             public void craft(EntityItem inputStack, World world, BlockPos pos) {
                 InvUtils.ejectStackWithOffset(world, inputStack.getPosition(), output.copy());
                 TileEntityFilteredHopper tile = (TileEntityFilteredHopper) world.getTileEntity(pos);
+                assert tile != null;
                 ItemStackHandler inventory = tile.inventory;
                 ItemStack sand = secondaryOutput.get(world.rand.nextInt(secondaryOutput.size())).copy();
                 if (!InvUtils.insert(inventory, sand, false).isEmpty()) {
@@ -93,6 +91,7 @@ public class HopperRecipes extends Feature {
             @Override
             public boolean canCraft(World world, BlockPos pos) {
                 TileEntityFilteredHopper hopper = (TileEntityFilteredHopper) world.getTileEntity(pos);
+                assert hopper != null;
                 return super.canCraft(world, pos) && hopper.soulsRetained > 0;
             }
 

@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:crop_stake",
+    "count": 3
+  },
+  "pattern": [
+    "M",
+    "M",
+    "M"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "M": {
+      "ore": "mouldingWood",
+      "type": "forge:ore_dict"
+    }
+  }
+}

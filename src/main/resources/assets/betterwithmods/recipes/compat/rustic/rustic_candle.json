@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    }
+  ],
+  "result": {
+    "item": "rustic:candle",
+    "count": 6
+  },
+  "pattern": [
+    "C",
+    "S"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "blockCandle",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "betterwithmods:candle_holder"
+    }
+  }
+}

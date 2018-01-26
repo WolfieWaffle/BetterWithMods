@@ -114,12 +114,10 @@ public class BlockRope extends BWMBlock {
         return ROPE_AABB;
     }
 
-    @Override
     public EnumFacing getFacing(IBlockState state) {
         return null;
     }
 
-    @Override
     public IBlockState setFacingInBlock(IBlockState state, EnumFacing facing) {
         return state;
     }

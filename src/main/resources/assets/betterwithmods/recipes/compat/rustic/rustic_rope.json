@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    }
+  ],
+  "result": {
+    "item": "rustic:rope",
+    "count": 12
+  },
+  "pattern": [
+    "S",
+    "S",
+    "S"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "fiberHemp",
+      "type": "forge:ore_dict"
+    }
+  }
+}

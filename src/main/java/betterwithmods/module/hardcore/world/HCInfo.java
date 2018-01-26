@@ -4,7 +4,7 @@ import betterwithmods.module.Feature;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 /**
- * Created by tyler on 5/6/17.
+ * Created by primetoxinz on 5/6/17.
  */
 public class HCInfo extends Feature {
     @Override

@@ -1,7 +1,6 @@
 package betterwithmods.common.blocks;
 
 import betterwithmods.api.block.PropertyObject;
-import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.blocks.tile.TileCamo;
 import betterwithmods.common.registry.KilnStructureManager;
 import betterwithmods.common.registry.blockmeta.managers.KilnManager;
@@ -56,23 +55,7 @@ public class BlockKiln extends BWMBlock {
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         int oldCookTime = getCookCounter(world, pos);
-        BlockPos down = pos.down();
         BlockPos up = pos.up();
-        if (world.getBlockState(down).getBlock() != BWMBlocks.STOKED_FLAME) {
-            Block block = world.getBlockState(down).getBlock();
-            int meta = block.damageDropped(world.getBlockState(down));
-
-            boolean intenseFlame = BWMHeatRegistry.contains(block, meta) && BWMHeatRegistry.get(block, meta).value > 4;
-
-            if (!intenseFlame) {
-                world.setBlockState(pos, world.getBlockState(pos).withProperty(COOK, 0));
-
-                if (oldCookTime > 0)
-                    world.sendBlockBreakProgress(0, up, -1);
-                return;
-            }
-        }
-
         int currentTickRate = 20;
 
         boolean canCook = false;
@@ -103,12 +86,12 @@ public class BlockKiln extends BWMBlock {
             if (newCookTime == 0) {
                 world.sendBlockBreakProgress(0, up, -1);
                 setCookCounter(world, pos, 0);
-                world.scheduleBlockUpdate(pos, this, tickRate(world), 5);// world.markBlockForUpdate(pos);
+                world.scheduleBlockUpdate(pos, this, currentTickRate, 5);
             }
         } else if (oldCookTime != 0) {
             world.sendBlockBreakProgress(0, up, -1);
             setCookCounter(world, pos, 0);
-            world.scheduleBlockUpdate(pos, this, tickRate(world), 5);
+            world.scheduleBlockUpdate(pos, this, currentTickRate, 5);
         }
 
         world.scheduleBlockUpdate(pos, this, currentTickRate, 5);
@@ -120,16 +103,11 @@ public class BlockKiln extends BWMBlock {
             for (int zP = -1; zP < 2; zP++) {
                 if (xP != 0 || zP != 0) {
                     BlockPos bPos = pos.add(xP, -1, zP);
-                    if (BWMHeatRegistry.contains(world.getBlockState(bPos).getBlock(),
-                            world.getBlockState(bPos).getBlock().damageDropped(world.getBlockState(bPos)))) {
-                        if (BWMHeatRegistry.get(world.getBlockState(bPos).getBlock(), world.getBlockState(bPos)
-                                .getBlock().damageDropped(world.getBlockState(bPos))).value > 4)
-                            secondaryFire++;
-                    }
+                    secondaryFire += BWMHeatRegistry.getHeat(world.getBlockState(bPos));
                 }
             }
         }
-        return 60 * (8 - secondaryFire) / 8 + 20;
+        return Math.max(0, Math.max(0, 60 * (8 - Math.max(secondaryFire, 0))) / 8 + 20);
     }
 
     @Override
@@ -140,11 +118,9 @@ public class BlockKiln extends BWMBlock {
         IBlockState aboveBlock = world.getBlockState(above);
         IBlockState belowBlock = world.getBlockState(below);
         if (cookTime > 0) {
+
             if (!KilnManager.INSTANCE.contains(aboveBlock.getBlock(), aboveBlock.getBlock().damageDropped(aboveBlock))) {
-                if (!BWMHeatRegistry.contains(belowBlock.getBlock(), belowBlock.getBlock().damageDropped(belowBlock))
-                        || (BWMHeatRegistry.contains(belowBlock.getBlock(), belowBlock.getBlock().damageDropped(state))
-                        && BWMHeatRegistry.get(belowBlock.getBlock(),
-                        belowBlock.getBlock().damageDropped(belowBlock)).value < 5)) {
+                if (BWMHeatRegistry.get(belowBlock) != null) {
                     if (getCookCounter(world, pos) > 0) {
                         world.sendBlockBreakProgress(0, above, -1);
                         setCookCounter(world, pos, 0);
@@ -155,20 +131,6 @@ public class BlockKiln extends BWMBlock {
         world.scheduleBlockUpdate(pos, this, 20, 5);
     }
 
-    @Override
-    public boolean canRotateOnTurntable(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateHorizontally(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public boolean canRotateVertically(IBlockAccess world, BlockPos pos) {
-        return true;
-    }
 
     public int getCookCounterFromMeta(int meta) {
         return meta & 0x7;

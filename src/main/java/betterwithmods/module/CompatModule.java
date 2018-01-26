@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by tyler on 5/24/17.
+ * Created by primetoxinz on 5/24/17.
  */
 public class CompatModule extends Module {
     private HashMap<String, String> compatRegistry = Maps.newHashMap();
@@ -36,6 +36,7 @@ public class CompatModule extends Module {
         registerCompatFeature("rustic", "betterwithmods.module.compat.Rustic");
         registerCompatFeature("tconstruct", "betterwithmods.module.compat.tcon.TConstruct");
         registerCompatFeature("thermalexpansion","betterwithmods.module.compat.ThermalExpansion");
+        registerCompatFeature("dynamictrees","betterwithmods.module.compat.DynamicTrees");
     }
 
     @Override

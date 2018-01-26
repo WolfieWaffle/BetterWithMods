@@ -1,7 +1,6 @@
 package betterwithmods.module.compat.jei.category;
 
 import betterwithmods.BWMod;
-import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.blocks.mechanical.BlockMechMachines;
 import betterwithmods.module.compat.jei.wrapper.HopperRecipeWrapper;
 import mezz.jei.api.IGuiHelper;
@@ -12,7 +11,6 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,7 +20,7 @@ import javax.annotation.Nonnull;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/20/16
  */
 public class HopperRecipeCategory implements IRecipeCategory<HopperRecipeWrapper> {
@@ -88,7 +86,6 @@ public class HopperRecipeCategory implements IRecipeCategory<HopperRecipeWrapper
         if (wrapper instanceof HopperRecipeWrapper.SoulUrn) {
             if (!wrapper.recipe.secondaryOutput.isEmpty()) {
                 guiItemStacks.init(5, false, x, y + 45); //urn
-                guiItemStacks.set(5, new ItemStack(BWMBlocks.URN, 1, 0));
             }
         }
         guiItemStacks.set(ingredients);

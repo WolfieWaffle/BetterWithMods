@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by tyler on 5/25/17.
+ * Created by primetoxinz on 5/25/17.
  */
 public class Hut2 extends AbandonedVillagePiece {
 

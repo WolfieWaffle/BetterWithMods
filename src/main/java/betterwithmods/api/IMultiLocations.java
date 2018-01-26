@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 /**
  * Used by Items and Blocks with a model location relative to their metadata.
  *
- * @author tyler
+ * @author primetoxinz
  */
 public interface IMultiLocations {
     /**

@@ -1,6 +1,7 @@
 package betterwithmods.common;
 
 import betterwithmods.BWMod;
+import betterwithmods.api.BWMAPI;
 import betterwithmods.api.capabilities.CapabilityAxle;
 import betterwithmods.api.capabilities.CapabilityMechanicalPower;
 import betterwithmods.api.tile.IAxle;
@@ -10,8 +11,9 @@ import betterwithmods.common.blocks.behaviors.BehaviorDiodeDispense;
 import betterwithmods.common.blocks.behaviors.BehaviorSilkTouch;
 import betterwithmods.common.entity.*;
 import betterwithmods.common.entity.item.EntityFallingBlockCustom;
-import betterwithmods.common.entity.item.EntityItemBuoy;
 import betterwithmods.common.potion.BWPotion;
+import betterwithmods.common.potion.PotionSlowfall;
+import betterwithmods.common.potion.PotionTruesight;
 import betterwithmods.common.registry.BellowsManager;
 import betterwithmods.common.registry.KilnStructureManager;
 import betterwithmods.common.registry.heat.BWMHeatRegistry;
@@ -24,11 +26,10 @@ import betterwithmods.module.compat.Rustic;
 import betterwithmods.module.compat.bop.BiomesOPlenty;
 import betterwithmods.module.gameplay.CraftingRecipes;
 import betterwithmods.module.hardcore.crafting.*;
+import betterwithmods.module.hardcore.creatures.EntityTentacle;
 import betterwithmods.module.hardcore.needs.HCTools;
 import betterwithmods.module.hardcore.world.HCTorches;
-import betterwithmods.util.ColorUtils;
-import betterwithmods.util.DispenserBehaviorDynamite;
-import betterwithmods.util.InvUtils;
+import betterwithmods.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -62,7 +63,6 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.awt.*;
-import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -74,11 +74,18 @@ public class BWRegistry {
     public static final Potion POTION_FORTUNE = null;
     @GameRegistry.ObjectHolder("betterwithmods:looting")
     public static final Potion POTION_LOOTING = null;
+    @GameRegistry.ObjectHolder("betterwithmods:slow_fall")
+    public static final Potion POTION_SLOWFALL = null;
 
     private static int availableEntityId = 0;
 
+    static {
+        BWMAPI.IMPLEMENTATION = new MechanicalUtil();
+    }
+
     public static void preInit() {
         API.manualAPI = ManualAPIImpl.INSTANCE;
+
         BWMBlocks.registerBlocks();
         BWMItems.registerItems();
         BWMBlocks.registerTileEntities();
@@ -103,21 +110,25 @@ public class BWRegistry {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         ForgeRegistry<IRecipe> reg = (ForgeRegistry<IRecipe>) event.getRegistry();
-
-        for (ItemStack output : BWMRecipes.REMOVE_RECIPE_BY_OUTPUT) {
-            for (Iterator<IRecipe> iter = reg.iterator(); iter.hasNext(); ) {
-                IRecipe recipe = iter.next();
+        for (IRecipe recipe : reg) {
+            for (ResourceLocation loc : BWMRecipes.REMOVE_RECIPE_BY_RL) {
+                if (loc.equals(recipe.getRegistryName()))
+                    reg.remove(recipe.getRegistryName());
+            }
+            for (ItemStack output : BWMRecipes.REMOVE_RECIPE_BY_OUTPUT) {
                 if (InvUtils.matches(recipe.getRecipeOutput(), output)) {
-                    reg.remove(reg.getKey(recipe));
+                    reg.remove(recipe.getRegistryName());
                     break;
                 }
             }
+
         }
     }
 
     public static void init() {
         BWRegistry.registerHeatSources();
         BWOreDictionary.registerOres();
+        VillagerUtils.initVillagerInfo();
     }
 
     public static void postInit() {
@@ -138,7 +149,6 @@ public class BWRegistry {
         BWRegistry.registerEntity(EntityDynamite.class, "bwm_dynamite", 10, 50, true);
         BWRegistry.registerEntity(EntityUrn.class, "bwm_urn", 10, 50, true);
         BWRegistry.registerEntity(EntityMiningCharge.class, "bwm_mining_charge", 10, 50, true);
-        BWRegistry.registerEntity(EntityItemBuoy.class, "entity_item_buoy", 64, 20, true);
         BWRegistry.registerEntity(EntityShearedCreeper.class, "entity_sheared_creeper", 64, 1, true);
         BWRegistry.registerEntity(EntityBroadheadArrow.class, "entity_broadhead_arrow", 64, 1, true);
         BWRegistry.registerEntity(EntityFallingGourd.class, "entity_falling_gourd", 64, 1, true);
@@ -146,8 +156,10 @@ public class BWRegistry {
         BWRegistry.registerEntity(EntitySpiderWeb.class, "bwm_spider_web", 64, 20, true);
         BWRegistry.registerEntity(EntityHCFishHook.class, "bwm_fishing_hook", 64, 20, true);
         BWRegistry.registerEntity(EntityJungleSpider.class, "bwm_jungle_spider", 64, 1, true);
+        BWRegistry.registerEntity(EntityTentacle.class, "bwm_tentacle", 64, 1, true);
 
-        EntityRegistry.registerEgg(new ResourceLocation(BWMod.MODID,"bwm_jungle_spider"),new Color(60,100,50).getRGB(),new Color(100,140,80).getRGB());
+
+        EntityRegistry.registerEgg(new ResourceLocation(BWMod.MODID, "bwm_jungle_spider"), new Color(60, 100, 50).getRGB(), new Color(100, 140, 80).getRGB());
     }
 
     public static void registerBlockDispenserBehavior() {
@@ -213,15 +225,16 @@ public class BWRegistry {
 
 
     public static void registerHeatSources() {
-        BWMHeatRegistry.setBlockHeatRegistry(Blocks.FIRE, 3);
-        BWMHeatRegistry.setBlockHeatRegistry(BWMBlocks.STOKED_FLAME, 8);
+        BWMHeatRegistry.addHeatSource(Blocks.FIRE, 3);
+        BWMHeatRegistry.addHeatSource(BWMBlocks.STOKED_FLAME, 8);
     }
 
     @SubscribeEvent
     public static void registerPotions(RegistryEvent.Register<Potion> event) {
-        event.getRegistry().register(registerPotion(new BWPotion(false, 14270531, 4, 1).setRegistryName("true_sight")));
-        event.getRegistry().register(registerPotion(new BWPotion(false, 14270531, 5, 2).setRegistryName("fortune")));
-        event.getRegistry().register(registerPotion(new BWPotion(false, 14270531, 6, 2).setRegistryName("looting")));
+        event.getRegistry().register(registerPotion(new PotionTruesight("true_sight", true, 14270531).setIconIndex(4, 1)));
+        event.getRegistry().register(registerPotion(new BWPotion("fortune", true, 14270531).setIconIndex(5, 2)));
+        event.getRegistry().register(registerPotion(new BWPotion("looting", true, 14270531).setIconIndex(6, 2)));
+        event.getRegistry().register(registerPotion(new PotionSlowfall("slow_fall", true, 0xF46F20).setIconIndex(4, 1)));
     }
 
     private static Potion registerPotion(Potion potion) {
@@ -269,6 +282,7 @@ public class BWRegistry {
             }
         }
     }
+
     private static void registerReplacements(IRecipe original, IRecipe from) {
         NonNullList<Ingredient> ing = original.getIngredients();
         for (int i = 0; i < ing.size(); i++) {

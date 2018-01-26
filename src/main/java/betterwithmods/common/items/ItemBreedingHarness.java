@@ -6,7 +6,7 @@ import betterwithmods.module.gameplay.Gameplay;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 11/15/16
  */
 public class ItemBreedingHarness extends ItemAltName {

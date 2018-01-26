@@ -3,7 +3,7 @@ package betterwithmods;
 import betterwithmods.client.BWGuiHandler;
 import betterwithmods.common.BWIMCHandler;
 import betterwithmods.common.BWRegistry;
-import betterwithmods.event.*;
+import betterwithmods.event.FakePlayerHandler;
 import betterwithmods.module.ModuleLoader;
 import betterwithmods.network.*;
 import betterwithmods.proxy.IProxy;
@@ -17,12 +17,12 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = BWMod.MODID, name = BWMod.NAME, version = BWMod.VERSION, dependencies = BWMod.DEPENDENCIES, guiFactory = "betterwithmods.client.gui.BWGuiFactory")
+@Mod(modid = BWMod.MODID, name = BWMod.NAME, version = BWMod.VERSION, dependencies = BWMod.DEPENDENCIES, guiFactory = "betterwithmods.client.gui.BWGuiFactory", acceptedMinecraftVersions = "[1.12, 1.13)")
 public class BWMod {
     public static final String MODID = "betterwithmods";
-    public static final String VERSION = "1.2.9-1.11.2";
+    public static final String VERSION = "${version}";
     public static final String NAME = "Better With Mods";
-    public static final String DEPENDENCIES = "before:survivalist;after:mantle;after:tconstruct;after:minechem;after:natura;after:terrafirmacraft;after:immersiveengineering;after:mekanism;after:thermalexpansion";
+    public static final String DEPENDENCIES = "before:survivalist;after:mantle;after:tconstruct;after:minechem;after:natura;after:terrafirmacraft;after:immersiveengineering;after:mekanism;after:thermalexpansion;after:ctm;after:geolosys;";
 
     public static Logger logger;
     @SuppressWarnings({"CanBeFinal", "unused"})
@@ -45,6 +45,7 @@ public class BWMod {
         NetworkHandler.register(MessageSyncModule.class, Side.CLIENT);
         NetworkHandler.register(MessageGuiShake.class, Side.CLIENT);
         NetworkHandler.register(MessageFat.class, Side.CLIENT);
+        NetworkHandler.register(MessageHarnessSync.class, Side.CLIENT);
         proxy.preInit(evt);
     }
 
@@ -61,10 +62,6 @@ public class BWMod {
     public void postInit(FMLPostInitializationEvent evt) {
         BWRegistry.postInit();
         ModuleLoader.postInit(evt);
-        MinecraftForge.EVENT_BUS.register(new PotionEventHandler());
-        MinecraftForge.EVENT_BUS.register(new BlastingOilEvent());
-        MinecraftForge.EVENT_BUS.register(new BreedingHardnessEvent());
-        MinecraftForge.EVENT_BUS.register(new FeedWolfchopEvent());
         if (evt.getSide().isServer())
             MinecraftForge.EVENT_BUS.register(new ModuleSync());
         proxy.postInit(evt);

@@ -38,16 +38,16 @@ public class FoodHelper {
     }
 
     public static void registerFood(ItemStack item, int hunger) {
-        registerFood(item, hunger, 0);
+        registerFood(item, hunger, 0.5f);
     }
 
-    public static void registerFood(ItemStack stack, int hunger, int saturation) {
-        registerFood(stack, hunger, saturation, false);
+    public static void registerFood(ItemStack stack, int hunger, float fat) {
+        registerFood(stack, hunger, fat, false);
     }
 
 
-    public static void registerFood(ItemStack stack, int hunger, int saturation, boolean alwaysEdible) {
-        registerFood(stack, new FoodValues(hunger, saturation), alwaysEdible);
+    public static void registerFood(ItemStack stack, int hunger, float fat, boolean alwaysEdible) {
+        registerFood(stack, new FoodValues(hunger, fat), alwaysEdible);
     }
 
     protected static void registerFood(ItemStack stack, FoodValues values) {
@@ -72,4 +72,5 @@ public class FoodHelper {
     protected static boolean match(ItemStack a, ItemStack b) {
         return a.getItem().equals(b.getItem()) && (a.getMetadata() == b.getMetadata() || (a.getMetadata() == OreDictionary.WILDCARD_VALUE || b.getMetadata() == OreDictionary.WILDCARD_VALUE));
     }
+
 }

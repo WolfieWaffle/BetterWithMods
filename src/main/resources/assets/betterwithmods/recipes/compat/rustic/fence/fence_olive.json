@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "rustic"
+    },
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "rustic:fence_olive",
+    "count": 3
+  },
+  "pattern": [
+    "MMM"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "M": {
+      "item": "betterwithmods:rustic_compat_moulding",
+      "data": 1
+    }
+  }
+}

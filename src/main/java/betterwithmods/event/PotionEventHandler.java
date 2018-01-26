@@ -3,7 +3,8 @@ package betterwithmods.event;
 import betterwithmods.BWMod;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWRegistry;
-import net.minecraft.block.state.IBlockState;
+import betterwithmods.common.items.ItemEnderSpectacles;
+import betterwithmods.common.potion.BWPotion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,173 +12,137 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemSoup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber
 public class PotionEventHandler {
 
-	public static boolean canMobsSpawnHere(World world, BlockPos pos) {
-		if (!world.isSideSolid(pos.down(), EnumFacing.UP)) {
-			return false;
-		} else if (!world.isBlockNormalCube(pos, false) && !world.isBlockNormalCube(pos.up(), false)
-			&& !world.getBlockState(pos).getMaterial().isLiquid()) {
-			IBlockState state = world.getBlockState(pos);
-			if (state == Blocks.BEDROCK.getDefaultState()) {
-				return false;
-			} else if (world.getWorldTime() < 11615 && world.getLightFor(EnumSkyBlock.SKY, pos) >= 15) {
-				return false;
-			} else {
-				int lightLevel = world.getLightFor(EnumSkyBlock.BLOCK, pos);
-				return lightLevel < 8 && (world.isAirBlock(pos) || state.getCollisionBoundingBox(world, pos) == null);
-			}
-		} else {
-			return false;
-		}
 
-	}
+    @SubscribeEvent
+    public static void onEndermanLook(LivingSetAttackTargetEvent event) {
+        EntityLivingBase target = event.getTarget();
+        EntityLivingBase living = event.getEntityLiving();
+        if (living instanceof EntityEnderman && target instanceof EntityPlayer) {
+            if (target.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ItemEnderSpectacles) {
+                ((EntityEnderman) living).setAttackTarget(null);
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void onRenderFireOverlay(RenderBlockOverlayEvent e) {
-		if (e.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE) {
-			if (e.getPlayer().getEntityWorld().getBlockState(e.getBlockPos()).getBlock() == BWMBlocks.STOKED_FLAME) {
-				renderFireInFirstPerson();
-				e.setCanceled(true);
-			}
-		}
-	}
 
-	private void renderFireInFirstPerson() {
-		Minecraft mc = Minecraft.getMinecraft();
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBuffer();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F);
-		GlStateManager.depthFunc(519);
-		GlStateManager.depthMask(false);
-		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-			GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-			GlStateManager.DestFactor.ZERO);
+    @SubscribeEvent
+    public static void onRenderFireOverlay(RenderBlockOverlayEvent e) {
+        if (e.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE) {
+            if (e.getPlayer().getEntityWorld().getBlockState(e.getBlockPos()).getBlock() == BWMBlocks.STOKED_FLAME) {
+                renderFireInFirstPerson();
+                e.setCanceled(true);
+            }
+        }
+    }
 
-		for (int i = 0; i < 2; ++i) {
-			GlStateManager.pushMatrix();
-			TextureAtlasSprite textureatlassprite = mc.getTextureMapBlocks()
-				.getTextureExtry(BWMod.MODID + ":blocks/stoked_fire_layer_0");
-			if (textureatlassprite == null)
-				textureatlassprite = mc.getTextureMapBlocks().getMissingSprite();
-			mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			float f1 = textureatlassprite.getMinU();
-			float f2 = textureatlassprite.getMaxU();
-			float f3 = textureatlassprite.getMinV();
-			float f4 = textureatlassprite.getMaxV();
-			GlStateManager.translate((float) (-(i * 2 - 1)) * 0.24F, -0.3F, 0.0F);
-			GlStateManager.rotate((float) (i * 2 - 1) * 10.0F, 0.0F, 1.0F, 0.0F);
-			vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-			vertexbuffer.pos(-0.5D, -0.5D, -0.5D).tex((double) f2, (double) f4).endVertex();
-			vertexbuffer.pos(0.5D, -0.5D, -0.5D).tex((double) f1, (double) f4).endVertex();
-			vertexbuffer.pos(0.5D, 0.5D, -0.5D).tex((double) f1, (double) f3).endVertex();
-			vertexbuffer.pos(-0.5D, 0.5D, -0.5D).tex((double) f2, (double) f3).endVertex();
-			tessellator.draw();
-			GlStateManager.popMatrix();
-		}
+    private static void renderFireInFirstPerson() {
+        Minecraft mc = Minecraft.getMinecraft();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F);
+        GlStateManager.depthFunc(519);
+        GlStateManager.depthMask(false);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
 
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.disableBlend();
-		GlStateManager.depthMask(true);
-		GlStateManager.depthFunc(515);
-	}
+        for (int i = 0; i < 2; ++i) {
+            GlStateManager.pushMatrix();
+            TextureAtlasSprite textureatlassprite = mc.getTextureMapBlocks()
+                    .getTextureExtry(BWMod.MODID + ":blocks/stoked_fire_layer_0");
+            if (textureatlassprite == null)
+                textureatlassprite = mc.getTextureMapBlocks().getMissingSprite();
+            mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            float f1 = textureatlassprite.getMinU();
+            float f2 = textureatlassprite.getMaxU();
+            float f3 = textureatlassprite.getMinV();
+            float f4 = textureatlassprite.getMaxV();
+            GlStateManager.translate((float) (-(i * 2 - 1)) * 0.24F, -0.3F, 0.0F);
+            GlStateManager.rotate((float) (i * 2 - 1) * 10.0F, 0.0F, 1.0F, 0.0F);
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            vertexbuffer.pos(-0.5D, -0.5D, -0.5D).tex((double) f2, (double) f4).endVertex();
+            vertexbuffer.pos(0.5D, -0.5D, -0.5D).tex((double) f1, (double) f4).endVertex();
+            vertexbuffer.pos(0.5D, 0.5D, -0.5D).tex((double) f1, (double) f3).endVertex();
+            vertexbuffer.pos(-0.5D, 0.5D, -0.5D).tex((double) f2, (double) f3).endVertex();
+            tessellator.draw();
+            GlStateManager.popMatrix();
+        }
 
-	@SubscribeEvent
-	public void onHarvestBlock(BlockEvent.HarvestDropsEvent event) {
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
+        GlStateManager.depthFunc(515);
+    }
 
-		if (event.getHarvester() != null && event.getHarvester().isPotionActive(BWRegistry.POTION_FORTUNE)) {
-			PotionEffect effect = event.getHarvester().getActivePotionEffect(BWRegistry.POTION_FORTUNE);
-			int level = effect.getAmplifier() + 1;
-			if (event.getFortuneLevel() < level) {
-				event.getDrops().clear();
-				event.getDrops().addAll(event.getState().getBlock().getDrops(event.getWorld(), event.getPos(), event.getState(), level));
-			}
-		}
-	}
+    @SubscribeEvent
+    public static void onHarvestBlock(BlockEvent.HarvestDropsEvent event) {
 
-	@SubscribeEvent
-	public void onLivingDeath(LootingLevelEvent event) {
-		if (event.getEntityLiving() != null && event.getEntityLiving().isPotionActive(BWRegistry.POTION_LOOTING)) {
-			PotionEffect effect = event.getEntityLiving().getActivePotionEffect(BWRegistry.POTION_LOOTING);
-			int level = effect.getAmplifier() + 1;
-			if (event.getLootingLevel() < level) {
-				event.setLootingLevel(level);
-			}
-		}
-	}
+        if (event.getHarvester() != null && event.getHarvester().isPotionActive(BWRegistry.POTION_FORTUNE)) {
+            PotionEffect effect = event.getHarvester().getActivePotionEffect(BWRegistry.POTION_FORTUNE);
+            int level = effect.getAmplifier() + 1;
+            if (event.getFortuneLevel() < level) {
+                event.getDrops().clear();
+                event.getDrops().addAll(event.getState().getBlock().getDrops(event.getWorld(), event.getPos(), event.getState(), level));
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void onPotionUpdate(LivingEvent.LivingUpdateEvent e) {
-		if (e.getEntity() instanceof EntityPlayer) {
+    @SubscribeEvent
+    public static void onLivingDeath(LootingLevelEvent event) {
+        if (event.getEntityLiving() != null && event.getEntityLiving().isPotionActive(BWRegistry.POTION_LOOTING)) {
+            PotionEffect effect = event.getEntityLiving().getActivePotionEffect(BWRegistry.POTION_LOOTING);
+            int level = effect.getAmplifier() + 1;
+            if (event.getLootingLevel() < level) {
+                event.setLootingLevel(level);
+            }
+        }
+    }
 
-			EntityPlayer player = (EntityPlayer) e.getEntity();
-			World world = player.getEntityWorld();
+    @SubscribeEvent
+    public static void onPotionUpdate(LivingEvent.LivingUpdateEvent e) {
+        if (e.getEntity() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) e.getEntity();
+            for (PotionEffect potion : player.getActivePotionEffects()) {
+                if (potion.getPotion() instanceof BWPotion) {
+                    ((BWPotion) potion.getPotion()).tick(player);
+                }
+            }
+        }
+    }
 
-			if (player.isPotionActive(BWRegistry.POTION_TRUESIGHT)) {
-				if (world.isRemote) {
-					Minecraft mc = Minecraft.getMinecraft();
-					int var3 = mc.gameSettings.particleSetting;
-					if (!mc.isGamePaused()
-						&& (world.provider.getDimension() == 0 || world.provider.getDimension() == 1)) {
-
-						int var4 = MathHelper.floor(player.posX);
-						int var5 = MathHelper.floor(player.posY);
-						int var6 = MathHelper.floor(player.posZ);
-						int radius = 10;
-						for (int x = var4 - radius; x <= var4 + radius; ++x) {
-							for (int y = var5 - radius; y <= var5 + radius; ++y) {
-								for (int z = var6 - radius; z <= var6 + radius; ++z) {
-									if (canMobsSpawnHere(world, new BlockPos(x, y, z))
-										&& (var3 == 0 || world.rand.nextInt(12) <= 2 - var3 << 1)) {
-
-										double i = (double) x + world.rand.nextDouble();
-										double j = (double) y + world.rand.nextDouble() * 0.25D;
-										double k = (double) z + world.rand.nextDouble();
-										world.spawnParticle(EnumParticleTypes.SPELL_MOB, i, j, k, 0, 0, 0);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void saveSoup(LivingEntityUseItemEvent.Finish event) {
-		if (event.getItem() != null) {
-			if (event.getItem().getItem() instanceof ItemSoup) {
-				if (event.getItem().getCount() > 0) {
-					ItemStack result = event.getResultStack();
-					event.setResultStack(event.getItem());
-					if (event.getEntityLiving() instanceof EntityPlayer) {
-						EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-						if (!player.inventory.addItemStackToInventory(result)) {
-							player.dropItem(result, false);
-						}
-					}
-				}
-			}
-		}
-	}
+    @SubscribeEvent
+    public static void saveSoup(LivingEntityUseItemEvent.Finish event) {
+        if (event.getItem().getItem() instanceof ItemSoup) {
+            if (event.getItem().getCount() > 0) {
+                ItemStack result = event.getResultStack();
+                event.setResultStack(event.getItem());
+                if (event.getEntityLiving() instanceof EntityPlayer) {
+                    EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+                    if (!player.inventory.addItemStackToInventory(result)) {
+                        player.dropItem(result, false);
+                    }
+                }
+            }
+        }
+    }
 }

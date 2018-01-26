@@ -14,18 +14,14 @@ import betterwithmods.common.blocks.tile.*;
 import betterwithmods.common.items.ItemHempSeed;
 import betterwithmods.common.items.ItemSimpleSlab;
 import betterwithmods.common.items.tools.ItemSteelSaw;
-import betterwithmods.proxy.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,9 +38,9 @@ public final class BWMBlocks {
 	public static final Block ROPE = new BlockRope().setRegistryName("rope");
 	public static final Block SINGLE_MACHINES = new BlockMechMachines().setRegistryName("single_machine");
 	public static final Block WOODEN_AXLE = new BlockAxle(EnumTier.WOOD, 1, 1, 3).setRegistryName("wooden_axle");
-	public static final Block STEEL_AXLE = new BlockAxle(EnumTier.STEEL, 1, 3, 5).setRegistryName("steel_axle");
+	public static final Block STEEL_AXLE = new BlockAxle(EnumTier.STEEL, 1, 50, 5).setRegistryName("steel_axle");
 	public static final Block WOODEN_GEARBOX = new BlockGearbox(1, EnumTier.WOOD).setRegistryName("wooden_gearbox");
-	public static final Block STEEL_GEARBOX = new BlockGearbox(3, EnumTier.STEEL).setRegistryName("steel_gearbox");
+	public static final Block STEEL_GEARBOX = new BlockGearbox(50, EnumTier.STEEL).setRegistryName("steel_gearbox");
 	public static final Block WOODEN_BROKEN_GEARBOX = new BlockBrokenGearbox(EnumTier.WOOD).setRegistryName("wooden_broken_gearbox");
 	public static final Block STEEL_BROKEN_GEARBOX = new BlockBrokenGearbox(EnumTier.STEEL).setRegistryName("steel_broken_gearbox");
 	public static final Block HAND_CRANK = new BlockCrank().setRegistryName("hand_crank");
@@ -98,7 +94,6 @@ public final class BWMBlocks {
 	public static final Block STAKE = new BlockStake().setRegistryName("stake");
 	public static final Block STAKE_STRING = new BlockStakeString().setRegistryName("stake_string");
 	public static final Block NETHER_GROWTH = new BlockNetherGrowth().setRegistryName("nether_growth");
-	public static final Block BEACON = new BlockBeacon();
 	public static final Block STEEL_BLOCK = new BlockSteel().setRegistryName("steel_block");
 	public static final Block STEEL_SAW = new BlockSteelSaw().setRegistryName("steel_saw");
 	public static final Block BLOOD_LOG = new BlockBloodLog().setRegistryName("blood_log");
@@ -112,7 +107,8 @@ public final class BWMBlocks {
 	public static final Block INFERNAL_ENCHANTER = new BlockInfernalEnchanter().setRegistryName("infernal_enchanter").setCreativeTab(BWCreativeTabs.BWTAB);
 	public static final Block CANDLE = new BlockCandle().setRegistryName("candle").setCreativeTab(BWCreativeTabs.BWTAB);
 	public static final Block CANDLE_HOLDER = new BlockCandleHolder().setRegistryName("candle_holder").setCreativeTab(BWCreativeTabs.BWTAB);
-
+	public static final Block MERGER = new BlockMerger().setRegistryName("steel_merger");
+	public static final Block SHAFT = new BlockShaft().setRegistryName("shaft");
 	public static final Block DYNAMIC_MINI = new BlockDynamicMini().setRegistryName("siding").setCreativeTab(BWCreativeTabs.BWTAB);
 
 	private static final List<Block> BLOCKS = new ArrayList<>();
@@ -211,6 +207,8 @@ public final class BWMBlocks {
 		registerBlock(CANDLE, new ItemBlockMeta(CANDLE));
 		registerBlock(CANDLE_HOLDER);
 		registerBlock(DYNAMIC_MINI);
+		registerBlock(MERGER);
+		registerBlock(SHAFT);
 	}
 
 	public static void registerTileEntities() {
@@ -239,10 +237,11 @@ public final class BWMBlocks {
 		GameRegistry.registerTileEntity(TileSteelSaw.class, "bwm.steel_saw");
 		GameRegistry.registerTileEntity(TileEntityLathe.class, "bwm.lathe");
 		GameRegistry.registerTileEntity(TileEntityInfernalEnchanter.class, "bwm.infernal_enchanter");
-
 		GameRegistry.registerTileEntity(TileEntityMultiType.class, "bwm.multiType");
 		GameRegistry.registerTileEntity(TileCamo.class, "bwm.camo");
 		GameRegistry.registerTileEntity(TileEntityProxyBlock.class, "bwm.multiblock_dummy");
+		GameRegistry.registerTileEntity(TileMerger.class, "bwm.steel_merger");
+		GameRegistry.registerTileEntity(TileFurnace.class, "bwm.furnace");
 		GameRegistry.registerTileEntity(TileDynamicMini.class, "bwm.dynamic_mini");
 	}
 
@@ -284,24 +283,7 @@ public final class BWMBlocks {
 		BWMItems.setInventoryModel(Item.getItemFromBlock(block));
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static void registerFluidModels(Fluid fluid) {
-		if (fluid == null) {
-			return;
-		}
-		Block block = fluid.getBlock();
-		if (block != null) {
-			Item item = Item.getItemFromBlock(block);
-			ClientProxy.FluidStateMapper mapper = new ClientProxy.FluidStateMapper(fluid);
-			// item-model
-			if (item != Items.AIR) {
-				ModelLoader.registerItemVariants(item);
-				ModelLoader.setCustomMeshDefinition(item, mapper);
-			}
-			// block-model
-			ModelLoader.setCustomStateMapper(block, mapper);
-		}
-	}
+
 
 	///CLIENT END
 }

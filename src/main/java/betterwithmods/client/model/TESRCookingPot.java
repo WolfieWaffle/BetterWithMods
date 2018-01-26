@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Purpose:
  *
- * @author Tyler Marshall
+ * @author primetoxinz
  * @version 3/20/17
  */
 public class TESRCookingPot extends TileEntitySpecialRenderer<TileEntityCookingPot> {
